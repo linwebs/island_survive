@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>GameWindow</class>
+ <widget class="QMainWindow" name="GameWindow">
+  <property name="enabled">
+   <bool>true</bool>
+  </property>
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1502</width>
+    <height>935</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>1502</width>
+    <height>935</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>1502</width>
+    <height>935</height>
+   </size>
+  </property>
+  <property name="font">
+   <font>
+    <family>Microsoft JhengHei</family>
+    <pointsize>12</pointsize>
+   </font>
+  </property>
+  <property name="windowTitle">
+   <string>小島生存</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <widget class="QPushButton" name="pushButton">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>10</y>
+      <width>100</width>
+      <height>100</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>20</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>頭像</string>
+    </property>
+   </widget>
+   <widget class="QProgressBar" name="progressBar">
+    <property name="geometry">
+     <rect>
+      <x>180</x>
+      <y>20</y>
+      <width>150</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="value">
+     <number>25</number>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>120</x>
+      <y>20</y>
+      <width>60</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>16</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>血量:</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_2">
+    <property name="geometry">
+     <rect>
+      <x>120</x>
+      <y>60</y>
+      <width>60</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>16</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>體力:</string>
+    </property>
+   </widget>
+   <widget class="QProgressBar" name="progressBar_2">
+    <property name="geometry">
+     <rect>
+      <x>180</x>
+      <y>60</y>
+      <width>150</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="value">
+     <number>100</number>
+    </property>
+   </widget>
+   <widget class="QGraphicsView" name="graphicsView">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>1500</width>
+      <height>900</height>
+     </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="minimumSize">
+     <size>
+      <width>1500</width>
+      <height>900</height>
+     </size>
+    </property>
+    <property name="maximumSize">
+     <size>
+      <width>1500</width>
+      <height>900</height>
+     </size>
+    </property>
+   </widget>
+   <zorder>graphicsView</zorder>
+   <zorder>pushButton</zorder>
+   <zorder>progressBar</zorder>
+   <zorder>label</zorder>
+   <zorder>label_2</zorder>
+   <zorder>progressBar_2</zorder>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1502</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menu">
+    <property name="title">
+     <string>遊戲</string>
+    </property>
+    <addaction name="action_action_save"/>
+    <addaction name="action_home"/>
+    <addaction name="separator"/>
+    <addaction name="action_exit"/>
+   </widget>
+   <widget class="QMenu" name="menu_2">
+    <property name="title">
+     <string>選項</string>
+    </property>
+    <addaction name="action_pause"/>
+    <addaction name="action_continue"/>
+   </widget>
+   <widget class="QMenu" name="menu_3">
+    <property name="title">
+     <string>說明</string>
+    </property>
+    <addaction name="action_game_intro"/>
+    <addaction name="action_game_background"/>
+    <addaction name="separator"/>
+    <addaction name="action_about_game"/>
+    <addaction name="action_about_us"/>
+   </widget>
+   <addaction name="menu"/>
+   <addaction name="menu_2"/>
+   <addaction name="menu_3"/>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+  <action name="action_action_save">
+   <property name="text">
+    <string>存檔</string>
+   </property>
+   <property name="toolTip">
+    <string>儲存遊戲當前階段</string>
+   </property>
+  </action>
+  <action name="action_home">
+   <property name="text">
+    <string>返回主畫面</string>
+   </property>
+   <property name="toolTip">
+    <string>返回主畫面</string>
+   </property>
+  </action>
+  <action name="action_exit">
+   <property name="text">
+    <string>離開遊戲</string>
+   </property>
+   <property name="toolTip">
+    <string>離開遊戲</string>
+   </property>
+  </action>
+  <action name="action_pause">
+   <property name="text">
+    <string>暫停</string>
+   </property>
+   <property name="toolTip">
+    <string>暫停遊戲</string>
+   </property>
+  </action>
+  <action name="action_continue">
+   <property name="text">
+    <string>繼續</string>
+   </property>
+   <property name="toolTip">
+    <string>繼續遊戲</string>
+   </property>
+  </action>
+  <action name="action_game_intro">
+   <property name="text">
+    <string>遊戲說明</string>
+   </property>
+   <property name="toolTip">
+    <string>遊戲說明</string>
+   </property>
+  </action>
+  <action name="action_game_background">
+   <property name="text">
+    <string>遊戲背景</string>
+   </property>
+   <property name="toolTip">
+    <string>遊戲背景</string>
+   </property>
+  </action>
+  <action name="action_about_game">
+   <property name="text">
+    <string>關於此遊戲</string>
+   </property>
+   <property name="toolTip">
+    <string>關於此遊戲</string>
+   </property>
+  </action>
+  <action name="action_about_us">
+   <property name="text">
+    <string>關於製作團隊</string>
+   </property>
+   <property name="toolTip">
+    <string>關於製作團隊</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
