@@ -5,11 +5,14 @@
 #include <QWidget>
 #include <QGraphicsView>
 #include <QGraphicsScene>
+#include <QJsonObject>
 #include "struct.cpp"
 #include "gamewindow.h"
 #include "gamewindowscene.h"
+#include <vector>
 using namespace std;
 
+class Player;
 /* 地圖 */
 class Map : public QGraphicsView
 {
@@ -17,7 +20,11 @@ class Map : public QGraphicsView
 		Map(GameWindowScene *GWscene);
 		Map(vector<maps>);	// 帶入存檔(map)
 		bool create();		// 生成地圖
-		bool update_map();
+		bool update_map(int&, int&, int&);
+		bool set_player(Player*);
+		bool create_items(QJsonObject);	// 從 map.json 取得地圖上物品
+		int get_size_height();
+		int get_size_width();
 
 	private:
 		bool barrier(int);	// 障礙物
@@ -30,10 +37,16 @@ class Map : public QGraphicsView
 		bool bbq(int);		// 篝火
 		bool home(int);		// 房子
 		bool land(int);		// 土地
+
+
+
 		vector<maps> map;	// 地圖組成項目列表
 		GameWindowScene *scene;
 		QGraphicsPixmapItem *background[16][9];
 		QGraphicsPixmapItem *grasses[16][9];
+		vector<vector<map_item>> map_items;
+		int size_height;
+		int size_width;
 };
 
 

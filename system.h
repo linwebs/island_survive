@@ -1,5 +1,6 @@
 #include <string>
 #include <QString>
+#include <QJsonObject>
 using namespace std;
 #ifndef SYSTEM_H
 #define SYSTEM_H
@@ -12,6 +13,7 @@ class System
 		bool save(string);		// 儲存檔案
 		int read(QString []);	// 讀取檔案(name)[開啟遊戲]
 		bool exit();			// 離開遊戲[返回主畫面]
+		QJsonObject static get_default_map();	// 讀取地圖
 
 	private:
 		string *get_data();	// 取得所有存檔

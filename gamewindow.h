@@ -27,8 +27,8 @@ class GameWindow : public QMainWindow
 		Map *map;				// view
 		GameWindowScene *scene;	// scene
 		Player *player;			// item
-		QAction *aboutAction;
-		QMenu *helpMenu;
+		QAction *MenuActions[4][6];
+		QMenu *Menus[4];
 };
 
 #endif // GAMEWINDOW_H

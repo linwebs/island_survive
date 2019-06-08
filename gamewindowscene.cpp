@@ -14,13 +14,16 @@ void GameWindowScene::keyPressEvent(QKeyEvent *event)
 	switch (event->key()){
 		case Qt::Key_Right:
 			qDebug()<<"Press Right";
+			player->action->move(4);
 			break;
 		case Qt::Key_Left:
 			qDebug()<<"Press Left";
+			player->action->move(3);
 
 			break;
 		case Qt::Key_Up:
 			qDebug()<<"Press Up";
+			player->action->move(1);
 
 			break;
 		case Qt::Key_Down:

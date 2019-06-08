@@ -6,5 +6,15 @@
         <file>res/img/land/soil_80.jpg</file>
         <file>res/img/character/people_80.png</file>
         <file>res/img/land/grass_80.png</file>
+        <file>res/img/building/furnace_1_80.png</file>
+        <file>res/img/building/furnace_2_80.png</file>
+        <file>res/img/building/furnace_3_80.png</file>
+        <file>res/img/building/furnace_4_80.png</file>
+        <file>res/img/building/furnace_5_80.png</file>
+        <file>res/img/building/furnace_6_80.png</file>
+        <file>res/img/building/furnace_7_80.png</file>
+        <file>res/img/building/furnace_8_80.png</file>
+        <file>res/img/building/furnace_9_80.png</file>
+        <file>res/map/map.json</file>
     </qresource>
 </RCC>

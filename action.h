@@ -14,10 +14,12 @@ class Action: public QGraphicsPixmapItem
 		bool move(int);		// 行走(direction_id)
 		bool pick(int);		// 採集資源(item id)
 		bool attack();		// 獵殺動物
-		bool furmace(int);	// 使用熔爐(item_id)
+		bool furnace(int);	// 使用熔爐(item_id)
 		bool bbq();			// 使用篝火
 		bool stove();		// 使用煉丹爐
 		void setMap(Map *m);
+		int get_x_axis();
+		int get_y_axis();
 		//void keyPressEvent(QKeyEvent *event); // 偵測鍵盤事件
 
 	private:
@@ -31,6 +33,7 @@ class Action: public QGraphicsPixmapItem
 		Map *map;
 
 		int direction;		// 方向
+		bool reverse;		// 反向
 		int x_axis;			// X 軸座標
 		int y_axis;			// Y 軸座標
 };

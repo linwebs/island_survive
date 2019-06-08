@@ -20,6 +20,11 @@ OldMemoryWindow::OldMemoryWindow(QWidget *parent) :
 			   ss[i].mid(8,2) + ":" + ss[i].mid(10,2) + " " + ss[i].mid(12, ss[i].size()-16);
 		ui->listWidget->addItem(name);
 	}
+
+
+	qDebug()<<System::get_default_map();
+
+
 	/*
 	ui->listWidget->addItem("data001");
 	ui->listWidget->addItem("data002");

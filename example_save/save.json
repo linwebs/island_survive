@@ -1,0 +1,26 @@
+{
+  "project": "island_survive",
+  "type": "save",
+  "note": "",
+  "date_time": "2019-03-31T02:02:52",
+  "seed": 123131231,
+  "player": {
+    "x_axis": 0,
+    "y_axis": 0,
+    "direction": 1,
+    "blood": 100,
+    "energy": 100,
+    "name": "abc",
+    "avatar": "xxx.png"
+  },
+  "bag": [
+    {
+      "item": 2,
+      "quantity": 3
+    },
+    {
+      "item": 3,
+      "quantity": 4
+    }
+  ]
+}

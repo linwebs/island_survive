@@ -2,6 +2,12 @@
 #include <QDir>
 #include <QFile>
 #include <QString>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonValue>
+#include <QJsonArray>
+#include <QDebug>
+
 using namespace std;
 #include "system.h"
 
@@ -36,6 +42,38 @@ int System::read(QString files[]) {
 		files[n++]=filename;
 	}
 	return n;
+}
+
+QJsonObject System::get_default_map()
+{
+	qDebug()<<"========================";
+
+	QString settings;
+	QFile file;
+	file.setFileName("map.json");
+	file.open(QIODevice::ReadOnly | QIODevice::Text);
+	settings = file.readAll();
+	file.close();
+
+	QJsonDocument sd = QJsonDocument::fromJson(settings.toUtf8());
+	//qWarning() << sd.isNull(); // <- print false :)
+	QJsonObject sett = sd.object();
+	if(!sd.isNull()) {
+		if((sett["project"].toString().toStdString().data() == QString("island_survive"))) {
+			if((sett["type"].toString().toStdString().data() == QString("map"))) {
+				return sett;
+			} else {
+				qDebug()<<"System:: [map.json] type error!";
+			}
+		} else {
+			qDebug()<<"System:: [map.json] project error!";
+		}
+	} else {
+		qDebug()<<"System:: [map.json] empty!";
+	}
+	//qWarning() << sett.value(QString("project"));  // <- print my title
+
+	qDebug()<<"========================";
 }
 
 /*

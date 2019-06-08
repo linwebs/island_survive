@@ -22,6 +22,7 @@ GameWindow::GameWindow()
 	map = new Map(scene);	// view
 	player->setMap(map);
 
+
 	player->action->setMap(map);
 	scene->setSceneRect(0, 0, 1280, 720);	// 設定場景大小
 	map->setScene(scene);
@@ -55,16 +56,47 @@ void GameWindow::closeEvent(QCloseEvent *event)
 
 void GameWindow::createActions()
 {
-	aboutAction = new QAction(tr("&關於此遊戲"), this);  // 小標題文字
-	aboutAction->setShortcut(tr("Ctrl+I")); // 小標題快捷鍵
-	connect(aboutAction, SIGNAL(triggered()), this, SLOT(showAbout()));
+	MenuActions[0][0] = new QAction(tr("&存檔"), this);  // 次選單文字
+	MenuActions[0][0]->setShortcut(tr("Ctrl+S")); // 呼叫次選單功能的快捷鍵
+	connect(MenuActions[0][0], SIGNAL(triggered()), this, SLOT(showAbout()));
+
+	MenuActions[0][1] = new QAction(tr("&返回主畫面"), this);  // 次選單文字
+	MenuActions[0][1]->setShortcut(tr("Ctrl+M")); // 呼叫次選單功能的快捷鍵
+	connect(MenuActions[0][1], SIGNAL(triggered()), this, SLOT(showAbout()));
+
+
+	MenuActions[0][2] = new QAction(tr("&離開"), this);  // 次選單文字
+	MenuActions[0][2]->setShortcut(tr("Ctrl+Q")); // 呼叫次選單功能的快捷鍵
+	connect(MenuActions[0][2], SIGNAL(triggered()), this, SLOT(showAbout()));
+
+
+	MenuActions[2][0] = new QAction(tr("&遊戲說明"), this);  // 次選單文字
+	MenuActions[2][0]->setShortcut(tr("Ctrl+I")); // 呼叫次選單功能的快捷鍵
+	connect(MenuActions[2][0], SIGNAL(triggered()), this, SLOT(showAbout()));
+
+	MenuActions[2][1] = new QAction(tr("&遊戲簡介"), this);  // 次選單文字
+	connect(MenuActions[2][1], SIGNAL(triggered()), this, SLOT(showAbout()));
+
+
 }
 
 void GameWindow::createMenus()
 {
-	helpMenu = menuBar()->addMenu(tr("&說明"));   // 大標題文字
-	helpMenu->setToolTip("遊戲簡介"); // 大標題提示文字
-	helpMenu->addAction(aboutAction);
+	Menus[0] = menuBar()->addMenu(tr("&遊戲"));   // 主選單文字
+	Menus[0]->setToolTip("此為遊戲"); // 主選單內的次選單提示文字
+	Menus[0]->addAction(MenuActions[0][0]);
+	Menus[0]->addAction(MenuActions[0][1]);
+	Menus[0]->addSeparator();
+	Menus[0]->addAction(MenuActions[0][2]);
+
+	Menus[1] = menuBar()->addMenu(tr("&選項"));
+	Menus[1]->setToolTip("此為選項");
+	//Menus[1]->addAction(MenuActions[1][0]);
+
+	Menus[2] = menuBar()->addMenu(tr("&說明"));
+	Menus[2]->setToolTip("此為說明");
+	Menus[2]->addAction(MenuActions[2][0]);
+	Menus[2]->addAction(MenuActions[2][1]);
 }
 
 void GameWindow::showAbout(){
