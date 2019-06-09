@@ -16,5 +16,26 @@
         <file>res/img/building/furnace_8_80.png</file>
         <file>res/img/building/furnace_9_80.png</file>
         <file>res/map/map.json</file>
+        <file>res/img/land/sea_80.jpg</file>
+        <file>res/img/land/wall_80.jpg</file>
+        <file>res/img/land/box_80.jpg</file>
+        <file>res/img/building/home_3_80.png</file>
+        <file>res/img/building/home_4_80.png</file>
+        <file>res/img/building/home_5_80.png</file>
+        <file>res/img/building/home_6_80.png</file>
+        <file>res/img/building/home_7_80.png</file>
+        <file>res/img/building/home_8_80.png</file>
+        <file>res/img/building/home_9_80.png</file>
+        <file>res/img/building/home_10_80.png</file>
+        <file>res/img/building/home_11_80.png</file>
+        <file>res/img/building/home_12_80.png</file>
+        <file>res/img/building/home_13_80.png</file>
+        <file>res/img/building/home_14_80.png</file>
+        <file>res/img/building/home_15_80.png</file>
+        <file>res/img/building/home_16_80.png</file>
+        <file>res/img/building/home_2_80.png</file>
+        <file>res/img/building/home_1_80.png</file>
+        <file>res/img/frame/ebh.png</file>
+        <file>res/img/character/people_avatar_130.png</file>
     </qresource>
 </RCC>

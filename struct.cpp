@@ -34,6 +34,7 @@ struct maps {
 struct map_item {
 		int item;
 		int size;
+		int walk;
 		QString img;
 };
 

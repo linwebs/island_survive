@@ -1,8 +1,8 @@
 #-------------------------------------------------
 #
 # Project created by QtCreator 2019-03-31T02:02:52
-# Version: 0.10
-# Last edit time 2019-06-05 00:48
+# Version: 0.13
+# Last edit time 2019-06-10 1:56
 #
 #-------------------------------------------------
 
@@ -59,9 +59,9 @@ HEADERS += \
 
 FORMS += \
     mainwindow.ui \
-    gamewindow.ui \
     oldmemorywindow.ui \
     ruleintrowindow.ui
+#    gamewindow.ui \
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

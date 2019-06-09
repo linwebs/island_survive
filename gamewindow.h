@@ -22,13 +22,14 @@ class GameWindow : public QMainWindow
 		void createMenus();
 	private slots:
 		void showAbout();
+		void back_to_main_window();
 
 	private:
 		Map *map;				// view
 		GameWindowScene *scene;	// scene
 		Player *player;			// item
-		QAction *MenuActions[4][6];
-		QMenu *Menus[4];
+		QAction *menu_actions[4][6];
+		QMenu *menus[4];
 };
 
 #endif // GAMEWINDOW_H

@@ -56,51 +56,61 @@ void GameWindow::closeEvent(QCloseEvent *event)
 
 void GameWindow::createActions()
 {
-	MenuActions[0][0] = new QAction(tr("&存檔"), this);  // 次選單文字
-	MenuActions[0][0]->setShortcut(tr("Ctrl+S")); // 呼叫次選單功能的快捷鍵
-	connect(MenuActions[0][0], SIGNAL(triggered()), this, SLOT(showAbout()));
+	menu_actions[0][0] = new QAction(tr("&存檔"), this);		// 次選單文字
+	menu_actions[0][0] -> setShortcut(tr("Ctrl+S"));		// 呼叫次選單功能的快捷鍵
+	connect(menu_actions[0][0], SIGNAL(triggered()), this, SLOT(showAbout()));
 
-	MenuActions[0][1] = new QAction(tr("&返回主畫面"), this);  // 次選單文字
-	MenuActions[0][1]->setShortcut(tr("Ctrl+M")); // 呼叫次選單功能的快捷鍵
-	connect(MenuActions[0][1], SIGNAL(triggered()), this, SLOT(showAbout()));
+	menu_actions[0][1] = new QAction(tr("&返回主畫面"), this);// 次選單文字
+	menu_actions[0][1] -> setShortcut(tr("Ctrl+R"));		// 呼叫次選單功能的快捷鍵
+	connect(menu_actions[0][1], SIGNAL(triggered()), this, SLOT(showAbout()));
 
+	menu_actions[0][2] = new QAction(tr("&離開遊戲"), this);	// 次選單文字
+	menu_actions[0][2] -> setShortcut(tr("Ctrl+Q"));		// 呼叫次選單功能的快捷鍵
+	connect(menu_actions[0][2], SIGNAL(triggered()), this, SLOT(back_to_main_window()));
 
-	MenuActions[0][2] = new QAction(tr("&離開"), this);  // 次選單文字
-	MenuActions[0][2]->setShortcut(tr("Ctrl+Q")); // 呼叫次選單功能的快捷鍵
-	connect(MenuActions[0][2], SIGNAL(triggered()), this, SLOT(showAbout()));
+	menu_actions[1][0] = new QAction(tr("&暫停"), this);		// 次選單文字
+	menu_actions[1][0] -> setShortcut(tr("Ctrl+P"));		// 呼叫次選單功能的快捷鍵
+	connect(menu_actions[1][0], SIGNAL(triggered()), this, SLOT(showAbout()));
 
+	menu_actions[1][1] = new QAction(tr("&繼續"), this);		// 次選單文字
+	menu_actions[1][1] -> setShortcut(tr("Ctrl+C"));		// 呼叫次選單功能的快捷鍵
+	connect(menu_actions[1][1], SIGNAL(triggered()), this, SLOT(showAbout()));
 
-	MenuActions[2][0] = new QAction(tr("&遊戲說明"), this);  // 次選單文字
-	MenuActions[2][0]->setShortcut(tr("Ctrl+I")); // 呼叫次選單功能的快捷鍵
-	connect(MenuActions[2][0], SIGNAL(triggered()), this, SLOT(showAbout()));
-
-	MenuActions[2][1] = new QAction(tr("&遊戲簡介"), this);  // 次選單文字
-	connect(MenuActions[2][1], SIGNAL(triggered()), this, SLOT(showAbout()));
-
-
+	menu_actions[2][0] = new QAction(tr("&遊戲說明"), this);	// 次選單文字
+	menu_actions[2][0] -> setShortcut(tr("Ctrl+I"));		// 呼叫次選單功能的快捷鍵
+	connect(menu_actions[2][0], SIGNAL(triggered()), this, SLOT(showAbout()));
 }
 
 void GameWindow::createMenus()
 {
-	Menus[0] = menuBar()->addMenu(tr("&遊戲"));   // 主選單文字
-	Menus[0]->setToolTip("此為遊戲"); // 主選單內的次選單提示文字
-	Menus[0]->addAction(MenuActions[0][0]);
-	Menus[0]->addAction(MenuActions[0][1]);
-	Menus[0]->addSeparator();
-	Menus[0]->addAction(MenuActions[0][2]);
 
-	Menus[1] = menuBar()->addMenu(tr("&選項"));
-	Menus[1]->setToolTip("此為選項");
-	//Menus[1]->addAction(MenuActions[1][0]);
+	menus[0] = menuBar()->addMenu(tr("&遊戲"));	// 主選單文字
+	menus[0]->addAction(menu_actions[0][0]);
+	menus[0]->addAction(menu_actions[0][1]);
+	menus[0]->addSeparator();
+	menus[0]->addAction(menu_actions[0][2]);
 
-	Menus[2] = menuBar()->addMenu(tr("&說明"));
-	Menus[2]->setToolTip("此為說明");
-	Menus[2]->addAction(MenuActions[2][0]);
-	Menus[2]->addAction(MenuActions[2][1]);
+	menus[1] = menuBar()->addMenu(tr("&選項"));	// 主選單文字
+	menus[1]->addAction(menu_actions[1][0]);
+	menus[1]->addAction(menu_actions[1][1]);
+
+	menus[2] = menuBar()->addMenu(tr("&說明"));	// 主選單文字
+	menus[2]->addAction(menu_actions[2][0]);
+	menus[2]->setToolTip("遊戲說明");				// 主選單內的次選單提示文字
 }
 
 void GameWindow::showAbout(){
 
 	RuleIntroWindow *ruleintrowindow = new RuleIntroWindow;
 	ruleintrowindow->show();
+}
+
+void GameWindow::back_to_main_window()
+{
+	QMessageBox::StandardButton reply = QMessageBox::question(this, "是否返回主畫面", "是否要存檔並返回主畫面", QMessageBox::Yes | QMessageBox::No);
+	if(reply == QMessageBox::Yes) {
+		MainWindow *mainwindow = new MainWindow;
+		mainwindow->show();
+		this->hide();
+	}
 }
