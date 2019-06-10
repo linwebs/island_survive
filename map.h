@@ -17,14 +17,16 @@ class Player;
 class Map : public QGraphicsView
 {
 	public:
-		Map(GameWindowScene *GWscene);
+		Map(GameWindowScene *GWscene, int *);
 		Map(vector<maps>);	// 帶入存檔(map)
 		bool update_map(int&, int&, int&);
 		bool set_player(Player*);
 		bool create_items(QJsonObject);	// 從 map.json 取得地圖上物品
 		int get_size_height();
 		int get_size_width();
-		int show_energy_blood();
+		int show_energy_blood(int, int, QString avatar_v = "://res/img/character/people_avatar_130.png");
+		bool exit_pause();
+		void pause_game();
 
 	private:
 		bool create_land();		// 生成土地
@@ -41,15 +43,24 @@ class Map : public QGraphicsView
 		bool initialize_items();
 		bool put_items(int, int, int);
 		bool generate_player(bool);
+		bool save_file();
 
 		vector<maps> map;	// 地圖組成項目列表
 		GameWindowScene *scene;
+		Player *player;
+
+		QGraphicsRectItem *save_bgm;
+		QGraphicsPixmapItem *pause_text;
+
 		QGraphicsPixmapItem *player_show;
 		QGraphicsPixmapItem *background[16][9];
 		QGraphicsPixmapItem *map_now[16][9];
+		QGraphicsTextItem *pause_time;
 		vector<vector<map_item>> map_items;
 		int size_height;
 		int size_width;
+		int *play_time;
+
 };
 
 

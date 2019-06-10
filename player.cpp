@@ -8,7 +8,16 @@ Player::Player(QGraphicsItem *parent): QGraphicsPixmapItem(parent)
 	action = new Action;
 	bag = new Bag;
 
+	action->setEnergy(energy);
 	setPixmap(QPixmap("://res/img/character/people_80.png"));
+}
+
+Player::~Player()
+{
+	delete  blood;
+	delete  energy;
+	delete  action;
+	delete  bag;
 }
 
 void Player::setMap(Map *m)

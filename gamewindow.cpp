@@ -17,15 +17,20 @@ GameWindow::GameWindow()
 	player = new Player();	// 建立玩家 object
 	player->setPos(560, 453);
 
+	play_time = 0;
+
 	scene = new GameWindowScene(player);	// scene
 
-	map = new Map(scene);	// view
+	map = new Map(scene, &play_time);	// view
 	player->setMap(map);
+
 
 
 	player->action->setMap(map);
 	scene->setSceneRect(0, 0, 1280, 720);	// 設定場景大小
 	map->setScene(scene);
+	map->set_player(player);
+	scene->set_map(map);
 	setCentralWidget(map);	// 將場景添加到 QMain Window
 
 	/* 560: 1280-80*7=560
@@ -39,6 +44,50 @@ GameWindow::GameWindow()
 
 	createActions();	// 建立標題列按鈕活動(小分支)
 	createMenus();		// 建立標題列按鈕
+	timer = new QTimer(this);
+	timer->start(1000);
+	connect(timer, SIGNAL(timeout()), this, SLOT(add_play_time()));
+
+	energy_timer = new QTimer(this);
+	energy_timer->start(3000);
+	connect(energy_timer, SIGNAL(timeout()), this, SLOT(sub_time()));
+}
+
+GameWindow::~GameWindow()
+{
+	timer->stop();
+	energy_timer->stop();
+	delete timer;
+	delete energy_timer;
+	delete player;
+	delete map;
+}
+
+void GameWindow::destructor()
+{
+	timer->stop();
+	energy_timer->stop();
+	delete timer;
+	delete energy_timer;
+	delete player;
+	delete map;
+}
+
+void GameWindow::sub_time()
+{
+	if(player->action->get_pause() == 0) {
+		player->action->energy_update();
+		map->show_energy_blood(player->energy->get_energy(), player->blood->get_blood());
+	}
+}
+
+void GameWindow::add_play_time()
+{
+
+	if(player->action->get_status() == 0) {
+		play_time++;
+	}
+	// qDebug()<<"play time: "<<play_time;
 }
 
 void GameWindow::closeEvent(QCloseEvent *event)
@@ -48,6 +97,10 @@ void GameWindow::closeEvent(QCloseEvent *event)
 		event->accept();
 		MainWindow *mainwindow = new MainWindow;
 		mainwindow->show();
+		// save file
+		/* desctructor */
+		destructor();
+
 		this->hide();
 	} else {
 		event->ignore();
@@ -62,19 +115,19 @@ void GameWindow::createActions()
 
 	menu_actions[0][1] = new QAction(tr("&返回主畫面"), this);// 次選單文字
 	menu_actions[0][1] -> setShortcut(tr("Ctrl+R"));		// 呼叫次選單功能的快捷鍵
-	connect(menu_actions[0][1], SIGNAL(triggered()), this, SLOT(showAbout()));
+	connect(menu_actions[0][1], SIGNAL(triggered()), this, SLOT(back_to_main_window()));
 
-	menu_actions[0][2] = new QAction(tr("&離開遊戲"), this);	// 次選單文字
-	menu_actions[0][2] -> setShortcut(tr("Ctrl+Q"));		// 呼叫次選單功能的快捷鍵
-	connect(menu_actions[0][2], SIGNAL(triggered()), this, SLOT(back_to_main_window()));
+	//	menu_actions[0][2] = new QAction(tr("&離開遊戲"), this);	// 次選單文字
+	//	menu_actions[0][2] -> setShortcut(tr("Ctrl+Q"));		// 呼叫次選單功能的快捷鍵
+	//	connect(menu_actions[0][2], SIGNAL(triggered()), this, SLOT());
 
 	menu_actions[1][0] = new QAction(tr("&暫停"), this);		// 次選單文字
 	menu_actions[1][0] -> setShortcut(tr("Ctrl+P"));		// 呼叫次選單功能的快捷鍵
-	connect(menu_actions[1][0], SIGNAL(triggered()), this, SLOT(showAbout()));
+	connect(menu_actions[1][0], SIGNAL(triggered()), this, SLOT(pause_game()));
 
 	menu_actions[1][1] = new QAction(tr("&繼續"), this);		// 次選單文字
 	menu_actions[1][1] -> setShortcut(tr("Ctrl+C"));		// 呼叫次選單功能的快捷鍵
-	connect(menu_actions[1][1], SIGNAL(triggered()), this, SLOT(showAbout()));
+	connect(menu_actions[1][1], SIGNAL(triggered()), this, SLOT(exit_pause_game()));
 
 	menu_actions[2][0] = new QAction(tr("&遊戲說明"), this);	// 次選單文字
 	menu_actions[2][0] -> setShortcut(tr("Ctrl+I"));		// 呼叫次選單功能的快捷鍵
@@ -87,8 +140,8 @@ void GameWindow::createMenus()
 	menus[0] = menuBar()->addMenu(tr("&遊戲"));	// 主選單文字
 	menus[0]->addAction(menu_actions[0][0]);
 	menus[0]->addAction(menu_actions[0][1]);
-	menus[0]->addSeparator();
-	menus[0]->addAction(menu_actions[0][2]);
+	//	menus[0]->addSeparator();
+	//	menus[0]->addAction(menu_actions[0][2]);
 
 	menus[1] = menuBar()->addMenu(tr("&選項"));	// 主選單文字
 	menus[1]->addAction(menu_actions[1][0]);
@@ -105,12 +158,25 @@ void GameWindow::showAbout(){
 	ruleintrowindow->show();
 }
 
+void GameWindow::pause_game()
+{
+	if(player->action->get_status() == 0)
+		map->pause_game();
+}
+
+void GameWindow::exit_pause_game()
+{
+	map->exit_pause();
+}
+
 void GameWindow::back_to_main_window()
 {
 	QMessageBox::StandardButton reply = QMessageBox::question(this, "是否返回主畫面", "是否要存檔並返回主畫面", QMessageBox::Yes | QMessageBox::No);
 	if(reply == QMessageBox::Yes) {
 		MainWindow *mainwindow = new MainWindow;
 		mainwindow->show();
+		destructor();
 		this->hide();
 	}
 }
+

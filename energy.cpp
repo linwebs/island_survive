@@ -13,8 +13,9 @@ Energy::Energy(int e)
 
 void Energy::sub_time()
 {
-	energy=energy-1;
-	qDebug()<<energy;
+	if(energy-1 > 0)
+		energy=energy-1;
+	//qDebug()<<energy;
 }
 
 bool Energy::attack()

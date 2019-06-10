@@ -2,12 +2,14 @@
 #include <QDebug>
 #include "action.h"
 #include "map.h"
+#include "energy.h"
 Action::Action()
 {
 	reverse = false;
 	x_axis = 7;
 	y_axis = 2;
 	direction = 1;
+	pause = 0;
 	setPixmap(QPixmap("://res/img/character/people.png"));
 }
 
@@ -18,38 +20,22 @@ Action::Action(int n)
 
 bool Action::move(int n) {
 	int step = 100;
-	qDebug()<<"move";
-	if (n==2) {
-		return go_down(step);
-	} else if (n==3) {
-		return go_left(step);
-	} else if (n==4) {
-		return go_right(step);
-	} else {
-		return go_up(step);
+	//	qDebug()<<"move";
+	if(pause==0 || pause==2) {
+		if (n==2) {
+			return go_down(step);
+		} else if (n==3) {
+			return go_left(step);
+		} else if (n==4) {
+			return go_right(step);
+		} else {
+			return go_up(step);
+		}
 	}
 }
-/*
-void Action::keyPressEvent(QKeyEvent *event) {
-	qDebug()<<"key press";
-	if(event->key() == Qt::Key_Up) {
-		qDebug()<<"up";
-		move(1);
-	} else if(event->key() == Qt::Key_Down) {
-		qDebug()<<"down";
-		move(2);
-	} else if(event->key() == Qt::Key_Left) {
-		qDebug()<<"left";
-		move(4);
-	} else if(event->key() == Qt::Key_Right) {
-		qDebug()<<"right";
-		move(3);
-	}
-}
-*/
 
 bool Action::go_up(int step) {
-	qDebug()<<map->get_size_height();
+	//qDebug()<<map->get_size_height();
 	if(reverse) {
 		if(y_axis-1 >= 0) {
 			y_axis -= 1;
@@ -130,6 +116,11 @@ void Action::setMap(Map *m)
 	map = m;
 }
 
+void Action::setEnergy(Energy *e)
+{
+	energy = e;
+}
+
 int Action::get_x_axis()
 {
 	return x_axis;
@@ -140,3 +131,55 @@ int Action::get_y_axis()
 	return y_axis;
 }
 
+bool Action::energy_update()
+{
+	energy->sub_time();
+}
+
+bool Action::change_status(int s)
+{
+	switch (s) {
+		case 0:
+			status = 0;
+			pause = 0;
+			return true;
+		case 1:
+			status = 1;
+			pause = 1;
+			return true;
+		case 2:
+			status = 2;
+			return true;
+		case 3:
+			status = 3;
+			pause = 1;	// 存檔中
+			return true;
+		case 4:
+			status = 4;
+			return true;
+		case 5:
+			status = 5;
+			return true;
+		case 6:
+			status = 6;
+			return true;
+		case 7:
+			status = 7;
+			return true;
+		case 8:
+			status = 8;
+			return true;
+		default:
+			return false;
+	}
+}
+
+int Action::get_status()
+{
+	return status;
+}
+
+int Action::get_pause()
+{
+	return pause;
+}

@@ -37,5 +37,6 @@
         <file>res/img/building/home_1_80.png</file>
         <file>res/img/frame/ebh.png</file>
         <file>res/img/character/people_avatar_130.png</file>
+        <file>res/img/frame/game_pause_text.png</file>
     </qresource>
 </RCC>

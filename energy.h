@@ -18,6 +18,7 @@ class Energy
 		bool add(int);		// 增加體力(數值)
 		bool sub(int);		// 減少體力(數值)
 		int energy;			// 體力
+
 };
 
 #endif // ENERGY_H

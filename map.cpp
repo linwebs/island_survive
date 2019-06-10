@@ -11,7 +11,7 @@
 #include <QJsonValue>
 #include <QJsonArray>
 
-Map::Map(GameWindowScene *GWscene)
+Map::Map(GameWindowScene *GWscene, int *p)
 {
 	scene = GWscene;
 	map.clear();
@@ -23,9 +23,9 @@ Map::Map(GameWindowScene *GWscene)
 	create_items(System::get_default_map());
 	initialize_items();
 	generate_player(true);
-
-	//	update_map(8, 3, 1);
-
+	show_energy_blood(100, 100);
+	play_time = p;
+	// update_map(8, 3, 1);
 	show();
 }
 
@@ -48,19 +48,82 @@ bool Map::create_land()
 
 bool Map::update_map(int &player_x, int &player_y, int &player_di)
 {
-	qDebug()<<"("<<player_x<<", "<<player_y<<")"<<map_items[player_x+7][player_y+2].img;
-	return put_items(player_x, player_y, player_di);
+	int item_id = map_items[player_x+7][player_y+2].item;
+	qDebug()<<"("<<player_x<<", "<<player_y<<")"<<item_id;
 
-	//for(int i=)
-	/*
-	qDebug()<<"update_map";
-	int i=10, j=3;
-	grasses[i][j] = new QGraphicsPixmapItem();
-	grasses[i][j]->setPixmap(QPixmap("://res/img/land/grass_80.png"));
-	grasses[i][j]->setPos(i*80, j*80);
-	scene->addItem(grasses[i][j]);
-	scene->removeItem(grasses[10][4]);
-	//	delete grasses[10][4];*/
+	switch (item_id) {
+		case 4:
+			// home
+			save_file();
+			break;
+		case 5:
+			// enter furnace
+			break;
+		case 6:
+			// enter bbq
+			break;
+		case 7:
+			// enter stove
+			break;
+		case 8:
+			// action fight
+			break;
+		case 9:
+			// pick wood
+			break;
+		case 10:
+			// pick stone
+			break;
+	}
+	return put_items(player_x, player_y, player_di);
+}
+
+bool Map::save_file()
+{
+	pause_game();
+	player->action->change_status(3);
+	//	qDebug()<<"save";
+
+	//return true;
+}
+
+bool Map::exit_pause()
+{
+	if(player->action->get_status() == 1 || player->action->get_status() == 3) {
+		scene->removeItem(save_bgm);
+		scene->removeItem(pause_text);
+		scene->removeItem(pause_time);
+		delete save_bgm;
+		delete  pause_text;
+		delete  pause_time;
+		player->action->change_status(0);
+	}
+}
+
+void Map::pause_game()
+{
+	player->action->change_status(1);
+	save_bgm = new QGraphicsRectItem();
+	save_bgm->setRect(0, 0, 1280, 720);
+	save_bgm->setPen(Qt::NoPen);
+	save_bgm->setBrush(QColor(0, 0, 0, 200));
+	scene->addItem(save_bgm);
+
+	pause_text= new QGraphicsPixmapItem();
+	pause_text->setPixmap(QPixmap("://res/img/frame/game_pause_text.png"));
+	pause_text->setPos(320, 200);
+	scene->addItem(pause_text);
+	pause_time = new QGraphicsTextItem();
+	pause_time->setPos(410, 400);
+	pause_time->setDefaultTextColor(Qt::white);
+	pause_time->setFont(QFont("Microsoft JhengHei", 20));
+	pause_time->setPlainText(QString("目前存活時間: ")+QString::number(*play_time)+QString("秒，按空白鍵繼續遊戲"));
+	scene->addItem(pause_time);
+}
+
+bool Map::set_player(Player *p)
+{
+	player = p;
 }
 
 bool Map::put_items(int player_x, int player_y, int player_di)
@@ -78,7 +141,7 @@ bool Map::put_items(int player_x, int player_y, int player_di)
 			}
 		}
 		generate_player(false);
-		show_energy_blood();
+		show_energy_blood(player->energy->get_energy(), player->blood->get_blood());
 		return true;
 	}
 }
@@ -125,7 +188,7 @@ bool Map::create_items(QJsonObject json)
 	md.assign(static_cast<unsigned long long int>(size_height), mi);
 	map_items.assign(static_cast<unsigned long long int>(size_width), md);
 
-	qDebug()<<size_height<<"*"<<size_width;
+	//qDebug()<<size_height<<"*"<<size_width;
 
 	// left
 	for(int i=0; i<size_height; i++) {
@@ -211,7 +274,7 @@ int Map::get_size_width()
 	return size_width;
 }
 
-int Map::show_energy_blood()
+int Map::show_energy_blood(int energy_v, int blood_v, QString avatar_v)
 {
 	QGraphicsPixmapItem *frame, *avatar;
 	QGraphicsRectItem *energy, *blood;
@@ -222,32 +285,32 @@ int Map::show_energy_blood()
 	frame->setPos(10, 10);
 	scene->addItem(frame);
 
-	energy = new QGraphicsRectItem();
-	energy->setRect(183, 61, 283, 38);
-	energy->setPen(Qt::NoPen);
-	energy->setBrush(QColor(241, 80, 88));
-	scene->addItem(energy);
-	energy_t = new QGraphicsTextItem();
-	energy_t->setPos(300, 64);
-	energy_t->setDefaultTextColor(Qt::black);
-	energy_t->setFont(QFont("Microsoft JhengHei", 16));
-	energy_t->setPlainText(QString("100%"));
-	scene->addItem(energy_t);
-
 	blood = new QGraphicsRectItem();
-	blood->setRect(184, 108, 282, 43);
+	blood->setRect(183, 61, blood_v*283/100, 38);
 	blood->setPen(Qt::NoPen);
-	blood->setBrush(QColor(0, 162, 232));
+	blood->setBrush(QColor(241, 80, 88));
 	scene->addItem(blood);
 	blood_t = new QGraphicsTextItem();
-	blood_t->setPos(310, 114);
+	blood_t->setPos(300, 64);
 	blood_t->setDefaultTextColor(Qt::black);
 	blood_t->setFont(QFont("Microsoft JhengHei", 16));
-	blood_t->setPlainText(QString("1%"));
+	blood_t->setPlainText(QString::number(blood_v)+QString("%"));
 	scene->addItem(blood_t);
 
+	energy = new QGraphicsRectItem();
+	energy->setRect(184, 108, energy_v*282/100, 43);
+	energy->setPen(Qt::NoPen);
+	energy->setBrush(QColor(0, 162, 232));
+	scene->addItem(energy);
+	energy_t = new QGraphicsTextItem();
+	energy_t->setPos(310, 114);
+	energy_t->setDefaultTextColor(Qt::black);
+	energy_t->setFont(QFont("Microsoft JhengHei", 16));
+	energy_t->setPlainText(QString::number(energy_v)+QString("%"));
+	scene->addItem(energy_t);
+
 	avatar = new QGraphicsPixmapItem();
-	avatar->setPixmap(QPixmap("://res/img/character/people_avatar_130.png"));
+	avatar->setPixmap(QPixmap(avatar_v));
 	avatar->setPos(36, 26);
 	scene->addItem(avatar);
 }
