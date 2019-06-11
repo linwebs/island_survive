@@ -46,7 +46,7 @@ int System::read(QString files[]) {
 
 QJsonObject System::get_default_map()
 {
-	qDebug()<<"========================";
+	//qDebug()<<"========================";
 
 	QString settings;
 	QFile file;
@@ -73,7 +73,64 @@ QJsonObject System::get_default_map()
 	}
 	//qWarning() << sett.value(QString("project"));  // <- print my title
 
-	qDebug()<<"========================";
+	//qDebug()<<"========================";
+}
+
+QString System::get_bag_item_file_path(int name)
+{
+//	return "://res/img/bag/bbb_180.png";
+	switch (name) {
+		case 1:
+			return "://res/img/bag/grass_blue_180.png";
+		case 2:
+			return "://res/img/bag/grass_red_180.png";
+		case 3:
+			return "://res/img/bag/grass_purple_180.png";
+		case 4:
+			return "://res/img/bag/wood_180.png";
+		case 5:
+			return "://res/img/bag/stone_180.png";
+		case 6:
+			return "://res/img/bag/weapon_scissor_180.png";
+		case 7:
+			return "://res/img/bag/weapon_stone_180.png";
+		case 8:
+			return "://res/img/bag/weapon_paper_180.png";
+		case 9:
+			return "://res/img/bag/flesh_180.png";
+		case 10:
+			return "://res/img/bag/meat_180.png";
+		default:
+			return "";
+	}
+}
+
+QString System::get_bags_item_file_path(int name)
+{
+	switch (name) {
+		case 1:
+			return "://res/img/bag/grass_blue_54.png";
+		case 2:
+			return "://res/img/bag/grass_red_54.png";
+		case 3:
+			return "://res/img/bag/grass_purple_54.png";
+		case 4:
+			return "://res/img/bag/wood_54.png";
+		case 5:
+			return "://res/img/bag/stone_54.png";
+		case 6:
+			return "://res/img/bag/weapon_scissor_54.png";
+		case 7:
+			return "://res/img/bag/weapon_stone_54.png";
+		case 8:
+			return "://res/img/bag/weapon_paper_54.png";
+		case 9:
+			return "://res/img/bag/flesh_54.png";
+		case 10:
+			return "://res/img/bag/meat_54.png";
+		default:
+			return "";
+	}
 }
 
 /*

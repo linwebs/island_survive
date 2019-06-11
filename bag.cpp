@@ -10,43 +10,51 @@ Bag::Bag()
 
 Bag::Bag(vector<bags> ibag)
 {
-	bag=ibag;
+	bag = ibag;
 }
 
 bool Bag::put(int name)
 {
-	if(checkbag(name)==-1)
-	{
-		bags blanck;
-		blanck.item=name;
-		blanck.quantity=1;
-		bag.push_back(blanck);
+	if(checkbag(name) == 0) {		// 檢查要新增的物品是否已在背包中
+		// 要新增的物品不在背包中
+		if(item_full() == false) {	// 檢查背包格數是否已滿
+			bags blanck;
+			blanck.item = name;
+			blanck.quantity = 1;
+			bag.push_back(blanck);
+			return true;
+		} else {
+			// 背包格數已滿，無法新增
+			return false;
+		}
+	} else {
+		if(quantity_full(name) == false) {	// 檢查背包此物品空間是否已滿
+			bag[get_item_order(name)].quantity++;
+			return true;
+		} else {
+			// 背包此物品空間已滿，無法新增
+			return false;
+		}
 	}
 }
 
 bool Bag::take(int name)
 {
-	int ch=0;
-	for(int i=0; i<bag.size(); i++)
-	{
-		if(name==bag[i].item)
-		{
-			bag[i].quantity--;
-			ch=1;
-			if(bag[i].quantity==0)
-			{
-				bag.erase(bag.begin()+i);
-			}
-		}
-	}
-	if(ch==1)
-	{
+	if(checkbag(name) == 0) {		// 檢查要取出的物品是否有在背包中
+		// 背包中無此物品，無法取出
+		return false;
+	} else if(checkbag(name) == 1) {
+		bag.erase(bag.begin() + static_cast<int>(get_item_order(name)));
+		return true;
+	} else {
+		bag[get_item_order(name)].quantity--;
 		return true;
 	}
-	else if(ch==0)
-	{
-		return false;
-	}
+}
+
+int Bag::bag_size()
+{
+	return bag.size();
 }
 
 vector<bags> *Bag::get_items()
@@ -54,35 +62,44 @@ vector<bags> *Bag::get_items()
 	return &bag;
 }
 
-bool Bag::full(int)
+bool Bag::item_full()
 {
-	if(bag.size()==10)
-	{
+	if(bag.size() >= 10) {
+		return true;
+	} else {
 		return false;
 	}
-	else if(bag.size()<=10)
-	{
+}
+
+bool Bag::quantity_full(int name)
+{
+	if(bag[get_item_order(name)].quantity >= 10) {
 		return true;
+	} else {
+		return false;
 	}
 }
 
 int Bag::checkbag(int name)
 {
-	int c=1;
-	for(int i=0; i<bag.size(); i++)
+	for(unsigned long long int i=0; i<bag.size(); i++)
 	{
-		if(bag[i].item==name)
+		if(bag[i].item == name)
 		{
-			bag[i].quantity++;
-			c=0;
+			return bag[i].quantity;
 		}
 	}
-	if(c==1)
+	return 0;
+}
+
+int Bag::get_item_order(int name)
+{
+	for(int i=0; i<bag.size(); i++)
 	{
-		return -1;
+		if(bag[i].item == name)
+		{
+			return i;
+		}
 	}
-	else if(c==0)
-	{
-		return 1;
-	}
+	return -1;
 }

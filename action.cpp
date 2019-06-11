@@ -10,6 +10,7 @@ Action::Action()
 	y_axis = 2;
 	direction = 1;
 	pause = 0;
+	status = 0;
 	setPixmap(QPixmap("://res/img/character/people.png"));
 }
 
@@ -165,10 +166,14 @@ bool Action::change_status(int s)
 			return true;
 		case 7:
 			status = 7;
-			return true;
-		case 8:
-			status = 8;
-			return true;
+            return true;
+        case 8:
+            status = 8;
+            return true;
+        case 9:
+            pause = 1;
+            status = 9;
+            return true;
 		default:
 			return false;
 	}

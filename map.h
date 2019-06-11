@@ -25,8 +25,11 @@ class Map : public QGraphicsView
 		int get_size_height();
 		int get_size_width();
 		int show_energy_blood(int, int, QString avatar_v = "://res/img/character/people_avatar_130.png");
-		bool exit_pause();
+        void show_bags();
+        bool exit_pause();
 		void pause_game();
+		void open_bag();
+		void close_bag();
 
 	private:
 		bool create_land();		// 生成土地
@@ -49,10 +52,23 @@ class Map : public QGraphicsView
 		GameWindowScene *scene;
 		Player *player;
 
+        // save
 		QGraphicsRectItem *save_bgm;
 		QGraphicsPixmapItem *pause_text;
 
-		QGraphicsPixmapItem *player_show;
+        // bags
+		QGraphicsPixmapItem *bags_bgm;
+		QGraphicsTextItem *bags_items_text[10];
+		QGraphicsPixmapItem *bags_items[10];
+
+        // bag
+        QGraphicsPixmapItem *bag_bgm;
+		QGraphicsTextItem *bag_items_text[10];
+		QGraphicsPixmapItem *bag_items[10];
+
+
+
+        QGraphicsPixmapItem *player_show;
 		QGraphicsPixmapItem *background[16][9];
 		QGraphicsPixmapItem *map_now[16][9];
 		QGraphicsTextItem *pause_time;

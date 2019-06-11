@@ -38,5 +38,27 @@
         <file>res/img/frame/ebh.png</file>
         <file>res/img/character/people_avatar_130.png</file>
         <file>res/img/frame/game_pause_text.png</file>
+        <file>res/img/bag/bags.png</file>
+        <file>res/img/bag/flesh_54.png</file>
+        <file>res/img/bag/grass_blue_54.png</file>
+        <file>res/img/bag/grass_purple_54.png</file>
+        <file>res/img/bag/grass_red_54.png</file>
+        <file>res/img/bag/meat_54.png</file>
+        <file>res/img/bag/stone_54.png</file>
+        <file>res/img/bag/weapon_paper_54.png</file>
+        <file>res/img/bag/weapon_scissor_54.png</file>
+        <file>res/img/bag/weapon_stone_54.png</file>
+        <file>res/img/bag/wood_54.png</file>
+        <file>res/img/bag/flesh_180.png</file>
+        <file>res/img/bag/grass_blue_180.png</file>
+        <file>res/img/bag/grass_purple_180.png</file>
+        <file>res/img/bag/grass_red_180.png</file>
+        <file>res/img/bag/meat_180.png</file>
+        <file>res/img/bag/stone_180.png</file>
+        <file>res/img/bag/weapon_paper_180.png</file>
+        <file>res/img/bag/weapon_scissor_180.png</file>
+        <file>res/img/bag/weapon_stone_180.png</file>
+        <file>res/img/bag/wood_180.png</file>
+        <file>res/img/frame/bag/bags_bgm.png</file>
     </qresource>
 </RCC>

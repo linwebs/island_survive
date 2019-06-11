@@ -20,11 +20,13 @@ class GameWindow : public QMainWindow
 		virtual ~GameWindow();
 		void closeEvent (QCloseEvent*);
 	private:
-		void createActions();
-		void createMenus();
+        void create_actions();
+        void create_menus();
 		void destructor();
-	private slots:
-		void showAbout();
+    private slots:
+        void show_about();
+        void show_bag();
+        void save_file();
 		void pause_game();
 		void exit_pause_game();
 		void back_to_main_window();
