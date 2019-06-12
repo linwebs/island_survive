@@ -22,11 +22,11 @@ GameWindow::GameWindow()
 	scene = new GameWindowScene(player);	// scene
 
 	map = new Map(scene, &play_time);	// view
-	player->setMap(map);
+	player->set_map(map);
 
 
 
-	player->action->setMap(map);
+	player->action->set_map(map);
 	scene->setSceneRect(0, 0, 1280, 720);	// 設定場景大小
 	map->setScene(scene);
 	map->set_player(player);

@@ -9,10 +9,15 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui(new Ui::MainWindow)
 {
 	ui->setupUi(this);
-	QPixmap bkgnd("://res/img/logo/splashlogo.png");
+	QPixmap bkgnd("://res/img/main/main_bgm.png");
 	bkgnd = bkgnd.scaled(this->size(), Qt::IgnoreAspectRatio);
 	QPalette palette;
 	palette.setBrush(QPalette::Background, bkgnd);
+
+	ui->btn_new_game->setStyleSheet("border-image: url(://res/img/main/new_game_btn.png);");
+	ui->btn_old_memory->setStyleSheet("border-image: url(://res/img/main/old_game_btn.png);");
+	ui->btn_rule_intro->setStyleSheet("border-image: url(://res/img/main/rule_intro_btn.png);");
+
 	this->setPalette(palette);
 }
 

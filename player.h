@@ -17,7 +17,7 @@ class Player: public QObject, public QGraphicsPixmapItem
 	public:
 		Player(QGraphicsItem *parent = 0);
 		virtual ~Player();
-		void setMap(Map *m);
+		void set_map(Map *m);
 		int get_play_time();
 		bool add_play_time(int);
 

@@ -26,8 +26,9 @@ Map::Map(GameWindowScene *GWscene, int *p)
 	initialize_items();
 	generate_player(true);
 	show_energy_blood(100, 100);
-    show_bags();
 	play_time = p;
+	local_item = 0;
+	last_local_item = 0;
 	// update_map(8, 3, 1);
 	show();
 }
@@ -37,12 +38,38 @@ Map::Map(vector<maps> maps)
 	map = maps;
 }
 
+bool Map::set_player(Player *p)
+{
+	player = p;
+/* test bag items
+	player->bag->put(3);
+	player->bag->put(2);
+	player->bag->put(3);
+	player->bag->put(6);
+	player->bag->put(4);
+	player->bag->put(1);
+	player->bag->put(4);
+	player->bag->take(5);
+	player->bag->put(1);
+	player->bag->put(2);
+	player->bag->put(3);
+	player->bag->put(4);
+	player->bag->put(5);
+	player->bag->put(6);
+	player->bag->put(7);
+	player->bag->put(8);
+	player->bag->put(9);
+	player->bag->put(10);
+*/
+	show_bags();
+}
+
 bool Map::create_land()
 {
 	for(int i=0; i<16; i++) {
 		for(int j=0; j<9; j++) {
 			background[i][j] = new QGraphicsPixmapItem();
-			background[i][j]->setPixmap(QPixmap("://res/img/land/soil_80.jpg"));
+			background[i][j]->setPixmap(QPixmap("://res/img/land/soil_80.png"));
 			background[i][j]->setPos(i*80, j*80);
 			scene->addItem(background[i][j]);
 		}
@@ -51,10 +78,20 @@ bool Map::create_land()
 
 bool Map::update_map(int &player_x, int &player_y, int &player_di)
 {
-	int item_id = map_items[player_x+7][player_y+2].item;
-	qDebug()<<"("<<player_x<<", "<<player_y<<")"<<item_id;
+	last_local_item = local_item;
+	local_item = map_items[player_x+7][player_y+2].item;
+	qDebug()<<"("<<player_x<<", "<<player_y<<")"<<local_item;
 
-	switch (item_id) {
+	switch (local_item) {
+		case 3:
+			// grass
+			if(last_local_item != 3) {
+				hint_text= new QGraphicsPixmapItem();
+				hint_text->setPixmap(QPixmap("://res/img/action/f_pick_grass_30.png"));
+				hint_text->setPos(660, 500);
+				scene->addItem(hint_text);
+			}
+			break;
 		case 4:
 			// home
 			save_file();
@@ -77,6 +114,9 @@ bool Map::update_map(int &player_x, int &player_y, int &player_di)
 		case 10:
 			// pick stone
 			break;
+	}
+	if(last_local_item == 3 && local_item != 3) {
+		scene->removeItem(hint_text);
 	}
 	return put_items(player_x, player_y, player_di);
 }
@@ -121,115 +161,75 @@ void Map::pause_game()
 	pause_time->setDefaultTextColor(Qt::white);
 	pause_time->setFont(QFont("Microsoft JhengHei", 20));
 	pause_time->setPlainText(QString("目前存活時間: ")+QString::number(*play_time)+QString("秒，按空白鍵繼續遊戲"));
-    scene->addItem(pause_time);
+	scene->addItem(pause_time);
 }
 
 void Map::open_bag()
 {
-    player->action->change_status(9);
-    bag_bgm= new QGraphicsPixmapItem();
-	bag_bgm->setPixmap(QPixmap("://res/img/frame/bag/bags_bgm.png"));
-    bag_bgm->setPos(0, 0);
-	scene->addItem(bag_bgm);
-/*
-	player->bag->put(3);
-	player->bag->put(3);
-	player->bag->put(3);
-	player->bag->put(3);
-	player->bag->put(3);
-	player->bag->put(3);
-	player->bag->put(3);
-	player->bag->put(3);
-	player->bag->put(3);
-	player->bag->put(3);
-	player->bag->put(3);
+	if(player->action->get_status() == 9) {
+		close_bag();
+	} else {
+		player->action->change_status(9);
+		bag_bgm= new QGraphicsPixmapItem();
+		bag_bgm->setPixmap(QPixmap("://res/img/frame/bag/bags_bgm.png"));
+		bag_bgm->setPos(0, 0);
+		scene->addItem(bag_bgm);
 
-	player->bag->put(5);
-	player->bag->put(5);
+		const vector<bags> bag = *player->bag->get_items();
 
-	player->bag->take(5);
-	player->bag->take(5);
+		for(int i=0; i<bag.size(); i++) {
+			// img
+			bag_items[i] = new QGraphicsPixmapItem();
 
-	player->bag->put(6);
-	player->bag->put(6);
-	const vector<bags> bag = *player->bag->get_items();
-	qDebug()<<player->bag->bag_size();
-
-	for(int i=0; i<bag.size(); i++) {
-		qDebug()<<bag[i].item<<bag[i].quantity;
-	}
- */
-
-	for(int i=0; i<10; i++) {
-		// img
-		bag_items[i] = new QGraphicsPixmapItem();
-
-		// text
-		bag_items_text[i] = new QGraphicsTextItem();
-		if(i==0) {
-			bag_items[i]->setPixmap(QPixmap(System::get_bag_item_file_path(1)));
-			bag_items[i]->setPos(69, 190);
-			bag_items_text[i]->setPos(210, 334);
-			bag_items_text[i]->setPlainText(QString::number(61));
-		} else if(i==1) {
-			bag_items[i]->setPixmap(QPixmap(System::get_bag_item_file_path(2)));
-			bag_items[i]->setPos(309, 190);
-			bag_items_text[i]->setPos(450, 334);
-			bag_items_text[i]->setPlainText(QString::number(26));
-		} else if(i==2) {
-			bag_items[i]->setPixmap(QPixmap(System::get_bag_item_file_path(3)));
-			bag_items[i]->setPos(550, 190);
-			bag_items_text[i]->setPos(690, 334);
-			bag_items_text[i]->setPlainText(QString::number(6));
-		} else if(i==3) {
-			bag_items[i]->setPixmap(QPixmap(System::get_bag_item_file_path(4)));
-			bag_items[i]->setPos(790, 190);
-			bag_items_text[i]->setPos(930, 334);
-			bag_items_text[i]->setPlainText(QString::number(6));
-		} else if(i==4) {
-			bag_items[i]->setPixmap(QPixmap(System::get_bag_item_file_path(5)));
-			bag_items[i]->setPos(1030, 190);
-			bag_items_text[i]->setPos(1170, 334);
-			bag_items_text[i]->setPlainText(QString::number(6));
-		} else if(i==5) {
-			bag_items[i]->setPixmap(QPixmap(System::get_bag_item_file_path(6)));
-			bag_items[i]->setPos(69, 430);
-			bag_items_text[i]->setPos(210, 574);
-			bag_items_text[i]->setPlainText(QString::number(6));
-		} else if(i==6) {
-			bag_items[i]->setPixmap(QPixmap(System::get_bag_item_file_path(7)));
-			bag_items[i]->setPos(309, 430);
-			bag_items_text[i]->setPos(450, 574);
-			bag_items_text[i]->setPlainText(QString::number(6));
-		} else if(i==7) {
-			bag_items[i]->setPixmap(QPixmap(System::get_bag_item_file_path(8)));
-			bag_items[i]->setPos(550, 430);
-			bag_items_text[i]->setPos(690, 574);
-			bag_items_text[i]->setPlainText(QString::number(6));
-		} else if(i==8) {
-			bag_items[i]->setPixmap(QPixmap(System::get_bag_item_file_path(9)));
-			bag_items[i]->setPos(790, 430);
-			bag_items_text[i]->setPos(930, 574);
-			bag_items_text[i]->setPlainText(QString::number(6));
-		} else if(i==9) {
-			bag_items[i]->setPixmap(QPixmap(System::get_bag_item_file_path(10)));
-			bag_items[i]->setPos(1030, 430);
-			bag_items_text[i]->setPos(1170, 574);
-			bag_items_text[i]->setPlainText(QString::number(6));
+			// text
+			bag_items_text[i] = new QGraphicsTextItem();
+			if(i==0) {
+				bag_items[i]->setPos(69, 190);
+				bag_items_text[i]->setPos(210, 334);
+			} else if(i==1) {
+				bag_items[i]->setPos(309, 190);
+				bag_items_text[i]->setPos(450, 334);
+			} else if(i==2) {
+				bag_items[i]->setPos(550, 190);
+				bag_items_text[i]->setPos(690, 334);
+			} else if(i==3) {
+				bag_items[i]->setPos(790, 190);
+				bag_items_text[i]->setPos(930, 334);
+			} else if(i==4) {
+				bag_items[i]->setPos(1030, 190);
+				bag_items_text[i]->setPos(1170, 334);
+			} else if(i==5) {
+				bag_items[i]->setPos(69, 430);
+				bag_items_text[i]->setPos(210, 574);
+			} else if(i==6) {
+				bag_items[i]->setPos(309, 430);
+				bag_items_text[i]->setPos(450, 574);
+			} else if(i==7) {
+				bag_items[i]->setPos(550, 430);
+				bag_items_text[i]->setPos(690, 574);
+			} else if(i==8) {
+				bag_items[i]->setPos(790, 430);
+				bag_items_text[i]->setPos(930, 574);
+			} else if(i==9) {
+				bag_items[i]->setPos(1030, 430);
+				bag_items_text[i]->setPos(1170, 574);
+			}
+			bag_items[i]->setPixmap(QPixmap(System::get_bag_item_file_path(bag[i].item)));
+			bag_items_text[i]->setPlainText(QString::number(bag[i].quantity));
+			bag_items_text[i]->setDefaultTextColor(Qt::black);
+			bag_items_text[i]->setFont(QFont("Microsoft JhengHei", 24));
+			scene->addItem(bag_items[i]);
+			scene->addItem(bag_items_text[i]);
 		}
-		bag_items_text[i]->setDefaultTextColor(Qt::black);
-		bag_items_text[i]->setFont(QFont("Microsoft JhengHei", 24));
-		scene->addItem(bag_items[i]);
-		scene->addItem(bag_items_text[i]);
 	}
-
 }
 
 void Map::close_bag()
 {
 	scene->removeItem(bag_bgm);
 	delete bag_bgm;
-	for(int i=0; i<10; i++) {
+	const vector<bags> bag = *player->bag->get_items();
+	for(int i=0; i<bag.size(); i++) {
 		scene->removeItem(bag_items[i]);
 		scene->removeItem(bag_items_text[i]);
 		delete bag_items[i];
@@ -238,9 +238,20 @@ void Map::close_bag()
 	player->action->change_status(0);
 }
 
-bool Map::set_player(Player *p)
+int Map::get_local_item()
 {
-	player = p;
+	return local_item;
+}
+
+bool Map::remove_pick_item(int player_x, int player_y, int player_di)
+{
+	map_items[player_x+7][player_y+2].item = 0;
+	map_items[player_x+7][player_y+2].size = 1;
+	map_items[player_x+7][player_y+2].walk = 1;
+	map_items[player_x+7][player_y+2].img  = "";
+	local_item = 0;
+	update_map(player_x, player_y, player_di);
+	scene->removeItem(hint_text);
 }
 
 bool Map::put_items(int player_x, int player_y, int player_di)
@@ -259,8 +270,8 @@ bool Map::put_items(int player_x, int player_y, int player_di)
 		}
 		generate_player(false);
 		show_energy_blood(player->energy->get_energy(), player->blood->get_blood());
-        show_bags();
-        return true;
+		show_bags();
+		return true;
 	}
 }
 
@@ -313,12 +324,12 @@ bool Map::create_items(QJsonObject json)
 		for(int j=0; j<7; j++) {
 			//qDebug()<<j<<","<<i;
 			map_items[j][i].item = 1;
-			map_items[j][i].img = "://res/img/land/sea_80.jpg";
+			map_items[j][i].img = "://res/img/land/sea_80.png";
 		}
 	}
 	for(int i=2; i<size_height-6; i++) {
 		map_items[6][i].item = 2;
-		map_items[6][i].img = "://res/img/land/box_80.jpg";
+		map_items[6][i].img = "://res/img/land/box_80.png";
 	}
 
 	// right
@@ -326,24 +337,24 @@ bool Map::create_items(QJsonObject json)
 		for(int j=size_width-8; j<size_width; j++) {
 			//qDebug()<<j<<","<<i;
 			map_items[j][i].item = 1;
-			map_items[j][i].img = "://res/img/land/sea_80.jpg";
+			map_items[j][i].img = "://res/img/land/sea_80.png";
 		}
 	}
 	for(int i=2; i<size_height-6; i++) {
 		map_items[size_width-8][i].item = 2;
-		map_items[size_width-8][i].img = "://res/img/land/box_80.jpg";
+		map_items[size_width-8][i].img = "://res/img/land/box_80.png";
 	}
 	// bottom
 	for(int i=7; i<size_width-8; i++) {
 		for(int j=0; j<1; j++) {
 			//qDebug()<<i<<","<<j;
 			map_items[i][j].item = 1;
-			map_items[i][j].img = "://res/img/land/sea_80.jpg";
+			map_items[i][j].img = "://res/img/land/sea_80.png";
 		}
 	}
 	for(int i=6; i<size_width-7; i++) {
 		map_items[i][1].item = 2;
-		map_items[i][1].img = "://res/img/land/box_80.jpg";
+		map_items[i][1].img = "://res/img/land/box_80.png";
 	}
 
 	// top
@@ -351,13 +362,13 @@ bool Map::create_items(QJsonObject json)
 		for(int j=size_height-5; j<size_height; j++) {
 			//qDebug()<<i<<","<<j;
 			map_items[i][j].item = 1;
-			map_items[i][j].img = "://res/img/land/sea_80.jpg";
+			map_items[i][j].img = "://res/img/land/sea_80.png";
 		}
 	}
 	for(int i=6; i<size_width-7; i++) {
 		//qDebug()<<i<<","<<size_height-6;
 		map_items[i][size_height-6].item = 2;
-		map_items[i][size_height-6].img = "://res/img/land/box_80.jpg";
+		map_items[i][size_height-6].img = "://res/img/land/box_80.png";
 	}
 
 	//qDebug()<<map_items[3][4].img;
@@ -408,14 +419,14 @@ int Map::show_energy_blood(int energy_v, int blood_v, QString avatar_v)
 	blood->setPen(Qt::NoPen);
 	blood->setBrush(QColor(241, 80, 88));
 	scene->addItem(blood);
-    blood_t = new QGraphicsTextItem();
+	blood_t = new QGraphicsTextItem();
 	if(blood_v>=100) {
-        blood_t->setPos(300, 64);
+		blood_t->setPos(300, 64);
 	} else if (blood_v>=10) {
-        blood_t->setPos(312, 64);
-    } else {
-        blood_t->setPos(324, 64);
-    }
+		blood_t->setPos(312, 64);
+	} else {
+		blood_t->setPos(324, 64);
+	}
 	blood_t->setDefaultTextColor(Qt::black);
 	blood_t->setFont(QFont("Microsoft JhengHei", 16));
 	blood_t->setPlainText(QString::number(blood_v)+QString("%"));
@@ -427,13 +438,13 @@ int Map::show_energy_blood(int energy_v, int blood_v, QString avatar_v)
 	energy->setBrush(QColor(0, 162, 232));
 	scene->addItem(energy);
 	energy_t = new QGraphicsTextItem();
-    if(energy_v>=100) {
-        energy_t->setPos(300, 114);
-    } else if (energy_v>=10) {
-        energy_t->setPos(312, 114);
-    } else {
-        energy_t->setPos(324, 114);
-    }
+	if(energy_v>=100) {
+		energy_t->setPos(300, 114);
+	} else if (energy_v>=10) {
+		energy_t->setPos(312, 114);
+	} else {
+		energy_t->setPos(324, 114);
+	}
 	energy_t->setDefaultTextColor(Qt::black);
 	energy_t->setFont(QFont("Microsoft JhengHei", 16));
 	energy_t->setPlainText(QString::number(energy_v)+QString("%"));
@@ -442,7 +453,7 @@ int Map::show_energy_blood(int energy_v, int blood_v, QString avatar_v)
 	avatar = new QGraphicsPixmapItem();
 	avatar->setPixmap(QPixmap(avatar_v));
 	avatar->setPos(36, 26);
-    scene->addItem(avatar);
+	scene->addItem(avatar);
 }
 
 void Map::show_bags()
@@ -452,66 +463,49 @@ void Map::show_bags()
 	bags_bgm->setPos(880, 560);
 	scene->addItem(bags_bgm);
 
-    for(int i=0; i<10; i++) {
+	const vector<bags> bag = *player->bag->get_items();
+	for(int i=0; i<bag.size(); i++) {
 		// img
 		bags_items[i] = new QGraphicsPixmapItem();
 
-        // text
+		// text
 		bags_items_text[i] = new QGraphicsTextItem();
-        if(i==0) {
-			bags_items[i]->setPixmap(QPixmap(System::get_bags_item_file_path(1)));
+		if(i==0) {
 			bags_items[i]->setPos(891, 571);
 			bags_items_text[i]->setPos(923, 603);
-			bags_items_text[i]->setPlainText(QString::number(1));
-        } else if(i==1) {
-			bags_items[i]->setPixmap(QPixmap(System::get_bags_item_file_path(2)));
+		} else if(i==1) {
 			bags_items[i]->setPos(967, 571);
 			bags_items_text[i]->setPos(1000, 603);
-			bags_items_text[i]->setPlainText(QString::number(2));
-        } else if(i==2) {
-			bags_items[i]->setPixmap(QPixmap(System::get_bags_item_file_path(3)));
+		} else if(i==2) {
 			bags_items[i]->setPos(1044, 571);
 			bags_items_text[i]->setPos(1077, 603);
-			bags_items_text[i]->setPlainText(QString::number(3));
-        } else if(i==3) {
-			bags_items[i]->setPixmap(QPixmap(System::get_bags_item_file_path(4)));
+		} else if(i==3) {
 			bags_items[i]->setPos(1120, 571);
 			bags_items_text[i]->setPos(1153, 603);
-			bags_items_text[i]->setPlainText(QString::number(4));
-        } else if(i==4) {
-			bags_items[i]->setPixmap(QPixmap(System::get_bags_item_file_path(5)));
+		} else if(i==4) {
 			bags_items[i]->setPos(1197, 571);
 			bags_items_text[i]->setPos(1230, 603);
-			bags_items_text[i]->setPlainText(QString::number(5));
 		} else if(i==5) {
-			bags_items[i]->setPixmap(QPixmap(System::get_bags_item_file_path(6)));
 			bags_items[i]->setPos(891, 646);
 			bags_items_text[i]->setPos(923, 678);
-			bags_items_text[i]->setPlainText(QString::number(6));
-        } else if(i==6) {
-			bags_items[i]->setPixmap(QPixmap(System::get_bags_item_file_path(7)));
+		} else if(i==6) {
 			bags_items[i]->setPos(967, 646);
 			bags_items_text[i]->setPos(1000, 678);
-			bags_items_text[i]->setPlainText(QString::number(7));
-        } else if(i==7) {
-			bags_items[i]->setPixmap(QPixmap(System::get_bags_item_file_path(8)));
+		} else if(i==7) {
 			bags_items[i]->setPos(1044, 646);
 			bags_items_text[i]->setPos(1077, 678);
-			bags_items_text[i]->setPlainText(QString::number(8));
-        } else if(i==8) {
-			bags_items[i]->setPixmap(QPixmap(System::get_bags_item_file_path(9)));
+		} else if(i==8) {
 			bags_items[i]->setPos(1120, 646);
 			bags_items_text[i]->setPos(1153, 678);
-			bags_items_text[i]->setPlainText(QString::number(9));
-        } else if(i==9) {
-			bags_items[i]->setPixmap(QPixmap(System::get_bags_item_file_path(10)));
+		} else if(i==9) {
 			bags_items[i]->setPos(1197, 646);
 			bags_items_text[i]->setPos(1230, 678);
-			bags_items_text[i]->setPlainText(QString::number(10));
-        }
+		}
+		bags_items[i]->setPixmap(QPixmap(System::get_bags_item_file_path(bag[i].item)));
+		bags_items_text[i]->setPlainText(QString::number(bag[i].quantity));
 		bags_items_text[i]->setDefaultTextColor(Qt::black);
 		bags_items_text[i]->setFont(QFont("Microsoft JhengHei", 12));
 		scene->addItem(bags_items[i]);
 		scene->addItem(bags_items_text[i]);
-    }
+	}
 }

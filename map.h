@@ -30,6 +30,8 @@ class Map : public QGraphicsView
 		void pause_game();
 		void open_bag();
 		void close_bag();
+		int get_local_item();
+		bool remove_pick_item(int, int, int);
 
 	private:
 		bool create_land();		// 生成土地
@@ -66,7 +68,8 @@ class Map : public QGraphicsView
 		QGraphicsTextItem *bag_items_text[10];
 		QGraphicsPixmapItem *bag_items[10];
 
-
+		// hint
+		QGraphicsPixmapItem *hint_text;
 
         QGraphicsPixmapItem *player_show;
 		QGraphicsPixmapItem *background[16][9];
@@ -76,6 +79,8 @@ class Map : public QGraphicsView
 		int size_height;
 		int size_width;
 		int *play_time;
+		int local_item;
+		int last_local_item;
 
 };
 

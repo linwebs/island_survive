@@ -1,7 +1,9 @@
 #include <QKeyEvent>
 #include <QDebug>
+#include <qrandom.h>
 #include "action.h"
 #include "map.h"
+#include "bag.h"
 #include "energy.h"
 Action::Action()
 {
@@ -31,6 +33,23 @@ bool Action::move(int n) {
 			return go_right(step);
 		} else {
 			return go_up(step);
+		}
+	}
+}
+
+bool Action::pick()
+{
+	qDebug()<<"pick grass";
+	if(qrand()%2 == 1) {
+		if(bag->put(1)) {
+			map->remove_pick_item(x_axis, y_axis, direction);
+
+			qDebug()<<"put_1";
+		}
+	} else {
+		if(bag->put(2)) {
+			map->remove_pick_item(x_axis, y_axis, direction);
+			qDebug()<<"put_2";
 		}
 	}
 }
@@ -112,14 +131,19 @@ bool Action::go_right(int step) {
 	return true;
 }
 
-void Action::setMap(Map *m)
+void Action::set_map(Map *m)
 {
 	map = m;
 }
 
-void Action::setEnergy(Energy *e)
+void Action::set_energy(Energy *e)
 {
 	energy = e;
+}
+
+void Action::set_bag(Bag *b)
+{
+	bag = b;
 }
 
 int Action::get_x_axis()

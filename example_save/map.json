@@ -78,6 +78,76 @@
             "img": "://res/img/building/furnace_9_80.png"
         },
         {
+            "item": 7,
+            "size": 9,
+            "walk": 0,
+            "x_axis": 10,
+            "y_axis": 3,
+            "img": "://res/img/building/stove_1_80.png"
+        },
+        {
+            "item": 7,
+            "size": 9,
+            "walk": 0,
+            "x_axis": 11,
+            "y_axis": 3,
+            "img": "://res/img/building/stove_2_80.png"
+        },
+        {
+            "item": 7,
+            "size": 9,
+            "walk": 0,
+            "x_axis": 12,
+            "y_axis": 3,
+            "img": "://res/img/building/stove_3_80.png"
+        },{
+            "item": 7,
+            "size": 9,
+            "walk": 0,
+            "x_axis": 10,
+            "y_axis": 2,
+            "img": "://res/img/building/stove_4_80.png"
+        },
+        {
+            "item": 7,
+            "size": 9,
+            "walk": 0,
+            "x_axis": 11,
+            "y_axis": 2,
+            "img": "://res/img/building/stove_5_80.png"
+        },
+        {
+            "item": 7,
+            "size": 9,
+            "walk": 0,
+            "x_axis": 12,
+            "y_axis": 2,
+            "img": "://res/img/building/stove_6_80.png"
+        },{
+            "item": 7,
+            "size": 9,
+            "walk": 0,
+            "x_axis": 10,
+            "y_axis": 1,
+            "img": "://res/img/building/stove_7_80.png"
+        },
+        {
+            "item": 7,
+            "size": 9,
+            "walk": 0,
+            "x_axis": 11,
+            "y_axis": 1,
+            "img": "://res/img/building/stove_8_80.png"
+        },
+        {
+            "item": 7,
+            "size": 9,
+            "walk": 0,
+            "x_axis": 12,
+            "y_axis": 1,
+            "img": "://res/img/building/stove_9_80.png"
+        },
+        {
             "item": 4,
             "size": 16,
             "walk": 0,
@@ -216,10 +286,218 @@
         {
             "item": 3,
             "size": 1,
-            "walk": 0,
-            "x_axis": 10,
-            "y_axis": 10,
+            "walk": 1,
+            "x_axis": 9,
+            "y_axis": 9,
             "img": "://res/img/land/grass_80.png"
+        },
+        {
+            "item": 3,
+            "size": 1,
+            "walk": 1,
+            "x_axis": 9,
+            "y_axis": 8,
+            "img": "://res/img/land/grass_80.png"
+        },
+        {
+            "item": 3,
+            "size": 1,
+            "walk": 1,
+            "x_axis": 9,
+            "y_axis": 7,
+            "img": "://res/img/land/grass_80.png"
+        },
+        {
+            "item": 11,
+            "size": 1,
+            "walk": 0,
+            "x_axis": 15,
+            "y_axis": 7,
+            "img": "://res/img/land/block_1_80.png"
+        },
+        {
+            "item": 12,
+            "size": 1,
+            "walk": 0,
+            "x_axis": 16,
+            "y_axis": 7,
+            "img": "://res/img/land/block_2_80.png"
+        },
+        {
+            "item": 13,
+            "size": 1,
+            "walk": 0,
+            "x_axis": 17,
+            "y_axis": 7,
+            "img": "://res/img/land/block_3_80.png"
+        },
+        {
+            "item": 14,
+            "size": 1,
+            "walk": 0,
+            "x_axis": 18,
+            "y_axis": 7,
+            "img": "://res/img/land/block_4_80.png"
+        },
+        {
+            "item": 15,
+            "size": 1,
+            "walk": 0,
+            "x_axis": 19,
+            "y_axis": 7,
+            "img": "://res/img/land/block_5_80.png"
+        },
+        {
+            "item": 10,
+            "size": 1,
+            "walk": 1,
+            "x_axis": 20,
+            "y_axis": 7,
+            "img": "://res/img/land/stone_80.png"
+        },
+        {
+            "item": 9,
+            "size": 1,
+            "walk": 1,
+            "x_axis": 21,
+            "y_axis": 7,
+            "img": "://res/img/land/wood_80.png"
+        },
+        {
+            "item": 8,
+            "size": 1,
+            "walk": 1,
+            "x_axis": 22,
+            "y_axis": 7,
+            "img": "://res/img/land/animal_80.png"
+        },
+        {
+            "item": 1,
+            "size": 1,
+            "walk": 0,
+            "x_axis": 26,
+            "y_axis": 9,
+            "img": "://res/img/land/sea_80.png"
+        },
+        {
+            "item": 1,
+            "size": 1,
+            "walk": 0,
+            "x_axis": 27,
+            "y_axis": 9,
+            "img": "://res/img/land/sea_80.png"
+        },
+        {
+            "item": 1,
+            "size": 1,
+            "walk": 0,
+            "x_axis": 26,
+            "y_axis": 10,
+            "img": "://res/img/land/sea_80.png"
+        },
+        {
+            "item": 1,
+            "size": 1,
+            "walk": 0,
+            "x_axis": 27,
+            "y_axis": 10,
+            "img": "://res/img/land/sea_80.png"
+        },
+        {
+            "item": 8,
+            "size": 2,
+            "walk": 0,
+            "x_axis": 25,
+            "y_axis": 8,
+            "img": "://res/img/land/box_80.png"
+        },
+        {
+            "item": 8,
+            "size": 2,
+            "walk": 0,
+            "x_axis": 25,
+            "y_axis": 9,
+            "img": "://res/img/land/box_80.png"
+        },
+        {
+            "item": 8,
+            "size": 2,
+            "walk": 0,
+            "x_axis": 25,
+            "y_axis": 10,
+            "img": "://res/img/land/box_80.png"
+        },
+        {
+            "item": 8,
+            "size": 2,
+            "walk": 0,
+            "x_axis": 25,
+            "y_axis": 11,
+            "img": "://res/img/land/box_80.png"
+        },
+        {
+            "item": 8,
+            "size": 2,
+            "walk": 0,
+            "x_axis": 26,
+            "y_axis": 8,
+            "img": "://res/img/land/box_80.png"
+        },
+        {
+            "item": 8,
+            "size": 2,
+            "walk": 0,
+            "x_axis": 27,
+            "y_axis": 8,
+            "img": "://res/img/land/box_80.png"
+        },
+        {
+            "item": 8,
+            "size": 2,
+            "walk": 0,
+            "x_axis": 26,
+            "y_axis": 11,
+            "img": "://res/img/land/box_80.png"
+        },
+        {
+            "item": 8,
+            "size": 2,
+            "walk": 0,
+            "x_axis": 27,
+            "y_axis": 11,
+            "img": "://res/img/land/box_80.png"
+        },
+        {
+            "item": 8,
+            "size": 2,
+            "walk": 0,
+            "x_axis": 28,
+            "y_axis": 8,
+            "img": "://res/img/land/box_80.png"
+        },
+        {
+            "item": 8,
+            "size": 2,
+            "walk": 0,
+            "x_axis": 28,
+            "y_axis": 9,
+            "img": "://res/img/land/box_80.png"
+        },
+        {
+            "item": 8,
+            "size": 2,
+            "walk": 0,
+            "x_axis": 28,
+            "y_axis": 10,
+            "img": "://res/img/land/box_80.png"
+        },
+        {
+            "item": 8,
+            "size": 2,
+            "walk": 0,
+            "x_axis": 28,
+            "y_axis": 11,
+            "img": "://res/img/land/box_80.png"
         }
     ]
 }

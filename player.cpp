@@ -8,7 +8,8 @@ Player::Player(QGraphicsItem *parent): QGraphicsPixmapItem(parent)
 	action = new Action;
 	bag = new Bag;
 
-	action->setEnergy(energy);
+	action->set_energy(energy);
+	action->set_bag(bag);
 	setPixmap(QPixmap("://res/img/character/people_80.png"));
 }
 
@@ -20,7 +21,7 @@ Player::~Player()
 	delete  bag;
 }
 
-void Player::setMap(Map *m)
+void Player::set_map(Map *m)
 {
 	map = m;
 }

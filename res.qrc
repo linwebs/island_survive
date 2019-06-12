@@ -3,7 +3,6 @@
         <file>res/img/character/people.png</file>
         <file>res/img/logo/splashlogo.png</file>
         <file>res/img/logo/logo.ico</file>
-        <file>res/img/land/soil_80.jpg</file>
         <file>res/img/character/people_80.png</file>
         <file>res/img/land/grass_80.png</file>
         <file>res/img/building/furnace_1_80.png</file>
@@ -16,9 +15,6 @@
         <file>res/img/building/furnace_8_80.png</file>
         <file>res/img/building/furnace_9_80.png</file>
         <file>res/map/map.json</file>
-        <file>res/img/land/sea_80.jpg</file>
-        <file>res/img/land/wall_80.jpg</file>
-        <file>res/img/land/box_80.jpg</file>
         <file>res/img/building/home_3_80.png</file>
         <file>res/img/building/home_4_80.png</file>
         <file>res/img/building/home_5_80.png</file>
@@ -60,5 +56,30 @@
         <file>res/img/bag/weapon_stone_180.png</file>
         <file>res/img/bag/wood_180.png</file>
         <file>res/img/frame/bag/bags_bgm.png</file>
+        <file>res/img/action/f_pick_grass_30.png</file>
+        <file>res/img/main/new_game_btn.png</file>
+        <file>res/img/main/old_game_btn.png</file>
+        <file>res/img/main/rule_intro_btn.png</file>
+        <file>res/img/main/main_bgm.png</file>
+        <file>res/img/land/animal_80.png</file>
+        <file>res/img/land/block_1_80.png</file>
+        <file>res/img/land/block_2_80.png</file>
+        <file>res/img/land/block_3_80.png</file>
+        <file>res/img/land/block_4_80.png</file>
+        <file>res/img/land/block_5_80.png</file>
+        <file>res/img/land/sea_80.png</file>
+        <file>res/img/land/stone_80.png</file>
+        <file>res/img/land/wood_80.png</file>
+        <file>res/img/building/stove_1_80.png</file>
+        <file>res/img/building/stove_2_80.png</file>
+        <file>res/img/building/stove_3_80.png</file>
+        <file>res/img/building/stove_4_80.png</file>
+        <file>res/img/building/stove_5_80.png</file>
+        <file>res/img/building/stove_6_80.png</file>
+        <file>res/img/building/stove_7_80.png</file>
+        <file>res/img/building/stove_8_80.png</file>
+        <file>res/img/building/stove_9_80.png</file>
+        <file>res/img/land/box_80.png</file>
+        <file>res/img/land/soil_80.png</file>
     </qresource>
 </RCC>

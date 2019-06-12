@@ -6,6 +6,7 @@
 
 class Map;
 class Energy;
+class Bag;
 /* 行動 */
 class Action: public QGraphicsPixmapItem
 {
@@ -13,13 +14,14 @@ class Action: public QGraphicsPixmapItem
 		Action();
 		Action(int);		// 帶入存檔(direction, x-axis, y-axis)
 		bool move(int);		// 行走(direction_id)
-		bool pick(int);		// 採集資源(item id)
+		bool pick();		// 採集資源(item id)
 		bool attack();		// 獵殺動物
 		bool furnace(int);	// 使用熔爐(item_id)
 		bool bbq();			// 使用篝火
 		bool stove();		// 使用煉丹爐
-		void setMap(Map *);
-		void setEnergy(Energy *);
+		void set_map(Map *);
+		void set_energy(Energy *);
+		void set_bag(Bag *);
 		int get_x_axis();
 		int get_y_axis();
 		bool energy_update();
@@ -37,6 +39,7 @@ class Action: public QGraphicsPixmapItem
 		bool go_right(int);	// 向右走
 		Map *map;
 		Energy *energy;
+		Bag *bag;
 
 		int direction;		// 方向
 		bool reverse;		// 反向
