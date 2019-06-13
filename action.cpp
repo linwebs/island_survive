@@ -54,6 +54,15 @@ bool Action::pick()
 	}
 }
 
+bool Action::bbq()
+{
+	if(bag->get_item_num(9)) {
+		bag->take(9);
+		bag->put(10);
+		map->open_bbq();
+	}
+}
+
 bool Action::go_up(int step) {
 	//qDebug()<<map->get_size_height();
 	if(reverse) {
@@ -187,6 +196,7 @@ bool Action::change_status(int s)
 			return true;
 		case 6:
 			status = 6;
+			pause = 1;
 			return true;
 		case 7:
 			status = 7;

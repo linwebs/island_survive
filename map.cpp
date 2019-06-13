@@ -41,7 +41,12 @@ Map::Map(vector<maps> maps)
 bool Map::set_player(Player *p)
 {
 	player = p;
-/* test bag items
+	player->bag->put(9);
+	player->bag->put(9);
+	player->bag->put(9);
+	player->bag->put(9);
+	player->bag->put(9);
+	/* test bag items
 	player->bag->put(3);
 	player->bag->put(2);
 	player->bag->put(3);
@@ -82,15 +87,42 @@ bool Map::update_map(int &player_x, int &player_y, int &player_di)
 	local_item = map_items[player_x+7][player_y+2].item;
 	qDebug()<<"("<<player_x<<", "<<player_y<<")"<<local_item;
 
+	if(map_items[player_x+7][player_y+2].walk==0) {
+		items_event();
+		return false;
+	} else {
+		for(int i=0; i<16; i++) {
+			for(int j=0; j<9; j++) {
+				scene->removeItem(map_now[i][j]);
+				map_now[i][j]= new QGraphicsPixmapItem();
+				map_now[i][j]->setPixmap(QPixmap(map_items[i+player_x][j+player_y].img));
+				map_now[i][j]->setPos(i*80, 640-j*80);
+				scene->addItem(map_now[i][j]);
+			}
+		}
+		generate_player(false);
+		items_event();
+		show_energy_blood(player->energy->get_energy(), player->blood->get_blood());
+		show_bags();
+
+		return true;
+	}
+}
+
+
+bool Map::items_event()
+{
 	switch (local_item) {
 		case 3:
 			// grass
-			if(last_local_item != 3) {
-				hint_text= new QGraphicsPixmapItem();
-				hint_text->setPixmap(QPixmap("://res/img/action/f_pick_grass_30.png"));
-				hint_text->setPos(660, 500);
-				scene->addItem(hint_text);
+			if(last_local_item == 3) {
+				scene->removeItem(hint_text);
+				delete  hint_text;
 			}
+			hint_text= new QGraphicsPixmapItem();
+			hint_text->setPixmap(QPixmap("://res/img/action/f_pick_grass_30.png"));
+			hint_text->setPos(660, 500);
+			scene->addItem(hint_text);
 			break;
 		case 4:
 			// home
@@ -100,6 +132,7 @@ bool Map::update_map(int &player_x, int &player_y, int &player_di)
 			// enter furnace
 			break;
 		case 6:
+			open_bbq();
 			// enter bbq
 			break;
 		case 7:
@@ -115,10 +148,11 @@ bool Map::update_map(int &player_x, int &player_y, int &player_di)
 			// pick stone
 			break;
 	}
+
 	if(last_local_item == 3 && local_item != 3) {
 		scene->removeItem(hint_text);
+		delete hint_text;
 	}
-	return put_items(player_x, player_y, player_di);
 }
 
 bool Map::save_file()
@@ -163,6 +197,70 @@ void Map::pause_game()
 	pause_time->setPlainText(QString("目前存活時間: ")+QString::number(*play_time)+QString("秒，按空白鍵繼續遊戲"));
 	scene->addItem(pause_time);
 }
+
+void Map::open_bbq()
+{
+	if(player->action->get_status() != 6) {
+		if(!player->action->change_status(6)) {
+			qDebug()<<"map::bbq change status error!";
+		}
+	} else {
+		scene->removeItem(bbq_bgm);
+		scene->removeItem(bbq_exit);
+		scene->removeItem(bbq_flesh_text);
+		scene->removeItem(bbq_meat_text);
+		delete bbq_bgm;
+		delete  bbq_exit;
+		delete bbq_meat_text;
+		delete  bbq_flesh_text;
+	}
+	qDebug()<<"bbq";
+
+	// bgm
+	bbq_bgm= new QGraphicsPixmapItem();
+	bbq_bgm->setPixmap(QPixmap("://res/img/frame/bbq/bbq_bgm.png"));
+	bbq_bgm->setPos(0, 0);
+	scene->addItem(bbq_bgm);
+
+	// exit btn
+	bbq_exit= new QGraphicsPixmapItem();
+	bbq_exit->setPixmap(QPixmap("://res/img/frame/exit/exit_60.png"));
+	bbq_exit->setPos(1090, 10);
+	scene->addItem(bbq_exit);
+
+	// bbq_flesh_text
+	bbq_flesh_text = new QGraphicsTextItem();
+	bbq_flesh_text->setPos(388, 460);
+	bbq_flesh_text->setDefaultTextColor(Qt::black);
+	bbq_flesh_text->setFont(QFont("Microsoft JhengHei", 20));
+	bbq_flesh_text->setPlainText(QString::number(player->bag->get_item_num(9)));
+	scene->addItem(bbq_flesh_text);
+
+	// bbq_meat_text
+	bbq_meat_text = new QGraphicsTextItem();
+	bbq_meat_text->setPos(1048, 460);
+	bbq_meat_text->setDefaultTextColor(Qt::black);
+	bbq_meat_text->setFont(QFont("Microsoft JhengHei", 20));
+	bbq_meat_text->setPlainText(QString::number(player->bag->get_item_num(10)));
+	scene->addItem(bbq_meat_text);
+}
+
+void Map::close_bbq() {
+	if(player->action->get_status() == 6) {
+		if(!player->action->change_status(0)) {
+			qDebug()<<"map::bbq change status error!";
+		}
+		scene->removeItem(bbq_bgm);
+		scene->removeItem(bbq_exit);
+		scene->removeItem(bbq_flesh_text);
+		scene->removeItem(bbq_meat_text);
+		delete bbq_bgm;
+		delete  bbq_exit;
+		delete bbq_meat_text;
+		delete  bbq_flesh_text;
+	}
+}
+
 
 void Map::open_bag()
 {
@@ -252,33 +350,14 @@ bool Map::remove_pick_item(int player_x, int player_y, int player_di)
 	local_item = 0;
 	update_map(player_x, player_y, player_di);
 	scene->removeItem(hint_text);
-}
-
-bool Map::put_items(int player_x, int player_y, int player_di)
-{
-	if(map_items[player_x+7][player_y+2].walk==0) {
-		return false;
-	} else {
-		for(int i=0; i<16; i++) {
-			for(int j=0; j<9; j++) {
-				scene->removeItem(map_now[i][j]);
-				map_now[i][j]= new QGraphicsPixmapItem();
-				map_now[i][j]->setPixmap(QPixmap(map_items[i+player_x][j+player_y].img));
-				map_now[i][j]->setPos(i*80, 640-j*80);
-				scene->addItem(map_now[i][j]);
-			}
-		}
-		generate_player(false);
-		show_energy_blood(player->energy->get_energy(), player->blood->get_blood());
-		show_bags();
-		return true;
-	}
+	delete hint_text;
 }
 
 bool Map::generate_player(bool ini)
 {
 	if(!ini) {
 		scene->removeItem(player_show);
+		delete player_show;
 	}
 	player_show= new QGraphicsPixmapItem();
 	player_show->setPixmap(QPixmap("://res/img/character/people_80.png"));

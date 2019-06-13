@@ -5,15 +5,6 @@
         <file>res/img/logo/logo.ico</file>
         <file>res/img/character/people_80.png</file>
         <file>res/img/land/grass_80.png</file>
-        <file>res/img/building/furnace_1_80.png</file>
-        <file>res/img/building/furnace_2_80.png</file>
-        <file>res/img/building/furnace_3_80.png</file>
-        <file>res/img/building/furnace_4_80.png</file>
-        <file>res/img/building/furnace_5_80.png</file>
-        <file>res/img/building/furnace_6_80.png</file>
-        <file>res/img/building/furnace_7_80.png</file>
-        <file>res/img/building/furnace_8_80.png</file>
-        <file>res/img/building/furnace_9_80.png</file>
         <file>res/map/map.json</file>
         <file>res/img/building/home_3_80.png</file>
         <file>res/img/building/home_4_80.png</file>
@@ -81,5 +72,26 @@
         <file>res/img/building/stove_9_80.png</file>
         <file>res/img/land/box_80.png</file>
         <file>res/img/land/soil_80.png</file>
+        <file>res/img/land/bridge_80.png</file>
+        <file>res/img/building/furnace_1_80.png</file>
+        <file>res/img/building/furnace_2_80.png</file>
+        <file>res/img/building/furnace_3_80.png</file>
+        <file>res/img/building/furnace_4_80.png</file>
+        <file>res/img/building/furnace_5_80.png</file>
+        <file>res/img/building/furnace_6_80.png</file>
+        <file>res/img/building/furnace_7_80.png</file>
+        <file>res/img/building/furnace_8_80.png</file>
+        <file>res/img/building/furnace_9_80.png</file>
+        <file>res/img/building/bbq_1_80.png</file>
+        <file>res/img/building/bbq_2_80.png</file>
+        <file>res/img/building/bbq_3_80.png</file>
+        <file>res/img/building/bbq_4_80.png</file>
+        <file>res/img/building/bbq_5_80.png</file>
+        <file>res/img/building/bbq_6_80.png</file>
+        <file>res/img/building/bbq_7_80.png</file>
+        <file>res/img/building/bbq_8_80.png</file>
+        <file>res/img/building/bbq_9_80.png</file>
+        <file>res/img/frame/bbq/bbq_bgm.png</file>
+        <file>res/img/frame/exit/exit_60.png</file>
     </qresource>
 </RCC>

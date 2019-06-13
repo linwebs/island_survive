@@ -15,7 +15,7 @@ Bag::Bag(vector<bags> ibag)
 
 bool Bag::put(int name)
 {
-	if(checkbag(name) == 0) {		// 檢查要新增的物品是否已在背包中
+	if(get_item_num(name) == 0) {		// 檢查要新增的物品是否已在背包中
 		// 要新增的物品不在背包中
 		if(item_full() == false) {	// 檢查背包格數是否已滿
 			bags blanck;
@@ -40,11 +40,11 @@ bool Bag::put(int name)
 
 bool Bag::take(int name)
 {
-	if(checkbag(name) == 0) {		// 檢查要取出的物品是否有在背包中
+	if(get_item_num(name) == 0) {		// 檢查要取出的物品是否有在背包中
 		// 背包中無此物品，無法取出
 		return false;
-	} else if(checkbag(name) == 1) {
-		bag.erase(bag.begin() + static_cast<int>(get_item_order(name)));
+	} else if(get_item_num(name) == 1) {
+		bag.erase(bag.begin() + get_item_order(name));
 		return true;
 	} else {
 		bag[get_item_order(name)].quantity--;
@@ -80,9 +80,9 @@ bool Bag::quantity_full(int name)
 	}
 }
 
-int Bag::checkbag(int name)
+int Bag::get_item_num(int name)
 {
-	for(unsigned long long int i=0; i<bag.size(); i++)
+	for(int i=0; i<bag.size(); i++)
 	{
 		if(bag[i].item == name)
 		{

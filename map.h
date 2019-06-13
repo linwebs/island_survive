@@ -28,10 +28,12 @@ class Map : public QGraphicsView
         void show_bags();
         bool exit_pause();
 		void pause_game();
-		void open_bag();
-		void close_bag();
 		int get_local_item();
 		bool remove_pick_item(int, int, int);
+		void open_bag();		// 背包
+		void close_bag();
+		void open_bbq();		// 篝火
+		void close_bbq();
 
 	private:
 		bool create_land();		// 生成土地
@@ -42,11 +44,10 @@ class Map : public QGraphicsView
 		bool grass(int);	// 草
 		bool stove(int);	// 煉丹爐
 		bool furnace(int);	// 熔爐
-		bool bbq(int);		// 篝火
 		bool home(int);		// 房子
 		bool land(int);		// 土地
 		bool initialize_items();
-		bool put_items(int, int, int);
+		bool items_event();
 		bool generate_player(bool);
 		bool save_file();
 
@@ -67,6 +68,12 @@ class Map : public QGraphicsView
         QGraphicsPixmapItem *bag_bgm;
 		QGraphicsTextItem *bag_items_text[10];
 		QGraphicsPixmapItem *bag_items[10];
+
+		// bbq
+		QGraphicsPixmapItem *bbq_bgm;
+		QGraphicsPixmapItem *bbq_exit;
+		QGraphicsTextItem *bbq_flesh_text;
+		QGraphicsTextItem *bbq_meat_text;
 
 		// hint
 		QGraphicsPixmapItem *hint_text;

@@ -20,6 +20,7 @@ class GameWindowScene : public QGraphicsScene
 	private:
 		void space_event();
 		void f_event();
+		void q_event();
 		Player *player;
 		Map *map;
 };

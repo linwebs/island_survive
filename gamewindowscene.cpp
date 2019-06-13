@@ -42,15 +42,22 @@ void GameWindowScene::keyPressEvent(QKeyEvent *event)
 		case Qt::Key_F:
 			f_event();
 			break;
+		case Qt::Key_Q:
+			q_event();
+			break;
 	}
 }
 
 void GameWindowScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
 	qreal x = event->scenePos().x(), y = event->scenePos().y();
-	//qDebug()<<"Mouse Event: ("<<x<<","<<y<<")";
-	if(x >= 800 && y >= 560) {
+	qDebug()<<"Mouse Event: ("<<x<<","<<y<<")";
+	if(player->action->get_status() == 0 && x >= 800 && y >= 560) {
 		map->open_bag();
+	} else if(player->action->get_status() == 6 && x >= 1080 && y <= 70) {
+		map->close_bbq();
+	} else if(player->action->get_status() == 6 && x >= 539 && x <= 720 && y >= 280 && y <= 430 && player->bag->get_item_num(9)) {
+		player->action->bbq();
 	}
 }
 
@@ -62,8 +69,18 @@ void GameWindowScene::space_event()
 
 void GameWindowScene::f_event()
 {
-	if(map->get_local_item() == 3) {
+	if(player->action->get_status() == 0 && map->get_local_item() == 3) {
 		player->action->pick();
+	} else if(player->action->get_status() == 6 && player->bag->get_item_num(9)) {
+		player->action->bbq();
+	}
+}
+
+void GameWindowScene::q_event() {
+	if(player->action->get_status() == 6) {
+		map->close_bbq();
+	} else if(player->action->get_status() == 9) {
+		map->close_bag();
 	}
 }
 
