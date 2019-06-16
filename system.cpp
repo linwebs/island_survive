@@ -7,6 +7,13 @@
 #include <QJsonValue>
 #include <QJsonArray>
 #include <QDebug>
+#include <QDateTime>
+#include "player.h"
+#include "action.h"
+#include "bag.h"
+#include "energy.h"
+#include "blood.h"
+#include "map.h"
 
 using namespace std;
 #include "system.h"
@@ -16,15 +23,81 @@ System::System() {
 }
 
 // Save File Test
-bool System::save(string name) {
+bool System::save(Map *m, Player *p) {
 	if(!QDir("data").exists()) {
 		QDir().mkdir("data");
 	}
-	string file_name="data/"+name;
+	string name = QDateTime::currentDateTime().toString("yyyyMMddhhmm").toStdString();
+	string file_name="data/" + name + ".dat";
 	QFile file(file_name.c_str());
 	file.open(QIODevice::WriteOnly);
 
-	const char* data = "Save File!\nsaving data!\n";
+	QJsonObject obj;
+	obj.insert("project", "island_survive");
+	obj.insert("type", "save");
+	obj.insert("note", "");
+	obj.insert("date_time", "");
+	QJsonObject player;
+	player.insert("x_axis", p->action->get_x_axis());
+	player.insert("y_axis", p->action->get_y_axis());
+	player.insert("direction", p->action->get_direction());
+	player.insert("blood", p->blood->get_blood());
+	player.insert("energy", p->energy->get_energy());
+	player.insert("status", p->action->get_status());
+	obj.insert("player", player);
+
+	QJsonObject size;
+	size.insert("height", m->get_size_height()-8);
+	size.insert("width", m->get_size_width()-15);
+	obj.insert("size", size);
+
+	QJsonObject home;
+	home.insert("height", m->get_home_size_height());
+	home.insert("width", m->get_home_size_width());
+	obj.insert("home", home);
+
+	QJsonArray bag;
+	const vector<bags> bb = *p->bag->get_items();
+	for(int i=0; i<bb.size(); i++) {
+		QJsonObject bags;
+		bags.insert("item", bb[i].item);
+		bags.insert("quantity", bb[i].quantity);
+		bag.append(bags);
+	}
+	obj.insert("bag", bag);
+
+	const vector<vector<map_item>> mm = *m->get_map_items();
+	QJsonArray item;
+	qDebug()<<mm.size()<<mm[0].size();
+	for(int i=7; i<mm.size()-8; i++) {		// 65
+		for(int j=2; j<mm[i].size()-6; j++) {	// 48
+			QJsonObject items;
+			items.insert("item", mm[i][j].item);
+			items.insert("size", mm[i][j].size);
+			items.insert("walk", mm[i][j].walk);
+			items.insert("x_axis", i-7);
+			items.insert("y_axis", j-2);
+			items.insert("img", mm[i][j].img);
+			item.append(items);
+		}
+	}
+
+	for(int i=0; i<5; i++) {
+		QJsonObject items;
+		items.insert("item", 6);
+		items.insert("size", 9);
+		items.insert("walk", 0);
+		items.insert("x_axis", 2);
+		items.insert("y_axis", 10);
+		items.insert("img", "://res/img/building/bbq_1_80.png");
+		item.append(items);
+	}
+	obj.insert("item", item);
+
+	QJsonDocument doc(obj);
+	QString str(doc.toJson(QJsonDocument::Compact));
+	QByteArray ba = str.toLocal8Bit();
+	const char* data = ba.data();
 	file.write(data);
 	file.close();
 	return true;

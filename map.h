@@ -25,6 +25,8 @@ class Map : public QGraphicsView
 		bool create_items(QJsonObject);		// 從 map.json 取得地圖上物品
 		int get_size_height();
 		int get_size_width();
+		int get_home_size_height();
+		int get_home_size_width();
 		int show_energy_blood(int, int, QString avatar_v = "://res/img/character/people_avatar_130.png");
 		void show_bags();						// 顯示小背包
 		bool exit_pause();						// 離開暫停遊戲畫面
@@ -49,6 +51,7 @@ class Map : public QGraphicsView
 		bool generate_animal();				// 生成獵物
 		bool generate_stone();					// 生成礦物
 		bool generate_wood();					// 生成木頭
+		vector<vector<map_item> > *get_map_items();	// 取得地圖中的物品
 
 	private:
 		bool create_land();					// 生成土地

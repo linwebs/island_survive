@@ -8,6 +8,9 @@ class Map;
 class Energy;
 class Blood;
 class Bag;
+class GameWindow;
+class System;
+class Player;
 /* 行動 */
 class Action: public QGraphicsPixmapItem
 {
@@ -25,6 +28,8 @@ class Action: public QGraphicsPixmapItem
 		void set_map(Map *);
 		void set_energy(Energy *);
 		void set_blood(Blood *);
+		void set_player(Player *);
+		void set_gamewindow(GameWindow *);
 		void set_bag(Bag *);
 		int &get_x_axis();
 		int &get_y_axis();
@@ -48,6 +53,9 @@ class Action: public QGraphicsPixmapItem
 		Energy *energy;
 		Blood *blood;
 		Bag *bag;
+		GameWindow *gamewindow;
+		System *system;
+		Player *player;
 
 		int direction;				// 方向
 		bool reverse;				// 反向

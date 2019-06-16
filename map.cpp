@@ -46,6 +46,7 @@ Map::Map(vector<maps> maps)
 bool Map::set_player(Player *p)
 {
 	player = p;
+	player->bag->put(3);
 	/* test bag items
 	player->bag->put(3);*/
 	show_bags();
@@ -113,6 +114,11 @@ bool Map::generate_wood()
 			}
 		}
 	}
+}
+
+vector<vector<map_item> > *Map::get_map_items()
+{
+	return &map_items;
 }
 
 bool Map::generate_stone()
@@ -420,7 +426,7 @@ void Map::open_stove()
 	red_grass_text->setPos(454, 224);
 	red_grass_text->setDefaultTextColor(Qt::black);
 	red_grass_text->setFont(QFont("Microsoft JhengHei", 20));
-	red_grass_text->setPlainText(QString::number(player->bag->get_item_num(1)));
+	red_grass_text->setPlainText(QString::number(player->bag->get_item_num(2)));
 	scene->addItem(red_grass_text);
 
 	// blue_grass_text
@@ -428,7 +434,7 @@ void Map::open_stove()
 	blue_grass_text->setPos(924, 224);
 	blue_grass_text->setDefaultTextColor(Qt::black);
 	blue_grass_text->setFont(QFont("Microsoft JhengHei", 20));
-	blue_grass_text->setPlainText(QString::number(player->bag->get_item_num(2)));
+	blue_grass_text->setPlainText(QString::number(player->bag->get_item_num(1)));
 	scene->addItem(blue_grass_text);
 
 	// purple_grass_text
@@ -1179,6 +1185,16 @@ int Map::get_size_height()
 int Map::get_size_width()
 {
 	return size_width;
+}
+
+int Map::get_home_size_height()
+{
+	return home_size_height;
+}
+
+int Map::get_home_size_width()
+{
+	return home_size_width;
 }
 
 int Map::show_energy_blood(int energy_v, int blood_v, QString avatar_v)

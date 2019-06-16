@@ -10,6 +10,7 @@
 class GameWindowScene;
 class Map;
 class Player;
+class System;
 
 class GameWindow : public QMainWindow
 {
@@ -20,6 +21,7 @@ class GameWindow : public QMainWindow
 		virtual ~GameWindow();
 		void closeEvent (QCloseEvent*);
 		void back_to_main_window(bool);
+		void set_invincible_time(int);
 	private:
         void create_actions();
         void create_menus();
@@ -41,7 +43,9 @@ class GameWindow : public QMainWindow
 		QAction *menu_actions[4][6];
 		QMenu *menus[4];
 		QTimer *timer, *energy_timer;
+		System *system;
 		int play_time;
+		int invincible_time;
 };
 
 #endif // GAMEWINDOW_H

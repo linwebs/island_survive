@@ -1,16 +1,19 @@
 #include "player.h"
+#include "gamewindow.h"
 #include <QGraphicsScene>
 
-Player::Player(QGraphicsItem *parent): QGraphicsPixmapItem(parent)
+Player::Player(GameWindow *g, QGraphicsItem *parent): QGraphicsPixmapItem(parent)
 {
 	blood = new Blood;
 	energy = new Energy;
 	action = new Action;
 	bag = new Bag;
-
+	gamewindow = g;
 	action->set_energy(energy);
 	action->set_blood(blood);
 	action->set_bag(bag);
+	action->set_player(this);
+	action->set_gamewindow(gamewindow);
 	setPixmap(QPixmap("://res/img/character/people_80.png"));
 }
 

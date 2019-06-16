@@ -10,12 +10,13 @@
 #include <QGraphicsItem>
 
 class Map;
+class GameWindow;
 
 class Player: public QObject, public QGraphicsPixmapItem
 {
 		Q_OBJECT
 	public:
-		Player(QGraphicsItem *parent = 0);
+		Player(GameWindow *, QGraphicsItem *parent = 0);
 		virtual ~Player();
 		void set_map(Map *m);
 		int get_play_time();
@@ -24,6 +25,7 @@ class Player: public QObject, public QGraphicsPixmapItem
 		Blood * blood;
 		Energy * energy;
 		Action * action;
+		GameWindow *gamewindow;
 		Bag * bag;
 		Map *map;
 		int play_time;

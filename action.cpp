@@ -7,6 +7,8 @@
 #include "bag.h"
 #include "energy.h"
 #include "blood.h"
+#include "gamewindow.h"
+#include "system.h"
 Action::Action()
 {
 	reverse = false;
@@ -16,6 +18,7 @@ Action::Action()
 	pause = 0;
 	status = 0;
 	last_status = 0;
+	system = new System;
 	setPixmap(QPixmap("://res/img/character/people.png"));
 }
 
@@ -27,7 +30,7 @@ Action::Action(int n)
 bool Action::move(int n) {
 	int step = 100;
 	//	qDebug()<<"move";
-	if(pause==0 || pause==2) {
+	if(status==0 || status==2) {
 		if (n==2) {
 			return go_down(step);
 		} else if (n==3) {
@@ -244,7 +247,11 @@ bool Action::use_item()
 			break;
 		case 3:
 			// grass purple
-
+			qDebug()<<"efudo";
+			gamewindow->set_invincible_time(30);
+			bag->take(3);
+			map->open_bag(map->get_bag_select(), !bag->get_item_num(3));
+			reverse = true;
 			break;
 		case 4:
 			// wood
@@ -368,6 +375,16 @@ void Action::set_blood(Blood *b)
 	blood = b;
 }
 
+void Action::set_player(Player *p)
+{
+	player = p;
+}
+
+void Action::set_gamewindow(GameWindow * g)
+{
+	gamewindow = g;
+}
+
 void Action::set_bag(Bag *b)
 {
 	bag = b;
@@ -415,6 +432,7 @@ bool Action::change_status(int s)
 			// save file
 			status = 3;
 			pause = 1;
+			system->save(map, player);
 			return true;
 		case 4:
 			// game over
