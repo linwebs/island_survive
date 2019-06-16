@@ -1,8 +1,8 @@
 #-------------------------------------------------
 #
 # Project created by QtCreator 2019-03-31T02:02:52
-# Version: 0.18
-# Last edit time 2019-06-13 23:53
+# Version: 0.23
+# Last edit time 2019-06-16 14:17
 #
 #-------------------------------------------------
 
@@ -26,6 +26,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 CONFIG += c++11
+          resources_big
 
 SOURCES += \
     bag.cpp \

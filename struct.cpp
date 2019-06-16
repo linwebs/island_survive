@@ -26,7 +26,8 @@ struct bags {
 
 /* 地圖結構 */
 struct maps {
-		int object_id;	// 物件 id
+		int object_id;
+		// 物件 id
 		int x_axis;		// 物件 X 軸
 		int y_axis;		// 物件 Y 軸
 };
@@ -38,4 +39,13 @@ struct map_item {
 		QString img;
 };
 
+#define WEAPON_SCISSOR_WOOD 2
+#define WEAPON_SCISSOR_STONE 0
+#define WEAPON_STONE_WOOD 0
+#define WEAPON_STONE_STONE 2
+#define WEAPON_PAPER_WOOD 1
+#define WEAPON_PAPER_STONE 1
+#define MAP_GRASS_PATH "://res/img/land/grass_80.png"
+#define MAP_WOOD_PATH "://res/img/land/wood_80.png"
+#define MAP_STONE_PATH "://res/img/land/stone_80.png"
 #endif

@@ -1,4 +1,6 @@
 #include "blood.h"
+#include "map.h"
+#include <QDebug>
 
 Blood::Blood()
 {
@@ -12,10 +14,11 @@ Blood::Blood(int b)
 
 bool Blood::grass(int m)
 {
-	if(m==2)
+	if(m==2) {
 		return add(5);
-	else if(m==3)
+	} else if(m==3) {
 		return sub(2);
+	}
 }
 
 bool Blood::fail()
@@ -26,6 +29,7 @@ bool Blood::fail()
 bool Blood::die()
 {
 	if(bloods<=0) {
+		map->show_die();
 		return true;
 	} else {
 		return false;
@@ -39,21 +43,25 @@ int Blood::get_blood()
 
 bool Blood::add(int b)
 {
-	if(bloods+b>100)
+	if(bloods+b>100) {
 		return false;
-	else
-	{
+	} else {
 		bloods+=b;
 		return true;
 	}
 }
 
 bool Blood::sub(int b) {
-	 if(bloods-b<=0)
-		return false;
-	 else
-	 {
-		bloods-=b;
+	bloods -= b;
+	if(bloods-b <= 0) {
+		bloods = 0;
+		return !die();
+	} else {
 		return true;
-	 }
+	}
+}
+
+void Blood::set_map(Map *m)
+{
+	map = m;
 }

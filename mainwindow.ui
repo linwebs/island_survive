@@ -110,9 +110,8 @@
      <string>說明</string>
     </property>
     <addaction name="action_game_intro"/>
-    <addaction name="action_game_background"/>
+    <addaction name="action_game_control"/>
     <addaction name="separator"/>
-    <addaction name="action_about_game"/>
     <addaction name="action_about_us"/>
    </widget>
    <addaction name="menu"/>
@@ -150,20 +149,12 @@
     <string>遊戲說明</string>
    </property>
   </action>
-  <action name="action_game_background">
+  <action name="action_game_control">
    <property name="text">
-    <string>遊戲背景</string>
+    <string>操作方式</string>
    </property>
    <property name="toolTip">
-    <string>遊戲背景</string>
-   </property>
-  </action>
-  <action name="action_about_game">
-   <property name="text">
-    <string>關於此遊戲</string>
-   </property>
-   <property name="toolTip">
-    <string>關於此遊戲</string>
+    <string>操作方式</string>
    </property>
   </action>
   <action name="action_about_us">

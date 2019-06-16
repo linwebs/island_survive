@@ -6,12 +6,13 @@
 
 class Player;
 class Map;
+class GameWindow;
 
 class GameWindowScene : public QGraphicsScene
 {
 		Q_OBJECT
 	public:
-		GameWindowScene(Player *, QObject *parent = 0);
+		GameWindowScene(Player *, GameWindow *, QObject *parent = 0);
 		void set_map(Map *);
 	protected:
 		void keyPressEvent(QKeyEvent *);
@@ -21,6 +22,11 @@ class GameWindowScene : public QGraphicsScene
 		void space_event();
 		void f_event();
 		void q_event();
+		void up_event();
+		void down_event();
+		void left_event();
+		void right_event();
+		GameWindow *gamewindow;
 		Player *player;
 		Map *map;
 };

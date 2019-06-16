@@ -1,6 +1,7 @@
 #include "map.h"
 #include "gamewindowscene.h"
 #include "system.h"
+#include "struct.cpp"
 #include "player.h"
 #include "bag.h"
 #include "struct.cpp"
@@ -12,6 +13,7 @@
 #include <QJsonObject>
 #include <QJsonValue>
 #include <QJsonArray>
+#include <QTime>
 
 Map::Map(GameWindowScene *GWscene, int *p)
 {
@@ -23,12 +25,14 @@ Map::Map(GameWindowScene *GWscene, int *p)
 	setFixedSize(1280, 720);
 	create_land();
 	create_items(System::get_default_map());
-	initialize_items();
+	initialize_items(4, 0);
 	generate_player(true);
 	show_energy_blood(100, 100);
 	play_time = p;
 	local_item = 0;
 	last_local_item = 0;
+	now_use_d = 0;
+	fight_result = 0;
 	// update_map(8, 3, 1);
 	show();
 }
@@ -40,12 +44,32 @@ Map::Map(vector<maps> maps)
 
 bool Map::set_player(Player *p)
 {
-	player = p;
+	player = p;/*
 	player->bag->put(9);
 	player->bag->put(9);
 	player->bag->put(9);
 	player->bag->put(9);
 	player->bag->put(9);
+	player->bag->put(1);
+	player->bag->put(1);
+	player->bag->put(1);
+	player->bag->put(1);
+	player->bag->put(2);
+	player->bag->put(2);
+	player->bag->put(2);
+	player->bag->put(2);
+	player->bag->put(2);
+	player->bag->put(2);
+	player->bag->put(2);
+	player->bag->put(2);
+	player->bag->put(4);
+	player->bag->put(5);
+	player->bag->put(4);
+	player->bag->put(5);
+	player->bag->put(4);
+	player->bag->put(5);
+	player->bag->put(4);
+	player->bag->put(5);*/
 	/* test bag items
 	player->bag->put(3);
 	player->bag->put(2);
@@ -77,6 +101,84 @@ bool Map::create_land()
 			background[i][j]->setPixmap(QPixmap("://res/img/land/soil_80.png"));
 			background[i][j]->setPos(i*80, j*80);
 			scene->addItem(background[i][j]);
+		}
+	}
+}
+
+bool Map::generate_grass()
+{
+	int x, y;
+	while(1) {
+		qsrand(static_cast<unsigned int>(QTime::currentTime().msecsSinceStartOfDay()));
+		x = qrand()%(size_width);
+		qsrand(static_cast<unsigned int>(QTime::currentTime().msecsSinceStartOfDay()));
+		y = qrand()%(size_height);
+		qDebug()<<"new grass: ("<<x-7<<","<<y-2<<")";
+		if(x<=0 && y<=0) {
+			qDebug()<<"again";
+		} else if(x<(home_size_width+7) && y<(home_size_height+2)) {
+			qDebug()<<"at home";
+		} else {
+			if(map_items[x][y].item == 0) {
+				map_items[x][y].item = 3;
+				map_items[x][y].size = 1;
+				map_items[x][y].walk = 1;
+				map_items[x][y].img = MAP_GRASS_PATH;
+				qDebug()<<"add grass";
+				break;
+			}
+		}
+	}
+}
+
+bool Map::generate_wood()
+{
+	int x, y;
+	while(1) {
+		qsrand(static_cast<unsigned int>(QTime::currentTime().msecsSinceStartOfDay()));
+		x = qrand()%(size_width);
+		qsrand(static_cast<unsigned int>(QTime::currentTime().msecsSinceStartOfDay()));
+		y = qrand()%(size_height);
+		qDebug()<<"new wood: ("<<x-7<<","<<y-2<<")";
+		if(x<=0 && y<=0) {
+			qDebug()<<"again";
+		} else if(x<(home_size_width+7) && y<(home_size_height+2)) {
+			qDebug()<<"at home";
+		} else {
+			if(map_items[x][y].item == 0) {
+				map_items[x][y].item = 9;
+				map_items[x][y].size = 1;
+				map_items[x][y].walk = 1;
+				map_items[x][y].img = MAP_WOOD_PATH;
+				qDebug()<<"add wood";
+				break;
+			}
+		}
+	}
+}
+
+bool Map::generate_stone()
+{
+	int x, y;
+	while(1) {
+		qsrand(static_cast<unsigned int>(QTime::currentTime().msecsSinceStartOfDay()));
+		x = qrand()%(size_width);
+		qsrand(static_cast<unsigned int>(QTime::currentTime().msecsSinceStartOfDay()));
+		y = qrand()%(size_height);
+		qDebug()<<"new stone: ("<<x-7<<","<<y-2<<")";
+		if(x<=0 && y<=0) {
+			qDebug()<<"again";
+		} else if(x<(home_size_width+7) && y<(home_size_height+2)) {
+			qDebug()<<"at home";
+		} else {
+			if(map_items[x][y].item == 0) {
+				map_items[x][y].item = 10;
+				map_items[x][y].size = 1;
+				map_items[x][y].walk = 1;
+				map_items[x][y].img = MAP_STONE_PATH;
+				qDebug()<<"add stone";
+				break;
+			}
 		}
 	}
 }
@@ -129,6 +231,7 @@ bool Map::items_event()
 			save_file();
 			break;
 		case 5:
+			open_furnace(1, 1);
 			// enter furnace
 			break;
 		case 6:
@@ -137,19 +240,53 @@ bool Map::items_event()
 			break;
 		case 7:
 			// enter stove
+			open_stove();
 			break;
 		case 8:
 			// action fight
+			if(last_local_item == 8) {
+				scene->removeItem(hint_text);
+				delete  hint_text;
+			}
+			hint_text= new QGraphicsPixmapItem();
+			hint_text->setPixmap(QPixmap("://res/img/action/f_fight_animal.png"));
+			hint_text->setPos(660, 500);
+			scene->addItem(hint_text);
 			break;
 		case 9:
 			// pick wood
+			if(last_local_item == 9) {
+				scene->removeItem(hint_text);
+				delete  hint_text;
+			}
+			hint_text= new QGraphicsPixmapItem();
+			hint_text->setPixmap(QPixmap("://res/img/action/f_pick_wood_30.png"));
+			hint_text->setPos(660, 500);
+			scene->addItem(hint_text);
 			break;
 		case 10:
 			// pick stone
+			if(last_local_item == 10) {
+				scene->removeItem(hint_text);
+				delete  hint_text;
+			}
+			hint_text= new QGraphicsPixmapItem();
+			hint_text->setPixmap(QPixmap("://res/img/action/f_pick_stone_30.png"));
+			hint_text->setPos(660, 500);
+			scene->addItem(hint_text);
 			break;
 	}
 
 	if(last_local_item == 3 && local_item != 3) {
+		scene->removeItem(hint_text);
+		delete hint_text;
+	} else if(last_local_item == 8 && local_item != 8) {
+		scene->removeItem(hint_text);
+		delete hint_text;
+	} else if(last_local_item == 9 && local_item != 9) {
+		scene->removeItem(hint_text);
+		delete hint_text;
+	} else if(last_local_item == 10 && local_item != 10) {
 		scene->removeItem(hint_text);
 		delete hint_text;
 	}
@@ -202,7 +339,7 @@ void Map::open_bbq()
 {
 	if(player->action->get_status() != 6) {
 		if(!player->action->change_status(6)) {
-			qDebug()<<"map::bbq change status error!";
+			qDebug()<<"map::play to bbq change status error!";
 		}
 	} else {
 		scene->removeItem(bbq_bgm);
@@ -248,7 +385,7 @@ void Map::open_bbq()
 void Map::close_bbq() {
 	if(player->action->get_status() == 6) {
 		if(!player->action->change_status(0)) {
-			qDebug()<<"map::bbq change status error!";
+			qDebug()<<"map::bbq to play change status error!";
 		}
 		scene->removeItem(bbq_bgm);
 		scene->removeItem(bbq_exit);
@@ -258,74 +395,603 @@ void Map::close_bbq() {
 		delete  bbq_exit;
 		delete bbq_meat_text;
 		delete  bbq_flesh_text;
+		update_map(player->action->get_x_axis(), player->action->get_y_axis(), player->action->get_direction());
 	}
 }
 
+void Map::open_stove()
+{
+	if(player->action->get_status() != 7) {
+		if(!player->action->change_status(7)) {
+			qDebug()<<"map::play to stove change status error!";
+		}
+	} else {
+		scene->removeItem(stove_bgm);
+		scene->removeItem(stove_exit);
+		scene->removeItem(red_grass_text);
+		scene->removeItem(blue_grass_text);
+		scene->removeItem(purple_grass_text);
+		delete stove_bgm;
+		delete stove_exit;
+		delete red_grass_text;
+		delete blue_grass_text;
+		delete purple_grass_text;
+	}
+	qDebug()<<"stove";
+
+	// bgm
+	stove_bgm= new QGraphicsPixmapItem();
+	stove_bgm->setPixmap(QPixmap("://res/img/frame/stove/stove_bgm.png"));
+	stove_bgm->setPos(0, 0);
+	scene->addItem(stove_bgm);
+
+	// exit btn
+	stove_exit= new QGraphicsPixmapItem();
+	stove_exit->setPixmap(QPixmap("://res/img/frame/exit/exit_60.png"));
+	stove_exit->setPos(1090, 10);
+	scene->addItem(stove_exit);
+
+	// red_grass_text
+	red_grass_text = new QGraphicsTextItem();
+	red_grass_text->setPos(454, 224);
+	red_grass_text->setDefaultTextColor(Qt::black);
+	red_grass_text->setFont(QFont("Microsoft JhengHei", 20));
+	red_grass_text->setPlainText(QString::number(player->bag->get_item_num(1)));
+	scene->addItem(red_grass_text);
+
+	// blue_grass_text
+	blue_grass_text = new QGraphicsTextItem();
+	blue_grass_text->setPos(924, 224);
+	blue_grass_text->setDefaultTextColor(Qt::black);
+	blue_grass_text->setFont(QFont("Microsoft JhengHei", 20));
+	blue_grass_text->setPlainText(QString::number(player->bag->get_item_num(2)));
+	scene->addItem(blue_grass_text);
+
+	// purple_grass_text
+	purple_grass_text = new QGraphicsTextItem();
+	purple_grass_text->setPos(690, 644);
+	purple_grass_text->setDefaultTextColor(Qt::black);
+	purple_grass_text->setFont(QFont("Microsoft JhengHei", 20));
+	purple_grass_text->setPlainText(QString::number(player->bag->get_item_num(3)));
+	scene->addItem(purple_grass_text);
+}
+
+void Map::close_stove() {
+	if(player->action->get_status() == 7) {
+		if(!player->action->change_status(0)) {
+			qDebug()<<"map::stove to play change status error!";
+		}
+		scene->removeItem(stove_bgm);
+		scene->removeItem(stove_exit);
+		scene->removeItem(red_grass_text);
+		scene->removeItem(blue_grass_text);
+		scene->removeItem(purple_grass_text);
+		delete stove_bgm;
+		delete stove_exit;
+		delete red_grass_text;
+		delete blue_grass_text;
+		delete purple_grass_text;
+		update_map(player->action->get_x_axis(), player->action->get_y_axis(), player->action->get_direction());
+	}
+}
+
+void Map::open_furnace(int result, int ini)
+{
+	if(ini == 1) {
+		now_use_d = 1;
+	} else {
+		now_use_d = result;
+	}
+	if(player->action->get_status() != 5 || ini == 1) {
+		if(!player->action->change_status(5)) {
+			qDebug()<<"map::play to furnace change status error!";
+		}
+	} else {
+		scene->removeItem(furnace_bgm);
+		scene->removeItem(furnace_exit);
+		scene->removeItem(now_use);
+		scene->removeItem(wood_text);
+		scene->removeItem(stone_text);
+		scene->removeItem(result_item);
+		scene->removeItem(result_text);
+		scene->removeItem(paper_card_text);
+		scene->removeItem(scissor_card_text);
+		scene->removeItem(stone_card_text);
+		delete furnace_bgm;
+		delete furnace_exit;
+		delete now_use;
+		delete wood_text;
+		delete stone_text;
+		delete result_item;
+		delete result_text;
+		delete paper_card_text;
+		delete scissor_card_text;
+		delete stone_card_text;
+	}
+	qDebug()<<"stove";
+
+	// bgm
+	furnace_bgm= new QGraphicsPixmapItem();
+	furnace_bgm->setPixmap(QPixmap("://res/img/frame/furnace/furnace_bgm.png"));
+	furnace_bgm->setPos(0, 0);
+	scene->addItem(furnace_bgm);
+
+	// exit btn
+	furnace_exit= new QGraphicsPixmapItem();
+	furnace_exit->setPixmap(QPixmap("://res/img/frame/exit/exit_60.png"));
+	furnace_exit->setPos(1090, 10);
+	scene->addItem(furnace_exit);
+
+	// now use
+	now_use = new QGraphicsPixmapItem();
+	now_use->setPixmap(QPixmap("://res/img/frame/furnace/now_use.png"));
+	if(now_use_d == 1) {
+		now_use->setPos(220, 64);
+	} else if(now_use_d == 2) {
+		now_use->setPos(220, 234);
+	} else if(now_use_d == 3) {
+		now_use->setPos(220, 404);
+	}
+	scene->addItem(now_use);
+
+	// wood_text
+	wood_text = new QGraphicsTextItem();
+	wood_text->setPos(540, 226);
+	wood_text->setDefaultTextColor(Qt::black);
+	wood_text->setFont(QFont("Microsoft JhengHei", 20));
+	if(now_use_d == 1) {
+		wood_text->setPlainText(QString::number(player->bag->get_item_num(4)) + QString("/") + QString::number(WEAPON_SCISSOR_WOOD));
+	} else if(now_use_d == 2) {
+		wood_text->setPlainText(QString::number(player->bag->get_item_num(4)) + QString("/") + QString::number(WEAPON_STONE_WOOD));
+	} else if(now_use_d == 3) {
+		wood_text->setPlainText(QString::number(player->bag->get_item_num(4)) + QString("/") + QString::number(WEAPON_PAPER_WOOD));
+	}
+	scene->addItem(wood_text);
+
+	// stone_text
+	stone_text = new QGraphicsTextItem();
+	stone_text->setPos(860, 226);
+	stone_text->setDefaultTextColor(Qt::black);
+	stone_text->setFont(QFont("Microsoft JhengHei", 20));
+	if(now_use_d == 1) {
+		stone_text->setPlainText(QString::number(player->bag->get_item_num(5)) + QString("/") + QString::number(WEAPON_SCISSOR_STONE));
+	} else if(now_use_d == 2) {
+		stone_text->setPlainText(QString::number(player->bag->get_item_num(5)) + QString("/") + QString::number(WEAPON_STONE_STONE));
+	} else if(now_use_d == 3) {
+		stone_text->setPlainText(QString::number(player->bag->get_item_num(5)) + QString("/") + QString::number(WEAPON_PAPER_STONE));
+	}
+	scene->addItem(stone_text);
+
+	// result_item
+	result_item= new QGraphicsPixmapItem();
+	if(now_use_d == 1) {
+		result_item->setPixmap(QPixmap("://res/img/frame/furnace/weapon_scissor_140.png"));
+	} else if(now_use_d == 2) {
+		result_item->setPixmap(QPixmap("://res/img/frame/furnace/weapon_stone_140.png"));
+	} else if(now_use_d == 3) {
+		result_item->setPixmap(QPixmap("://res/img/frame/furnace/weapon_paper_140.png"));
+	}
+	result_item->setPos(652, 350);
+	scene->addItem(result_item);
+
+	// result_text
+	result_text = new QGraphicsTextItem();
+	result_text->setPos(756, 460);
+	result_text->setDefaultTextColor(Qt::black);
+	result_text->setFont(QFont("Microsoft JhengHei", 20));
+	if(now_use_d == 1) {
+		result_text->setPlainText(QString::number(player->bag->get_item_num(6)));
+	} else if(now_use_d == 2) {
+		result_text->setPlainText(QString::number(player->bag->get_item_num(7)));
+	} else if(now_use_d == 3) {
+		result_text->setPlainText(QString::number(player->bag->get_item_num(8)));
+	}
+	scene->addItem(result_text);
+
+	// scissor_card_text
+	scissor_card_text = new QGraphicsTextItem();
+	scissor_card_text->setPos(440, 670);
+	scissor_card_text->setDefaultTextColor(Qt::black);
+	scissor_card_text->setFont(QFont("Microsoft JhengHei", 20));
+	scissor_card_text->setPlainText(QString::number(player->bag->get_item_num(6)));
+	scene->addItem(scissor_card_text);
+
+	// stone_card_text
+	stone_card_text = new QGraphicsTextItem();
+	stone_card_text->setPos(740, 670);
+	stone_card_text->setDefaultTextColor(Qt::black);
+	stone_card_text->setFont(QFont("Microsoft JhengHei", 20));
+	stone_card_text->setPlainText(QString::number(player->bag->get_item_num(7)));
+	scene->addItem(stone_card_text);
+
+	// paper_card_text
+	paper_card_text = new QGraphicsTextItem();
+	paper_card_text->setPos(1040, 670);
+	paper_card_text->setDefaultTextColor(Qt::black);
+	paper_card_text->setFont(QFont("Microsoft JhengHei", 20));
+	paper_card_text->setPlainText(QString::number(player->bag->get_item_num(8)));
+	scene->addItem(paper_card_text);
+}
+
+void Map::close_furnace() {
+	if(player->action->get_status() == 5) {
+		if(!player->action->change_status(0)) {
+			qDebug()<<"map::furnace to play change status error!";
+		}
+		scene->removeItem(furnace_bgm);
+		scene->removeItem(furnace_exit);
+		scene->removeItem(now_use);
+		scene->removeItem(wood_text);
+		scene->removeItem(stone_text);
+		scene->removeItem(result_item);
+		scene->removeItem(result_text);
+		scene->removeItem(scissor_card_text);
+		scene->removeItem(stone_card_text);
+		scene->removeItem(paper_card_text);
+		delete furnace_bgm;
+		delete furnace_exit;
+		delete now_use;
+		delete wood_text;
+		delete stone_text;
+		delete result_item;
+		delete result_text;
+		delete scissor_card_text;
+		delete stone_card_text;
+		delete paper_card_text;
+		now_use_d = 0;
+		update_map(player->action->get_x_axis(), player->action->get_y_axis(), player->action->get_direction());
+	}
+}
+
+int Map::get_now_use_d()
+{
+	return now_use_d;
+}
+
+void Map::show_die()
+{
+	player->action->change_status(4);
+
+	// bgm
+	die_bgm= new QGraphicsPixmapItem();
+	die_bgm->setPixmap(QPixmap("://res/img/frame/die/die_bgm.png"));
+	die_bgm->setPos(0, 0);
+	scene->addItem(die_bgm);
+
+	// exit btn
+	die_exit= new QGraphicsPixmapItem();
+	die_exit->setPixmap(QPixmap("://res/img/frame/exit/exit_60.png"));
+	die_exit->setPos(1100, 0);
+	scene->addItem(die_exit);
+
+	// survive_time
+	survive_time = new QGraphicsTextItem();
+	survive_time->setPos(560, 30);
+	survive_time->setDefaultTextColor(Qt::black);
+	survive_time->setFont(QFont("Microsoft JhengHei", 20));
+	survive_time->setPlainText(QString("掙扎時間: ") + QString::number(*play_time) + QString("秒"));
+	scene->addItem(survive_time);
+	player->action->change_status(4);
+	qDebug()<<"die";
+
+}
+
+void Map::open_fight(int card, int ini, int result)
+{
+	fight_result = result;
+	if(ini == 1) {
+		now_use_d = 1;
+	} else {
+		now_use_d = card;
+	}
+	if(player->action->get_status() != 8 || ini == 1) {
+		if(!player->action->change_status(8)) {
+			qDebug()<<"map::play to furnace change status error!";
+		}
+	} else {
+		scene->removeItem(fight_bgm);
+		scene->removeItem(fight_exit);
+		scene->removeItem(fight_people);
+		scene->removeItem(fight_animal);
+		scene->removeItem(fight_text);
+		scene->removeItem(fight_now_use_card);
+		scene->removeItem(fight_paper_card_text);
+		scene->removeItem(fight_scissor_card_text);
+		scene->removeItem(fight_stone_card_text);
+		delete fight_bgm;
+		delete fight_exit;
+		delete fight_people;
+		delete fight_animal;
+		delete fight_text;
+		delete fight_now_use_card;
+		delete fight_paper_card_text;
+		delete fight_scissor_card_text;
+		delete fight_stone_card_text;
+		scene->removeItem(fight_sword);
+		delete fight_sword;/*
+		if(fight_result == 0) {
+			scene->removeItem(fight_sword);
+			delete fight_sword;
+		} else {
+			scene->removeItem(fight_card_people_bgm);
+			scene->removeItem(fight_card_animal_bgm);
+			scene->removeItem(fight_card_people);
+			scene->removeItem(fight_card_animal);
+			delete fight_card_people_bgm;
+			delete fight_card_animal_bgm;
+			delete fight_card_people;
+			delete fight_card_animal;
+		}*/
+	}
+	qDebug()<<"fight";
+
+	// bgm
+	fight_bgm= new QGraphicsPixmapItem();
+	fight_bgm->setPixmap(QPixmap("://res/img/frame/fight/fight_bgm.png"));
+	fight_bgm->setPos(0, 0);
+	scene->addItem(fight_bgm);
+
+	// exit btn
+	fight_exit= new QGraphicsPixmapItem();
+	fight_exit->setPixmap(QPixmap("://res/img/frame/exit/exit_60.png"));
+	fight_exit->setPos(1090, 10);
+	scene->addItem(fight_exit);
+
+	// fight text
+	fight_text= new QGraphicsPixmapItem();
+	if(fight_result == 0) {
+		fight_text->setPixmap(QPixmap("://res/img/frame/fight/fight_text.png"));
+	} else if((now_use_d == 1 && fight_result == 2) || (now_use_d == 2 && fight_result == 3) || (now_use_d == 3 && fight_result == 1)) {
+		fight_text->setPixmap(QPixmap("://res/img/frame/fight/fight_fail_text.png"));
+	} else if((now_use_d == 1 && fight_result == 3) || (now_use_d == 2 && fight_result == 1) || (now_use_d == 3 && fight_result == 2)) {
+		fight_text->setPixmap(QPixmap("://res/img/frame/fight/people_success.png"));
+	} else {
+		fight_text->setPixmap(QPixmap("://res/img/frame/fight/people_flat.png"));
+	}
+	fight_text->setPos(500, 26);
+	scene->addItem(fight_text);
+
+	// fight people
+	fight_people= new QGraphicsPixmapItem();
+	if((now_use_d == 1 && fight_result == 2) || (now_use_d == 2 && fight_result == 3) || (now_use_d == 3 && fight_result == 1)) {
+		fight_people->setPixmap(QPixmap("://res/img/frame/fight/people_fail.png"));
+		fight_people->setPos(40, 250);
+	} else {
+		fight_people->setPixmap(QPixmap("://res/img/frame/fight/people.png"));
+		fight_people->setPos(60, 170);
+	}
+	scene->addItem(fight_people);
+
+	// fight animal
+	fight_animal= new QGraphicsPixmapItem();
+	if((now_use_d == 1 && fight_result == 3) || (now_use_d == 2 && fight_result == 1) || (now_use_d == 3 && fight_result == 2)) {
+		fight_animal->setPixmap(QPixmap("://res/img/frame/fight/animal_fail.png"));
+		fight_animal->setPos(930, 230);
+	} else {
+		fight_animal->setPixmap(QPixmap("://res/img/frame/fight/animal.png"));
+		fight_animal->setPos(930, 230);
+	}
+	scene->addItem(fight_animal);
+
+	if(fight_result == 0) {
+		// fight sword
+		fight_sword= new QGraphicsPixmapItem();
+		fight_sword->setPixmap(QPixmap("://res/img/frame/fight/fight_sword.png"));
+		fight_sword->setPos(400, 130);
+		scene->addItem(fight_sword);
+	} else {
+		fight_card_people_bgm= new QGraphicsPixmapItem();
+		fight_card_people_bgm->setPixmap(QPixmap("://res/img/frame/fight/fight_card.png"));
+		fight_card_people_bgm->setPos(380, 280);
+		scene->addItem(fight_card_people_bgm);
+
+		fight_card_animal_bgm= new QGraphicsPixmapItem();
+		fight_card_animal_bgm->setPixmap(QPixmap("://res/img/frame/fight/fight_card.png"));
+		fight_card_animal_bgm->setPos(730, 280);
+		scene->addItem(fight_card_animal_bgm);
+
+		fight_card_people= new QGraphicsPixmapItem();
+		if(now_use_d == 1) {
+			fight_card_people->setPixmap(QPixmap("://res/img/frame/fight/card_scissor_120.png"));
+		} else if (now_use_d == 2) {
+			fight_card_people->setPixmap(QPixmap("://res/img/frame/fight/card_stone_120.png"));
+		} else if(now_use_d == 3) {
+			fight_card_people->setPixmap(QPixmap("://res/img/frame/fight/card_paper_120.png"));
+		}
+		fight_card_people->setPos(400, 340);
+		scene->addItem(fight_card_people);
+
+		fight_card_animal= new QGraphicsPixmapItem();
+		if(fight_result == 1) {
+			fight_card_animal->setPixmap(QPixmap("://res/img/frame/fight/card_scissor_120.png"));
+		} else if (fight_result == 2) {
+			fight_card_animal->setPixmap(QPixmap("://res/img/frame/fight/card_stone_120.png"));
+		} else if(fight_result == 3) {
+			fight_card_animal->setPixmap(QPixmap("://res/img/frame/fight/card_paper_120.png"));
+		}
+		fight_card_animal->setPos(750, 340);
+		scene->addItem(fight_card_animal);
+	}
+
+	// fight now use card
+	fight_now_use_card= new QGraphicsPixmapItem();
+	fight_now_use_card->setPixmap(QPixmap("://res/img/frame/fight/now_use_card.png"));
+	if(now_use_d == 1) {
+		fight_now_use_card->setPos(140, 600);
+	} else if (now_use_d == 2) {
+		fight_now_use_card->setPos(460, 600);
+	} else if(now_use_d == 3) {
+		fight_now_use_card->setPos(780, 600);
+	}
+	scene->addItem(fight_now_use_card);
+
+
+	// fight_paper_card_text
+	fight_paper_card_text = new QGraphicsTextItem();
+	fight_paper_card_text->setPos(340, 670);
+	fight_paper_card_text->setDefaultTextColor(Qt::black);
+	fight_paper_card_text->setFont(QFont("Microsoft JhengHei", 20));
+	fight_paper_card_text->setPlainText(QString::number(player->bag->get_item_num(6)));
+	scene->addItem(fight_paper_card_text);
+
+	// fight_paper_card_text
+	fight_scissor_card_text = new QGraphicsTextItem();
+	fight_scissor_card_text->setPos(660, 670);
+	fight_scissor_card_text->setDefaultTextColor(Qt::black);
+	fight_scissor_card_text->setFont(QFont("Microsoft JhengHei", 20));
+	fight_scissor_card_text->setPlainText(QString::number(player->bag->get_item_num(7)));
+	scene->addItem(fight_scissor_card_text);
+
+	// fight_paper_card_text
+	fight_stone_card_text = new QGraphicsTextItem();
+	fight_stone_card_text->setPos(980, 670);
+	fight_stone_card_text->setDefaultTextColor(Qt::black);
+	fight_stone_card_text->setFont(QFont("Microsoft JhengHei", 20));
+	fight_stone_card_text->setPlainText(QString::number(player->bag->get_item_num(8)));
+	scene->addItem(fight_stone_card_text);
+
+}
+
+void Map::close_fight()
+{
+	if(player->action->get_status() == 8) {
+		if(!player->action->change_status(0)) {
+			qDebug()<<"map::fight to play change status error!";
+		}
+		scene->removeItem(fight_bgm);
+		scene->removeItem(fight_exit);
+		scene->removeItem(fight_people);
+		scene->removeItem(fight_animal);
+		scene->removeItem(fight_text);
+		scene->removeItem(fight_now_use_card);
+		scene->removeItem(fight_paper_card_text);
+		scene->removeItem(fight_scissor_card_text);
+		scene->removeItem(fight_stone_card_text);
+		delete fight_bgm;
+		delete fight_exit;
+		delete fight_people;
+		delete fight_animal;
+		delete fight_text;
+		delete fight_now_use_card;
+		delete fight_paper_card_text;
+		delete fight_scissor_card_text;
+		delete fight_stone_card_text;
+		if(fight_result == 0) {
+			scene->removeItem(fight_sword);
+			delete fight_sword;
+		} else {
+			scene->removeItem(fight_card_people_bgm);
+			scene->removeItem(fight_card_animal_bgm);
+			scene->removeItem(fight_card_people);
+			scene->removeItem(fight_card_animal);
+			delete fight_card_people_bgm;
+			delete fight_card_animal_bgm;
+			delete fight_card_people;
+			delete fight_card_animal;
+		}
+		now_use_d = 0;
+		update_map(player->action->get_x_axis(), player->action->get_y_axis(), player->action->get_direction());
+	}
+}
+
+int Map::get_fight_result()
+{
+	return fight_result;
+}
 
 void Map::open_bag()
 {
-	if(player->action->get_status() == 9) {
-		close_bag();
-	} else {
-		player->action->change_status(9);
-		bag_bgm= new QGraphicsPixmapItem();
-		bag_bgm->setPixmap(QPixmap("://res/img/frame/bag/bags_bgm.png"));
-		bag_bgm->setPos(0, 0);
-		scene->addItem(bag_bgm);
-
-		const vector<bags> bag = *player->bag->get_items();
-
-		for(int i=0; i<bag.size(); i++) {
-			// img
-			bag_items[i] = new QGraphicsPixmapItem();
-
-			// text
-			bag_items_text[i] = new QGraphicsTextItem();
-			if(i==0) {
-				bag_items[i]->setPos(69, 190);
-				bag_items_text[i]->setPos(210, 334);
-			} else if(i==1) {
-				bag_items[i]->setPos(309, 190);
-				bag_items_text[i]->setPos(450, 334);
-			} else if(i==2) {
-				bag_items[i]->setPos(550, 190);
-				bag_items_text[i]->setPos(690, 334);
-			} else if(i==3) {
-				bag_items[i]->setPos(790, 190);
-				bag_items_text[i]->setPos(930, 334);
-			} else if(i==4) {
-				bag_items[i]->setPos(1030, 190);
-				bag_items_text[i]->setPos(1170, 334);
-			} else if(i==5) {
-				bag_items[i]->setPos(69, 430);
-				bag_items_text[i]->setPos(210, 574);
-			} else if(i==6) {
-				bag_items[i]->setPos(309, 430);
-				bag_items_text[i]->setPos(450, 574);
-			} else if(i==7) {
-				bag_items[i]->setPos(550, 430);
-				bag_items_text[i]->setPos(690, 574);
-			} else if(i==8) {
-				bag_items[i]->setPos(790, 430);
-				bag_items_text[i]->setPos(930, 574);
-			} else if(i==9) {
-				bag_items[i]->setPos(1030, 430);
-				bag_items_text[i]->setPos(1170, 574);
-			}
-			bag_items[i]->setPixmap(QPixmap(System::get_bag_item_file_path(bag[i].item)));
-			bag_items_text[i]->setPlainText(QString::number(bag[i].quantity));
-			bag_items_text[i]->setDefaultTextColor(Qt::black);
-			bag_items_text[i]->setFont(QFont("Microsoft JhengHei", 24));
-			scene->addItem(bag_items[i]);
-			scene->addItem(bag_items_text[i]);
+	qsrand(static_cast<unsigned int>(QTime::currentTime().msecsSinceStartOfDay()));
+	qDebug()<<qrand();
+	if(player->action->get_status() != 9) {
+		if(!player->action->change_status(9)) {
+			qDebug()<<"map::bag change status error!";
 		}
+	} else {
+		scene->removeItem(bag_bgm);
+		delete bag_bgm;
+		scene->removeItem(bag_exit);
+		delete bag_exit;
+		const vector<bags> bag = *player->bag->get_items();
+		for(int i=0; i<bag.size(); i++) {
+			scene->removeItem(bag_items[i]);
+			scene->removeItem(bag_items_text[i]);
+			delete bag_items[i];
+			delete bag_items_text[i];
+		}
+	}
+
+	// bgm
+	bag_bgm= new QGraphicsPixmapItem();
+	bag_bgm->setPixmap(QPixmap("://res/img/frame/bag/bags_bgm.png"));
+	bag_bgm->setPos(0, 0);
+	scene->addItem(bag_bgm);
+
+	// exit btn
+	bag_exit= new QGraphicsPixmapItem();
+	bag_exit->setPixmap(QPixmap("://res/img/frame/exit/exit_60.png"));
+	bag_exit->setPos(1090, 10);
+	scene->addItem(bag_exit);
+
+	const vector<bags> bag = *player->bag->get_items();
+
+	for(int i=0; i<bag.size(); i++) {
+		// img
+		bag_items[i] = new QGraphicsPixmapItem();
+
+		// text
+		bag_items_text[i] = new QGraphicsTextItem();
+		if(i==0) {
+			bag_items[i]->setPos(69, 190);
+			bag_items_text[i]->setPos(210, 334);
+		} else if(i==1) {
+			bag_items[i]->setPos(309, 190);
+			bag_items_text[i]->setPos(450, 334);
+		} else if(i==2) {
+			bag_items[i]->setPos(550, 190);
+			bag_items_text[i]->setPos(690, 334);
+		} else if(i==3) {
+			bag_items[i]->setPos(790, 190);
+			bag_items_text[i]->setPos(930, 334);
+		} else if(i==4) {
+			bag_items[i]->setPos(1030, 190);
+			bag_items_text[i]->setPos(1170, 334);
+		} else if(i==5) {
+			bag_items[i]->setPos(69, 430);
+			bag_items_text[i]->setPos(210, 574);
+		} else if(i==6) {
+			bag_items[i]->setPos(309, 430);
+			bag_items_text[i]->setPos(450, 574);
+		} else if(i==7) {
+			bag_items[i]->setPos(550, 430);
+			bag_items_text[i]->setPos(690, 574);
+		} else if(i==8) {
+			bag_items[i]->setPos(790, 430);
+			bag_items_text[i]->setPos(930, 574);
+		} else if(i==9) {
+			bag_items[i]->setPos(1030, 430);
+			bag_items_text[i]->setPos(1170, 574);
+		}
+		bag_items[i]->setPixmap(QPixmap(System::get_bag_item_file_path(bag[i].item)));
+		bag_items_text[i]->setPlainText(QString::number(bag[i].quantity));
+		bag_items_text[i]->setDefaultTextColor(Qt::black);
+		bag_items_text[i]->setFont(QFont("Microsoft JhengHei", 24));
+		scene->addItem(bag_items[i]);
+		scene->addItem(bag_items_text[i]);
 	}
 }
 
+
 void Map::close_bag()
 {
+	//scene->removeItem(bag_exit);
+	//delete bag_exit;
+	qDebug()<<"close bag";
+
 	scene->removeItem(bag_bgm);
 	delete bag_bgm;
+	scene->removeItem(bag_exit);
+	delete bag_exit;
 	const vector<bags> bag = *player->bag->get_items();
 	for(int i=0; i<bag.size(); i++) {
 		scene->removeItem(bag_items[i]);
@@ -334,6 +1000,7 @@ void Map::close_bag()
 		delete bag_items_text[i];
 	}
 	player->action->change_status(0);
+	update_map(player->action->get_x_axis(), player->action->get_y_axis(), player->action->get_direction());
 }
 
 int Map::get_local_item()
@@ -343,6 +1010,13 @@ int Map::get_local_item()
 
 bool Map::remove_pick_item(int player_x, int player_y, int player_di)
 {
+	if(map_items[player_x+7][player_y+2].item== 3) {
+		generate_grass();
+	} else if(map_items[player_x+7][player_y+2].item== 9) {
+		generate_wood();
+	} else if(map_items[player_x+7][player_y+2].item== 10) {
+		generate_stone();
+	}
 	map_items[player_x+7][player_y+2].item = 0;
 	map_items[player_x+7][player_y+2].size = 1;
 	map_items[player_x+7][player_y+2].walk = 1;
@@ -365,12 +1039,12 @@ bool Map::generate_player(bool ini)
 	scene->addItem(player_show);
 }
 
-bool Map::initialize_items()
+bool Map::initialize_items(int x, int y)
 {
 	for(int i=0; i<16; i++) {
 		for(int j=0; j<9; j++) {
 			map_now[i][j]= new QGraphicsPixmapItem();
-			map_now[i][j]->setPixmap(QPixmap(map_items[i+7][j+2].img));
+			map_now[i][j]->setPixmap(QPixmap(map_items[i+x][j+y].img));
 			map_now[i][j]->setPos(i*80, 640-j*80);
 			scene->addItem(map_now[i][j]);
 		}
@@ -382,6 +1056,9 @@ bool Map::create_items(QJsonObject json)
 	QJsonObject map_size = json["size"].toObject();
 	size_height = map_size["height"].toInt() + 8;
 	size_width = map_size["width"].toInt() + 15;
+	home_size_height = json["home"].toObject()["height"].toInt();
+	home_size_width = json["home"].toObject()["width"].toInt();
+	qDebug()<<home_size_width<<home_size_height;
 	/*
 	 * up: 6 ;  down: 2 ;  right: 8 ;  left: 7
 	 */

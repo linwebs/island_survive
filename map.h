@@ -1,5 +1,6 @@
 #ifndef MAP_H
 #define MAP_H
+
 #include <vector>
 #include <QLabel>
 #include <QWidget>
@@ -18,54 +19,59 @@ class Map : public QGraphicsView
 {
 	public:
 		Map(GameWindowScene *GWscene, int *);
-		Map(vector<maps>);	// 帶入存檔(map)
+		Map(vector<maps>);						// 帶入存檔(map)
 		bool update_map(int&, int&, int&);
 		bool set_player(Player*);
-		bool create_items(QJsonObject);	// 從 map.json 取得地圖上物品
+		bool create_items(QJsonObject);		// 從 map.json 取得地圖上物品
 		int get_size_height();
 		int get_size_width();
 		int show_energy_blood(int, int, QString avatar_v = "://res/img/character/people_avatar_130.png");
-        void show_bags();
-        bool exit_pause();
-		void pause_game();
-		int get_local_item();
-		bool remove_pick_item(int, int, int);
-		void open_bag();		// 背包
+		void show_bags();						// 顯示小背包
+		bool exit_pause();						// 離開暫停遊戲畫面
+		void pause_game();						// 遊戲暫停畫面
+		int get_local_item();					// 取得當前位置的物品
+		bool remove_pick_item(int, int, int);	// 移除當前位置的物品
+		void open_bag();						// 背包
 		void close_bag();
-		void open_bbq();		// 篝火
+		void open_bbq();						// 篝火
 		void close_bbq();
+		void open_stove();						// 煉丹爐
+		void close_stove();
+		void open_furnace(int, int);			// 熔爐
+		void close_furnace();
+		int get_now_use_d();					// 取得熔爐目前配方
+		void show_die();						// 死亡畫面
+		void open_fight(int, int, int);		// 戰鬥
+		void close_fight();
+		int get_fight_result();
+		bool generate_grass();					// 生成草
+		bool generate_animal();				// 生成獵物
+		bool generate_stone();					// 生成礦物
+		bool generate_wood();					// 生成木頭
 
 	private:
-		bool create_land();		// 生成土地
-		bool barrier(int);	// 障礙物
-		bool prey(int);		// 獵物
-		bool stone(int);	// 礦物
-		bool wood(int);		// 木頭
-		bool grass(int);	// 草
-		bool stove(int);	// 煉丹爐
-		bool furnace(int);	// 熔爐
-		bool home(int);		// 房子
-		bool land(int);		// 土地
-		bool initialize_items();
+		bool create_land();					// 生成土地
+		bool initialize_items(int, int);
 		bool items_event();
 		bool generate_player(bool);
 		bool save_file();
 
-		vector<maps> map;	// 地圖組成項目列表
+		vector<maps> map;						// 地圖組成項目列表
 		GameWindowScene *scene;
 		Player *player;
 
-        // save
+		// save
 		QGraphicsRectItem *save_bgm;
 		QGraphicsPixmapItem *pause_text;
 
-        // bags
+		// bags
 		QGraphicsPixmapItem *bags_bgm;
 		QGraphicsTextItem *bags_items_text[10];
 		QGraphicsPixmapItem *bags_items[10];
 
-        // bag
-        QGraphicsPixmapItem *bag_bgm;
+		// bag big
+		QGraphicsPixmapItem *bag_bgm;
+		QGraphicsPixmapItem *bag_exit;
 		QGraphicsTextItem *bag_items_text[10];
 		QGraphicsPixmapItem *bag_items[10];
 
@@ -75,16 +81,60 @@ class Map : public QGraphicsView
 		QGraphicsTextItem *bbq_flesh_text;
 		QGraphicsTextItem *bbq_meat_text;
 
+		// stove
+		QGraphicsPixmapItem *stove_bgm;
+		QGraphicsPixmapItem *stove_exit;
+		QGraphicsTextItem *red_grass_text;
+		QGraphicsTextItem *blue_grass_text;
+		QGraphicsTextItem *purple_grass_text;
+
+		// furnace
+		QGraphicsPixmapItem *furnace_bgm;
+		QGraphicsPixmapItem *furnace_exit;
+		QGraphicsPixmapItem *result_item;
+		QGraphicsPixmapItem *now_use;
+		QGraphicsTextItem *wood_text;
+		QGraphicsTextItem *stone_text;
+		QGraphicsTextItem *result_text;
+		QGraphicsTextItem *paper_card_text;
+		QGraphicsTextItem *scissor_card_text;
+		QGraphicsTextItem *stone_card_text;
+		int now_use_d;
+
 		// hint
 		QGraphicsPixmapItem *hint_text;
 
-        QGraphicsPixmapItem *player_show;
+		// die
+		QGraphicsPixmapItem *die_bgm;
+		QGraphicsPixmapItem *die_exit;
+		QGraphicsTextItem *survive_time;
+
+		// fight
+		QGraphicsPixmapItem *fight_bgm;
+		QGraphicsPixmapItem *fight_exit;
+		QGraphicsPixmapItem *fight_people;
+		QGraphicsPixmapItem *fight_animal;
+		QGraphicsPixmapItem *fight_card_people_bgm;
+		QGraphicsPixmapItem *fight_card_animal_bgm;
+		QGraphicsPixmapItem *fight_card_people;
+		QGraphicsPixmapItem *fight_card_animal;
+		QGraphicsPixmapItem *fight_text;
+		QGraphicsPixmapItem *fight_now_use_card;
+		QGraphicsPixmapItem *fight_sword;
+		QGraphicsTextItem *fight_paper_card_text;
+		QGraphicsTextItem *fight_scissor_card_text;
+		QGraphicsTextItem *fight_stone_card_text;
+		int fight_result;
+
+		QGraphicsPixmapItem *player_show;
 		QGraphicsPixmapItem *background[16][9];
 		QGraphicsPixmapItem *map_now[16][9];
 		QGraphicsTextItem *pause_time;
 		vector<vector<map_item>> map_items;
 		int size_height;
 		int size_width;
+		int home_size_height;
+		int home_size_width;
 		int *play_time;
 		int local_item;
 		int last_local_item;

@@ -19,12 +19,10 @@ GameWindow::GameWindow()
 
 	play_time = 0;
 
-	scene = new GameWindowScene(player);	// scene
+	scene = new GameWindowScene(player, this);	// scene
 
 	map = new Map(scene, &play_time);	// view
 	player->set_map(map);
-
-
 
 	player->action->set_map(map);
 	scene->setSceneRect(0, 0, 1280, 720);	// 設定場景大小
@@ -44,9 +42,11 @@ GameWindow::GameWindow()
 
     create_actions();	// 建立標題列按鈕活動(小分支)
     create_menus();		// 建立標題列按鈕
+
 	timer = new QTimer(this);
 	timer->start(1000);
 	connect(timer, SIGNAL(timeout()), this, SLOT(add_play_time()));
+//	connect("要connect的東西", SIGNAL("得到訊號"), this, SLOT("要執行的東西"));
 
 	energy_timer = new QTimer(this);
 	energy_timer->start(3000);
@@ -76,8 +76,9 @@ void GameWindow::destructor()
 void GameWindow::sub_time()
 {
 	if(player->action->get_pause() == 0) {
-		player->action->energy_update();
-		map->show_energy_blood(player->energy->get_energy(), player->blood->get_blood());
+		if(player->action->energy_update()) {
+			map->show_energy_blood(player->energy->get_energy(), player->blood->get_blood());
+		}
 	}
 }
 
@@ -115,7 +116,7 @@ void GameWindow::create_actions()
 
 	menu_actions[0][1] = new QAction(tr("&返回主畫面"), this);// 次選單文字
 	menu_actions[0][1] -> setShortcut(tr("Ctrl+R"));		// 呼叫次選單功能的快捷鍵
-	connect(menu_actions[0][1], SIGNAL(triggered()), this, SLOT(back_to_main_window()));
+	connect(menu_actions[0][1], SIGNAL(triggered()), this, SLOT(back_to_main_window_slot()));
 
 	//	menu_actions[0][2] = new QAction(tr("&離開遊戲"), this);	// 次選單文字
 	//	menu_actions[0][2] -> setShortcut(tr("Ctrl+Q"));		// 呼叫次選單功能的快捷鍵
@@ -186,6 +187,10 @@ void GameWindow::pause_game()
 void GameWindow::exit_pause_game()
 {
 	map->exit_pause();
+}
+
+void GameWindow::back_to_main_window_slot() {
+	back_to_main_window();
 }
 
 void GameWindow::back_to_main_window()

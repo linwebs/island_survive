@@ -9,6 +9,7 @@ Player::Player(QGraphicsItem *parent): QGraphicsPixmapItem(parent)
 	bag = new Bag;
 
 	action->set_energy(energy);
+	action->set_blood(blood);
 	action->set_bag(bag);
 	setPixmap(QPixmap("://res/img/character/people_80.png"));
 }
@@ -24,4 +25,6 @@ Player::~Player()
 void Player::set_map(Map *m)
 {
 	map = m;
+	energy->set_map(map);
+	blood->set_map(map);
 }

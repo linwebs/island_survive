@@ -19,6 +19,7 @@ class GameWindow : public QMainWindow
 		GameWindow();
 		virtual ~GameWindow();
 		void closeEvent (QCloseEvent*);
+		void back_to_main_window();
 	private:
         void create_actions();
         void create_menus();
@@ -29,7 +30,7 @@ class GameWindow : public QMainWindow
         void save_file();
 		void pause_game();
 		void exit_pause_game();
-		void back_to_main_window();
+		void back_to_main_window_slot();
 		void sub_time();
 		void add_play_time();
 

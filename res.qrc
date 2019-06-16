@@ -48,6 +48,8 @@
         <file>res/img/bag/wood_180.png</file>
         <file>res/img/frame/bag/bags_bgm.png</file>
         <file>res/img/action/f_pick_grass_30.png</file>
+        <file>res/img/action/f_pick_wood_30.png</file>
+        <file>res/img/action/f_pick_stone_30.png</file>
         <file>res/img/main/new_game_btn.png</file>
         <file>res/img/main/old_game_btn.png</file>
         <file>res/img/main/rule_intro_btn.png</file>
@@ -93,5 +95,30 @@
         <file>res/img/building/bbq_9_80.png</file>
         <file>res/img/frame/bbq/bbq_bgm.png</file>
         <file>res/img/frame/exit/exit_60.png</file>
+        <file>res/img/frame/stove/stove_bgm.png</file>
+        <file>res/img/frame/die/die_bgm.png</file>
+        <file>res/img/frame/furnace/furnace_bgm.png</file>
+        <file>res/img/frame/furnace/weapon_scissor_140.png</file>
+        <file>res/img/frame/furnace/weapon_stone_140.png</file>
+        <file>res/img/frame/furnace/weapon_paper_140.png</file>
+        <file>res/img/frame/furnace/now_use.png</file>
+        <file>res/img/land/bridge_1_80.png</file>
+        <file>res/img/land/bridge_2_80.png</file>
+        <file>res/img/frame/fight/fight_bgm.png</file>
+        <file>res/img/frame/fight/animal.png</file>
+        <file>res/img/frame/fight/people.png</file>
+        <file>res/img/frame/fight/animal_fail.png</file>
+        <file>res/img/frame/fight/people_fail.png</file>
+        <file>res/img/frame/fight/fight_fail_text.png</file>
+        <file>res/img/frame/fight/fight_text.png</file>
+        <file>res/img/frame/fight/people_success.png</file>
+        <file>res/img/frame/fight/fight_sword.png</file>
+        <file>res/img/frame/fight/now_use_card.png</file>
+        <file>res/img/action/f_fight_animal.png</file>
+        <file>res/img/frame/fight/fight_card.png</file>
+        <file>res/img/frame/fight/people_flat.png</file>
+        <file>res/img/frame/fight/card_paper_120.png</file>
+        <file>res/img/frame/fight/card_scissor_120.png</file>
+        <file>res/img/frame/fight/card_stone_120.png</file>
     </qresource>
 </RCC>

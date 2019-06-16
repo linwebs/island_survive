@@ -1,15 +1,17 @@
 #include <QKeyEvent>
 #include <QDebug>
-#include <qrandom.h>
+#include <QTime>
+#include "struct.cpp"
 #include "action.h"
 #include "map.h"
 #include "bag.h"
 #include "energy.h"
+#include "blood.h"
 Action::Action()
 {
 	reverse = false;
-	x_axis = 7;
-	y_axis = 2;
+	x_axis = 4;
+	y_axis = 0;
 	direction = 1;
 	pause = 0;
 	status = 0;
@@ -37,19 +39,162 @@ bool Action::move(int n) {
 	}
 }
 
-bool Action::pick()
+bool Action::pick(int item)
 {
-	qDebug()<<"pick grass";
-	if(qrand()%2 == 1) {
-		if(bag->put(1)) {
-			map->remove_pick_item(x_axis, y_axis, direction);
-
-			qDebug()<<"put_1";
+	qsrand(static_cast<unsigned int>(QTime::currentTime().msecsSinceStartOfDay()));
+	if(item == 3) {
+		qDebug()<<"pick grass";
+		if(qrand()%2 == 1) {
+			if(bag->put(1)) {
+				if(energy->pick()) {
+					map->remove_pick_item(x_axis, y_axis, direction);
+				} else {
+					change_status(4);
+				}
+				qDebug()<<"put_1";
+				return true;
+			} else {
+				// bag item 1 full
+				return false;
+			}
+		} else {
+			if(bag->put(2)) {
+				if(energy->pick()) {
+					map->remove_pick_item(x_axis, y_axis, direction);
+				} else {
+					change_status(4);
+				}
+				qDebug()<<"put_2";
+				return true;
+			} else {
+				// bag item 2 full
+				return false;
+			}
 		}
+	} else if(item == 9) {
+		qDebug()<<"pick wood";
+		if(bag->put(4)) {
+			if(energy->pick()) {
+				map->remove_pick_item(x_axis, y_axis, direction);
+			} else {
+				change_status(4);
+			}
+			return true;
+		} else {
+			// bag item 4 full
+			return false;
+		}
+	} else if(item == 10) {
+		qDebug()<<"pick stone";
+		if(bag->put(5)) {
+			if(energy->pick()) {
+				map->remove_pick_item(x_axis, y_axis, direction);
+			} else {
+				change_status(4);
+			}
+			return true;
+		} else {
+			// bag item 5 full
+			return false;
+		}
+	}
+}
+
+bool Action::attack()
+{
+	if(map->get_now_use_d() == 1 && bag->get_item_num(6)) {
+		bag->take(6);
+	} else if (map->get_now_use_d() == 2 && bag->get_item_num(7)) {
+		bag->take(7);
+	}  else if (map->get_now_use_d() == 3 && bag->get_item_num(8)) {
+		bag->take(8);
 	} else {
-		if(bag->put(2)) {
-			map->remove_pick_item(x_axis, y_axis, direction);
-			qDebug()<<"put_2";
+		return false;
+	}
+	qsrand(static_cast<unsigned int>(QTime::currentTime().msecsSinceStartOfDay()));
+	int result = qrand()%3;
+	if(result == 0) {
+		result = 3;
+	}
+
+	map->open_fight(map->get_now_use_d(), 0, result);
+	return true;
+}
+
+bool Action::exit_attack(int result)
+{
+	energy->attack();
+	if(map->get_now_use_d() == 1 && result == 2) {
+		blood->fail();
+		qDebug()<<"fail";
+		return false;
+	} else if(map->get_now_use_d() == 1 && result == 3) {
+		bag->put(9);
+		map->remove_pick_item(x_axis, y_axis, direction);
+	} else if(map->get_now_use_d() == 2 && result == 1) {
+		bag->put(9);
+		map->remove_pick_item(x_axis, y_axis, direction);
+	} else if(map->get_now_use_d() == 2 && result == 3) {
+		blood->fail();
+		qDebug()<<"fail";
+		return false;
+	} else if(map->get_now_use_d() == 3 && result == 1) {
+		blood->fail();
+		qDebug()<<"fail";
+		return false;
+	} else if(map->get_now_use_d() == 3 && result == 2) {
+		bag->put(9);
+		map->remove_pick_item(x_axis, y_axis, direction);
+	}
+	return true;
+}
+
+bool Action::furnace(int result)
+{
+	if(result == 1) {
+		if(bag->get_item_num(4) >= WEAPON_SCISSOR_WOOD && bag->get_item_num(5) >= WEAPON_SCISSOR_STONE) {
+			for(int i=0; i<WEAPON_SCISSOR_WOOD; i++) {
+				bag->take(4);
+			}
+			for(int i=0; i<WEAPON_SCISSOR_STONE; i++) {
+				bag->take(5);
+			}
+			if(bag->put(6)) {
+				map->open_furnace(1, 0);
+				return true;
+			} else {
+				return false;
+			}
+		}
+	} else if(result == 2) {
+		if(bag->get_item_num(4) >= WEAPON_STONE_WOOD && bag->get_item_num(5) >= WEAPON_STONE_STONE) {
+			for(int i=0; i<WEAPON_STONE_WOOD; i++) {
+				bag->take(4);
+			}
+			for(int i=0; i<WEAPON_STONE_STONE; i++) {
+				bag->take(5);
+			}
+			if(bag->put(7)) {
+				map->open_furnace(2, 0);
+				return true;
+			} else {
+				return false;
+			}
+		}
+	} else if(result == 3) {
+		if(bag->get_item_num(4) >= WEAPON_PAPER_WOOD && bag->get_item_num(5) >= WEAPON_PAPER_STONE) {
+			for(int i=0; i<WEAPON_PAPER_WOOD; i++) {
+				bag->take(4);
+			}
+			for(int i=0; i<WEAPON_PAPER_STONE; i++) {
+				bag->take(5);
+			}
+			if(bag->put(8)) {
+				map->open_furnace(3, 0);
+				return true;
+			} else {
+				return false;
+			}
 		}
 	}
 }
@@ -60,6 +205,23 @@ bool Action::bbq()
 		bag->take(9);
 		bag->put(10);
 		map->open_bbq();
+		return true;
+	} else {
+		return false;
+	}
+}
+
+
+bool Action::stove()
+{
+	if(bag->get_item_num(1) && bag->get_item_num(2)) {
+		bag->take(1);
+		bag->take(2);
+		bag->put(3);
+		map->open_stove();
+		return true;
+	} else {
+		return false;
 	}
 }
 
@@ -150,24 +312,34 @@ void Action::set_energy(Energy *e)
 	energy = e;
 }
 
+void Action::set_blood(Blood *b)
+{
+	blood = b;
+}
+
 void Action::set_bag(Bag *b)
 {
 	bag = b;
 }
 
-int Action::get_x_axis()
+int &Action::get_x_axis()
 {
 	return x_axis;
 }
 
-int Action::get_y_axis()
+int &Action::get_y_axis()
 {
 	return y_axis;
 }
 
+int &Action::get_direction()
+{
+	return direction;
+}
+
 bool Action::energy_update()
 {
-	energy->sub_time();
+	return energy->sub_time();
 }
 
 bool Action::change_status(int s)
@@ -178,36 +350,49 @@ bool Action::change_status(int s)
 			pause = 0;
 			return true;
 		case 1:
+			// pause
 			status = 1;
 			pause = 1;
 			return true;
 		case 2:
+			// invincible mode
 			status = 2;
+			pause = 1;
 			return true;
 		case 3:
+			// save file
 			status = 3;
-			pause = 1;	// 存檔中
+			pause = 1;
 			return true;
 		case 4:
+			// game over
 			status = 4;
+			pause = 1;
 			return true;
 		case 5:
+			// furnace
 			status = 5;
+			pause = 1;
 			return true;
 		case 6:
+			// bbq
 			status = 6;
 			pause = 1;
 			return true;
 		case 7:
+			// stove
 			status = 7;
-            return true;
-        case 8:
-            status = 8;
-            return true;
-        case 9:
-            pause = 1;
-            status = 9;
-            return true;
+			pause = 1;
+			return true;
+		case 8:
+			// fight
+			status = 8;
+			pause = 1;
+			return true;
+		case 9:
+			pause = 1;
+			status = 9;
+			return true;
 		default:
 			return false;
 	}

@@ -1,21 +1,21 @@
 #include "energy.h"
+#include "map.h"
 #include <QDebug>
 
 Energy::Energy()
 {
-	energy=100;
+	energy = 100;
 }
 
 Energy::Energy(int e)
 {
-	energy=e;
+	energy = e;
 }
 
-void Energy::sub_time()
+bool Energy::sub_time()
 {
-	if(energy-1 > 0)
-		energy=energy-1;
-	//qDebug()<<energy;
+	return sub(1);
+	//	qDebug()<<energy;
 }
 
 bool Energy::attack()
@@ -36,6 +36,7 @@ bool Energy::eat()
 bool Energy::die()
 {
 	if(energy<=0) {
+		map->show_die();
 		return true;
 	} else {
 		return false;
@@ -59,11 +60,16 @@ bool Energy::add(int e)
 }
 
 bool Energy::sub(int e) {
-	if(energy-e<=0) {
-		return false;
-		// return die();
+	energy -= e;
+	if(energy <= 0) {
+		energy = 0;
+		return !die();
 	} else {
-		energy=energy-e;
 		return true;
 	}
+}
+
+void Energy::set_map(Map *m)
+{
+	map = m;
 }
