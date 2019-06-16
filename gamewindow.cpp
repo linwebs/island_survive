@@ -91,23 +91,6 @@ void GameWindow::add_play_time()
 	//qDebug()<<"play time: "<<play_time;
 }
 
-void GameWindow::closeEvent(QCloseEvent *event)
-{
-	QMessageBox::StandardButton reply = QMessageBox::question(this, "是否返回主畫面", "是否要存檔並返回主畫面", QMessageBox::Yes | QMessageBox::No);
-	if(reply == QMessageBox::Yes) {
-		event->accept();
-		MainWindow *mainwindow = new MainWindow;
-		mainwindow->show();
-		// save file
-		/* desctructor */
-		destructor();
-
-		this->hide();
-	} else {
-		event->ignore();
-	}
-}
-
 void GameWindow::create_actions()
 {
 	menu_actions[0][0] = new QAction(tr("&存檔"), this);		// 次選單文字
@@ -167,7 +150,7 @@ void GameWindow::show_about(){
 void GameWindow::show_bag()
 {
 	if(player->action->get_status() == 0) {
-        map->open_bag();
+		map->open_bag(0, 0);
 	} else if(player->action->get_status() == 9) {
 		map->close_bag();
 	}
@@ -190,16 +173,56 @@ void GameWindow::exit_pause_game()
 }
 
 void GameWindow::back_to_main_window_slot() {
-	back_to_main_window();
+	if(player->action->get_status() == 4) {
+		back_to_main_window(true);
+	} else {
+		back_to_main_window(false);
+	}
 }
 
-void GameWindow::back_to_main_window()
+void GameWindow::closeEvent(QCloseEvent *event)
 {
-	QMessageBox::StandardButton reply = QMessageBox::question(this, "是否返回主畫面", "是否要存檔並返回主畫面", QMessageBox::Yes | QMessageBox::No);
+	QString mbox_content;
+	if(player->action->get_status() == 4) {
+		mbox_content = "是否返回主畫面";
+	} else {
+		mbox_content = "是否要存檔並返回主畫面";
+	}
+	if(player->action->get_status() == 0) {
+		map->pause_game();
+	}
+	QMessageBox::StandardButton reply = QMessageBox::question(this, "返回主畫面", mbox_content, QMessageBox::Yes | QMessageBox::No);
+	if(reply == QMessageBox::Yes) {
+		event->accept();
+		MainWindow *mainwindow = new MainWindow;
+		mainwindow->show();
+		// save file
+		/* desctructor */
+		destructor();
+
+		this->hide();
+	} else {
+		event->ignore();
+	}
+}
+
+void GameWindow::back_to_main_window(bool die)
+{
+	QString mbox_content;
+	if(die) {
+		mbox_content = "是否返回主畫面";
+	} else {
+		mbox_content = "是否要存檔並返回主畫面";
+	}
+	if(player->action->get_status() == 0) {
+		map->pause_game();
+	}
+	QMessageBox::StandardButton reply = QMessageBox::question(this, "返回主畫面", mbox_content, QMessageBox::Yes | QMessageBox::No);
 	if(reply == QMessageBox::Yes) {
 		MainWindow *mainwindow = new MainWindow;
 		mainwindow->show();
 		destructor();
 		this->hide();
+	} else {
 	}
 }

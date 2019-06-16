@@ -25,12 +25,16 @@ bool Energy::attack()
 
 bool Energy::pick()
 {
-	return sub(4);
+	return sub(2);
 }
 
-bool Energy::eat()
+bool Energy::eat(int n)
 {
-	return add(10);
+	if(n==9) {
+		return sub(5);
+	} else if(n==10) {
+		return add(20);
+	}
 }
 
 bool Energy::die()
@@ -50,11 +54,13 @@ int Energy::get_energy()
 
 bool Energy::add(int e)
 {
-	if(energy+e>100)
+	if(energy == 100) {
 		return false;
-	else
-	{
-		energy=energy+e;
+	} else {
+		energy+=e;
+		if(energy > 100) {
+			energy = 100;
+		}
 		return true;
 	}
 }

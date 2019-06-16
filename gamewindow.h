@@ -19,7 +19,7 @@ class GameWindow : public QMainWindow
 		GameWindow();
 		virtual ~GameWindow();
 		void closeEvent (QCloseEvent*);
-		void back_to_main_window();
+		void back_to_main_window(bool);
 	private:
         void create_actions();
         void create_menus();

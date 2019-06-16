@@ -31,8 +31,9 @@ class Map : public QGraphicsView
 		void pause_game();						// 遊戲暫停畫面
 		int get_local_item();					// 取得當前位置的物品
 		bool remove_pick_item(int, int, int);	// 移除當前位置的物品
-		void open_bag();						// 背包
+		void open_bag(int, int);						// 背包
 		void close_bag();
+		int get_bag_select();
 		void open_bbq();						// 篝火
 		void close_bbq();
 		void open_stove();						// 煉丹爐
@@ -72,8 +73,10 @@ class Map : public QGraphicsView
 		// bag big
 		QGraphicsPixmapItem *bag_bgm;
 		QGraphicsPixmapItem *bag_exit;
+		QGraphicsPixmapItem *bag_selected;
 		QGraphicsTextItem *bag_items_text[10];
 		QGraphicsPixmapItem *bag_items[10];
+		int bag_select;
 
 		// bbq
 		QGraphicsPixmapItem *bbq_bgm;

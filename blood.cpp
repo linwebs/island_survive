@@ -12,11 +12,11 @@ Blood::Blood(int b)
 	bloods = b;
 }
 
-bool Blood::grass(int m)
+bool Blood::grass(int n)
 {
-	if(m==2) {
+	if(n==1) {
 		return add(5);
-	} else if(m==3) {
+	} else if(n==2) {
 		return sub(2);
 	}
 }
@@ -43,10 +43,13 @@ int Blood::get_blood()
 
 bool Blood::add(int b)
 {
-	if(bloods+b>100) {
+	if(bloods == 100) {
 		return false;
 	} else {
 		bloods+=b;
+		if(bloods > 100) {
+			bloods = 100;
+		}
 		return true;
 	}
 }

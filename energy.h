@@ -11,7 +11,7 @@ class Energy
 		bool sub_time();	// 定時扣飢餓度(QTimer主動呼叫)
 		bool attack();		// 攻擊動物
 		bool pick();		// 採草藥
-		bool eat();			// 進食
+		bool eat(int);			// 進食
 		bool die();			// 死亡判定
 		int get_energy();	// 取得體力
 		void set_map(Map*);		// 設定Map以顯示死亡畫面

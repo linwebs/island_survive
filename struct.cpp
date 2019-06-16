@@ -48,4 +48,5 @@ struct map_item {
 #define MAP_GRASS_PATH "://res/img/land/grass_80.png"
 #define MAP_WOOD_PATH "://res/img/land/wood_80.png"
 #define MAP_STONE_PATH "://res/img/land/stone_80.png"
+#define MAP_ANIMAL_PATH "://res/img/land/animal_80.png"
 #endif

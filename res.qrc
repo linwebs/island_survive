@@ -120,5 +120,10 @@
         <file>res/img/frame/fight/card_paper_120.png</file>
         <file>res/img/frame/fight/card_scissor_120.png</file>
         <file>res/img/frame/fight/card_stone_120.png</file>
+        <file>res/img/frame/bag/bag_selected.png</file>
+        <file>res/img/land/swamp_1_80.png</file>
+        <file>res/img/land/swamp_2_80.png</file>
+        <file>res/img/land/swamp_3_80.png</file>
+        <file>res/img/land/swamp_4_80.png</file>
     </qresource>
 </RCC>

@@ -13,7 +13,8 @@ class Bag
 		bool put(int);				// 放入物品(item_id)
 		bool take(int);				// 拿出物品(item_id)
 		int bag_size();				// 取得當前背包使用格數
-		int get_item_num(int);			// 檢查物品是否在背包中(item_id)
+		int get_item_num(int);		// 檢查物品是否在背包中(item_id)
+		int get_order_item(int);		// 取得背包中此順序的物品
 		vector<bags> *get_items();	// 取得背包中的物品
 
 	private:

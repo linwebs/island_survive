@@ -33,6 +33,7 @@ Map::Map(GameWindowScene *GWscene, int *p)
 	last_local_item = 0;
 	now_use_d = 0;
 	fight_result = 0;
+	bag_select = 0;
 	// update_map(8, 3, 1);
 	show();
 }
@@ -44,52 +45,9 @@ Map::Map(vector<maps> maps)
 
 bool Map::set_player(Player *p)
 {
-	player = p;/*
-	player->bag->put(9);
-	player->bag->put(9);
-	player->bag->put(9);
-	player->bag->put(9);
-	player->bag->put(9);
-	player->bag->put(1);
-	player->bag->put(1);
-	player->bag->put(1);
-	player->bag->put(1);
-	player->bag->put(2);
-	player->bag->put(2);
-	player->bag->put(2);
-	player->bag->put(2);
-	player->bag->put(2);
-	player->bag->put(2);
-	player->bag->put(2);
-	player->bag->put(2);
-	player->bag->put(4);
-	player->bag->put(5);
-	player->bag->put(4);
-	player->bag->put(5);
-	player->bag->put(4);
-	player->bag->put(5);
-	player->bag->put(4);
-	player->bag->put(5);*/
+	player = p;
 	/* test bag items
-	player->bag->put(3);
-	player->bag->put(2);
-	player->bag->put(3);
-	player->bag->put(6);
-	player->bag->put(4);
-	player->bag->put(1);
-	player->bag->put(4);
-	player->bag->take(5);
-	player->bag->put(1);
-	player->bag->put(2);
-	player->bag->put(3);
-	player->bag->put(4);
-	player->bag->put(5);
-	player->bag->put(6);
-	player->bag->put(7);
-	player->bag->put(8);
-	player->bag->put(9);
-	player->bag->put(10);
-*/
+	player->bag->put(3);*/
 	show_bags();
 }
 
@@ -177,6 +135,32 @@ bool Map::generate_stone()
 				map_items[x][y].walk = 1;
 				map_items[x][y].img = MAP_STONE_PATH;
 				qDebug()<<"add stone";
+				break;
+			}
+		}
+	}
+}
+
+bool Map::generate_animal()
+{
+	int x, y;
+	while(1) {
+		qsrand(static_cast<unsigned int>(QTime::currentTime().msecsSinceStartOfDay()));
+		x = qrand()%(size_width);
+		qsrand(static_cast<unsigned int>(QTime::currentTime().msecsSinceStartOfDay()));
+		y = qrand()%(size_height);
+		qDebug()<<"new animal: ("<<x-7<<","<<y-2<<")";
+		if(x<=0 && y<=0) {
+			qDebug()<<"again";
+		} else if(x<(home_size_width+7) && y<(home_size_height+2)) {
+			qDebug()<<"at home";
+		} else {
+			if(map_items[x][y].item == 0) {
+				map_items[x][y].item = 8;
+				map_items[x][y].size = 1;
+				map_items[x][y].walk = 1;
+				map_items[x][y].img = MAP_ANIMAL_PATH;
+				qDebug()<<"add animal";
 				break;
 			}
 		}
@@ -899,21 +883,23 @@ int Map::get_fight_result()
 	return fight_result;
 }
 
-void Map::open_bag()
+void Map::open_bag(int select, int use)
 {
-	qsrand(static_cast<unsigned int>(QTime::currentTime().msecsSinceStartOfDay()));
-	qDebug()<<qrand();
+	bag_select = select;
+	qDebug()<<bag_select;
 	if(player->action->get_status() != 9) {
 		if(!player->action->change_status(9)) {
 			qDebug()<<"map::bag change status error!";
 		}
 	} else {
 		scene->removeItem(bag_bgm);
-		delete bag_bgm;
 		scene->removeItem(bag_exit);
+		scene->removeItem(bag_selected);
+		delete bag_bgm;
 		delete bag_exit;
+		delete bag_selected;
 		const vector<bags> bag = *player->bag->get_items();
-		for(int i=0; i<bag.size(); i++) {
+		for(int i=0; i<bag.size()+use; i++) {
 			scene->removeItem(bag_items[i]);
 			scene->removeItem(bag_items_text[i]);
 			delete bag_items[i];
@@ -932,6 +918,33 @@ void Map::open_bag()
 	bag_exit->setPixmap(QPixmap("://res/img/frame/exit/exit_60.png"));
 	bag_exit->setPos(1090, 10);
 	scene->addItem(bag_exit);
+
+	// bag_selected
+	bag_selected= new QGraphicsPixmapItem();
+	bag_selected->setPixmap(QPixmap("://res/img/frame/bag/bag_selected.png"));
+	if(bag_select == 0) {
+		bag_selected->setPos(12, 133);
+	} else if(bag_select == 1) {
+		bag_selected->setPos(252, 133);
+	}
+	else if(bag_select == 2) {
+		bag_selected->setPos(493, 133);
+	}else if(bag_select == 3) {
+		bag_selected->setPos(733, 133);
+	}else if(bag_select == 4) {
+		bag_selected->setPos(973, 133);
+	}else if(bag_select == 5) {
+		bag_selected->setPos(12, 373);
+	}else if(bag_select == 6) {
+		bag_selected->setPos(252, 373);
+	}else if(bag_select == 7) {
+		bag_selected->setPos(493, 373);
+	}else if(bag_select == 8) {
+		bag_selected->setPos(733, 373);
+	}else if(bag_select == 9) {
+		bag_selected->setPos(973, 373);
+	}
+	scene->addItem(bag_selected);
 
 	const vector<bags> bag = *player->bag->get_items();
 
@@ -989,9 +1002,11 @@ void Map::close_bag()
 	qDebug()<<"close bag";
 
 	scene->removeItem(bag_bgm);
-	delete bag_bgm;
 	scene->removeItem(bag_exit);
+	scene->removeItem(bag_selected);
+	delete bag_bgm;
 	delete bag_exit;
+	delete bag_selected;
 	const vector<bags> bag = *player->bag->get_items();
 	for(int i=0; i<bag.size(); i++) {
 		scene->removeItem(bag_items[i]);
@@ -1001,6 +1016,11 @@ void Map::close_bag()
 	}
 	player->action->change_status(0);
 	update_map(player->action->get_x_axis(), player->action->get_y_axis(), player->action->get_direction());
+}
+
+int Map::get_bag_select()
+{
+	return bag_select;
 }
 
 int Map::get_local_item()
@@ -1016,6 +1036,8 @@ bool Map::remove_pick_item(int player_x, int player_y, int player_di)
 		generate_wood();
 	} else if(map_items[player_x+7][player_y+2].item== 10) {
 		generate_stone();
+	} else if(map_items[player_x+7][player_y+2].item== 8) {
+		generate_animal();
 	}
 	map_items[player_x+7][player_y+2].item = 0;
 	map_items[player_x+7][player_y+2].size = 1;

@@ -53,7 +53,7 @@ void GameWindowScene::mousePressEvent(QGraphicsSceneMouseEvent *event) {
 	qreal x = event->scenePos().x(), y = event->scenePos().y();
 	qDebug()<<"Mouse Event: ("<<x<<","<<y<<")";
 	if(player->action->get_status() == 0 && x >= 800 && y >= 560) {
-		map->open_bag();
+		map->open_bag(0, 0);
 	} else if(player->action->get_status() == 9 && x >= 1080 && y <= 70) {
 		map->close_bag();
 	} else if(player->action->get_status() == 6 && x >= 1080 && y <= 70) {
@@ -79,7 +79,7 @@ void GameWindowScene::mousePressEvent(QGraphicsSceneMouseEvent *event) {
 			map->close_fight();
 		}
 	} else if(player->action->get_status() == 4 && x >= 1080 && y <= 70) {
-		gamewindow->back_to_main_window();
+		gamewindow->back_to_main_window(true);
 	}
 }
 
@@ -105,6 +105,8 @@ void GameWindowScene::f_event() {
 		player->action->stove();
 	} else if(player->action->get_status() == 5) {
 		player->action->furnace(map->get_now_use_d());
+	} else if(player->action->get_status() == 9) {
+		player->action->use_item();
 	}
 }
 
@@ -121,6 +123,8 @@ void GameWindowScene::q_event() {
 		if(player->action->exit_attack(map->get_fight_result())) {
 			map->close_fight();
 		}
+	} else if(player->action->get_status() == 4) {
+		gamewindow->back_to_main_window(true);
 	}
 }
 
@@ -139,6 +143,13 @@ void GameWindowScene::up_event() {
 			map->open_furnace(1, ini);
 		} else if (map->get_now_use_d() == 3) {
 			map->open_furnace(2, ini);
+		}
+	} else if(player->action->get_status() == 9) {
+		qDebug()<<"bag up";
+		if(map->get_bag_select() < 5) {
+			map->open_bag(map->get_bag_select()+5, 0);
+		} else {
+			map->open_bag(map->get_bag_select()-5, 0);
 		}
 	}
 }
@@ -159,6 +170,13 @@ void GameWindowScene::down_event() {
 		} else if (map->get_now_use_d() == 3) {
 			map->open_furnace(1, ini);
 		}
+	} else if(player->action->get_status() == 9) {
+		qDebug()<<"bag down";
+		if(map->get_bag_select() < 5) {
+			map->open_bag(map->get_bag_select()+5, 0);
+		} else {
+			map->open_bag(map->get_bag_select()-5, 0);
+		}
 	}
 }
 
@@ -178,6 +196,13 @@ void GameWindowScene::left_event() {
 		} else if (map->get_now_use_d() == 3) {
 			map->open_fight(2, ini, 0);
 		}
+	} else if(player->action->get_status() == 9) {
+		qDebug()<<"bag left";
+		if(map->get_bag_select() == 0) {
+			map->open_bag(9, 0);
+		} else {
+			map->open_bag(map->get_bag_select()-1, 0);
+		}
 	}
 }
 
@@ -196,6 +221,13 @@ void GameWindowScene::right_event() {
 			map->open_fight(3, ini, 0);
 		} else if (map->get_now_use_d() == 3) {
 			map->open_fight(1, ini, 0);
+		}
+	} else if(player->action->get_status() == 9) {
+		qDebug()<<"bag right";
+		if(map->get_bag_select() == 9) {
+			map->open_bag(0, 0);
+		} else {
+			map->open_bag(map->get_bag_select()+1, 0);
 		}
 	}
 }

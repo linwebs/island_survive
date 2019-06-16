@@ -15,6 +15,7 @@ Action::Action()
 	direction = 1;
 	pause = 0;
 	status = 0;
+	last_status = 0;
 	setPixmap(QPixmap("://res/img/character/people.png"));
 }
 
@@ -127,7 +128,7 @@ bool Action::exit_attack(int result)
 	if(map->get_now_use_d() == 1 && result == 2) {
 		blood->fail();
 		qDebug()<<"fail";
-		return false;
+		//return false;
 	} else if(map->get_now_use_d() == 1 && result == 3) {
 		bag->put(9);
 		map->remove_pick_item(x_axis, y_axis, direction);
@@ -137,11 +138,11 @@ bool Action::exit_attack(int result)
 	} else if(map->get_now_use_d() == 2 && result == 3) {
 		blood->fail();
 		qDebug()<<"fail";
-		return false;
+		//return false;
 	} else if(map->get_now_use_d() == 3 && result == 1) {
 		blood->fail();
 		qDebug()<<"fail";
-		return false;
+		//return false;
 	} else if(map->get_now_use_d() == 3 && result == 2) {
 		bag->put(9);
 		map->remove_pick_item(x_axis, y_axis, direction);
@@ -222,6 +223,56 @@ bool Action::stove()
 		return true;
 	} else {
 		return false;
+	}
+}
+
+bool Action::use_item()
+{
+	qDebug()<<bag->get_order_item(map->get_bag_select());
+	switch (bag->get_order_item(map->get_bag_select())) {
+		case 1:
+			// grass blue
+			blood->grass(1);
+			bag->take(1);
+			map->open_bag(map->get_bag_select(), !bag->get_item_num(1));
+			break;
+		case 2:
+			// grass red
+			blood->grass(2);
+			bag->take(2);
+			map->open_bag(map->get_bag_select(), !bag->get_item_num(2));
+			break;
+		case 3:
+			// grass purple
+
+			break;
+		case 4:
+			// wood
+			break;
+		case 5:
+			// stone
+			break;
+		case 6:
+			// weapon scissor
+			break;
+		case 7:
+			// weapon stone
+			break;
+		case 8:
+			// weapon paper
+			break;
+		case 9:
+			// flesh
+			energy->eat(9);
+			bag->take(9);
+			map->open_bag(map->get_bag_select(), !bag->get_item_num(9));
+			break;
+		case 10:
+			// meat
+			energy->eat(10);
+			bag->take(10);
+			map->open_bag(map->get_bag_select(), !bag->get_item_num(10));
+			break;
 	}
 }
 
@@ -344,6 +395,7 @@ bool Action::energy_update()
 
 bool Action::change_status(int s)
 {
+	last_status = status;
 	switch (s) {
 		case 0:
 			status = 0;
@@ -403,7 +455,17 @@ int Action::get_status()
 	return status;
 }
 
+int Action::get_last_status()
+{
+	return last_status;
+}
+
 int Action::get_pause()
 {
 	return pause;
+}
+
+void Action::change_reverse(bool r)
+{
+	reverse = r;
 }

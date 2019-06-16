@@ -92,6 +92,15 @@ int Bag::get_item_num(int name)
 	return 0;
 }
 
+int Bag::get_order_item(int order)
+{
+	if(order >= bag.size()) {
+		return 0;
+	} else {
+		return bag[order].item;
+	}
+}
+
 int Bag::get_item_order(int name)
 {
 	for(int i=0; i<bag.size(); i++)
@@ -103,3 +112,4 @@ int Bag::get_item_order(int name)
 	}
 	return -1;
 }
+
