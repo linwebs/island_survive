@@ -18,10 +18,11 @@ GameWindow::GameWindow()
 	player->setPos(560, 453);
 
 	play_time = 0;
+	bag_full_show_time = 0;
 
 	scene = new GameWindowScene(player, this);	// scene
 
-	map = new Map(scene, &play_time, player);	// view
+	map = new Map(scene, &play_time, player, this);	// view
 
 
 	player->set_map(map);
@@ -66,10 +67,11 @@ GameWindow::GameWindow(QString save)
 	player->setPos(560, 453);
 
 	play_time = 0;
+	bag_full_show_time = 0;
 
 	scene = new GameWindowScene(player, this);	// scene
 
-	map = new Map(scene, &play_time, player, save);	// view
+	map = new Map(scene, &play_time, player, save, this);	// view
 	player->set_map(map);
 
 	player->action->set_map(map);
@@ -148,7 +150,12 @@ void GameWindow::add_play_time()
 			player->action->change_status(0);
 		}
 	}
-
+	if(bag_full_show_time == 1) {
+		bag_full_show_time--;
+		map->close_bag_full_hint();
+	} else if(bag_full_show_time > 1) {
+		bag_full_show_time--;
+	}
 	qDebug()<<"play time: "<<play_time;
 }
 
@@ -319,6 +326,11 @@ void GameWindow::set_invincible_time(int t)
 	invincible_time = t;
 }
 
+void GameWindow::set_bag_full_show_time(int t)
+{
+	bag_full_show_time = t;
+}
+
 int GameWindow::get_play_time()
 {
 	return  play_time;
@@ -327,5 +339,10 @@ int GameWindow::get_play_time()
 int GameWindow::get_invincible_time()
 {
 	return invincible_time;
+}
+
+int GameWindow::get_bag_full_show_time()
+{
+	return bag_full_show_time;
 }
 

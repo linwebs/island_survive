@@ -1,5 +1,6 @@
 #include "map.h"
 #include "gamewindowscene.h"
+#include "gamewindow.h"
 #include "system.h"
 #include "struct.cpp"
 #include "player.h"
@@ -15,12 +16,13 @@
 #include <QJsonArray>
 #include <QTime>
 
-Map::Map(GameWindowScene *GWscene, int *t, Player *p)
+Map::Map(GameWindowScene *GWscene, int *t, Player *p, GameWindow*g)
 {
 	scene = GWscene;
 	map.clear();
 	player = p;
 	play_time = t;
+	gamewindow = g;
 	local_item = 0;
 	last_local_item = 0;
 	now_use_d = 0;
@@ -39,12 +41,13 @@ Map::Map(GameWindowScene *GWscene, int *t, Player *p)
 	show();
 }
 
-Map::Map(GameWindowScene *GWscene, int *t, Player *p, QString save)
+Map::Map(GameWindowScene *GWscene, int *t, Player *p, QString save, GameWindow*g)
 {
 	scene = GWscene;
 	map.clear();
 	player = p;
 	play_time = t;
+	gamewindow = g;
 	local_item = 0;
 	last_local_item = 0;
 	now_use_d = 0;
@@ -128,6 +131,23 @@ bool Map::generate_wood()
 	}
 }
 
+void Map::open_bag_full_hint(bool ini)
+{
+	// bgm
+	bag_full_hint= new QGraphicsPixmapItem();
+	bag_full_hint->setPixmap(QPixmap("://res/img/frame/bag/hint/bag_full.png"));
+	bag_full_hint->setPos(880, 80);
+	scene->addItem(bag_full_hint);
+	if(ini) {
+		gamewindow->set_bag_full_show_time(3);
+	}
+}
+
+void Map::close_bag_full_hint() {
+	scene->removeItem(bag_full_hint);
+	delete bag_full_hint;
+}
+
 vector<vector<map_item> > *Map::get_map_items()
 {
 	return &map_items;
@@ -209,6 +229,10 @@ bool Map::update_map(int &player_x, int &player_y, int &player_di)
 		show_energy_blood(player->energy->get_energy(), player->blood->get_blood());
 		show_bags();
 
+		if(gamewindow->get_bag_full_show_time() > 0) {
+			close_bag_full_hint();
+			open_bag_full_hint(false);
+		}
 		return true;
 	}
 }

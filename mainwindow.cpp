@@ -3,6 +3,7 @@
 #include "gamewindow.h"
 #include "oldmemorywindow.h"
 #include "ruleintrowindow.h"
+#include "teamintro.h"
 
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
@@ -64,4 +65,10 @@ void MainWindow::on_action_game_intro_triggered()
 {
 	RuleIntroWindow *ruleintrowindow = new RuleIntroWindow;
 	ruleintrowindow->show();
+}
+
+void MainWindow::on_action_about_us_triggered()
+{
+	TeamIntro *teamintrowindow = new TeamIntro;
+	teamintrowindow->show();
 }

@@ -125,8 +125,21 @@
         <file>res/img/land/swamp_3_80.png</file>
         <file>res/img/land/swamp_4_80.png</file>
         <file>res/img/intro/game_intro.png</file>
+        <file>res/img/frame/bag/hint/bag_full.png</file>
+        <file>res/img/frame/bag/hint/use_item_hint_1_0.png</file>
+        <file>res/img/frame/bag/hint/use_item_hint_1_1.png</file>
+        <file>res/img/frame/bag/hint/use_item_hint_2_1.png</file>
+        <file>res/img/frame/bag/hint/use_item_hint_3_1.png</file>
+        <file>res/img/frame/bag/hint/use_item_hint_4_0.png</file>
+        <file>res/img/frame/bag/hint/use_item_hint_5_0 .png</file>
+        <file>res/img/frame/bag/hint/use_item_hint_6_0 .png</file>
+        <file>res/img/frame/bag/hint/use_item_hint_7_0.png</file>
+        <file>res/img/frame/bag/hint/use_item_hint_8_0 .png</file>
+        <file>res/img/frame/bag/hint/use_item_hint_9_1 .png</file>
+        <file>res/img/frame/bag/hint/use_item_hint_10_1 .png</file>
     </qresource>
     <qresource prefix="/map">
         <file>res/map/map.json</file>
+        <file>res/img/team/team_intro.png</file>
     </qresource>
 </RCC>

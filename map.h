@@ -14,12 +14,13 @@
 using namespace std;
 
 class Player;
+class GameWindow;
 /* 地圖 */
 class Map : public QGraphicsView
 {
 	public:
-		Map(GameWindowScene *GWscene, int *, Player *);
-		Map(GameWindowScene *GWscene, int *, Player *, QString);						// 帶入存檔(map)
+		Map(GameWindowScene *GWscene, int *, Player *, GameWindow *);
+		Map(GameWindowScene *GWscene, int *, Player *, QString, GameWindow *);						// 帶入存檔(map)
 		bool update_map(int&, int&, int&);
 		bool create_items(QJsonObject);		// 從 map.json 取得地圖上物品
 		int get_size_height();
@@ -50,6 +51,8 @@ class Map : public QGraphicsView
 		bool generate_animal();				// 生成獵物
 		bool generate_stone();					// 生成礦物
 		bool generate_wood();					// 生成木頭
+		void open_bag_full_hint(bool);
+		void close_bag_full_hint();
 		vector<vector<map_item> > *get_map_items();	// 取得背包中的物品
 
 	private:
@@ -62,6 +65,7 @@ class Map : public QGraphicsView
 		vector<maps> map;						// 地圖組成項目列表
 		GameWindowScene *scene;
 		Player *player;
+		GameWindow * gamewindow;
 
 		// save
 		QGraphicsRectItem *save_bgm;
@@ -143,7 +147,8 @@ class Map : public QGraphicsView
 		int *play_time;
 		int local_item;
 		int last_local_item;
-
+		QGraphicsPixmapItem *bag_full_hint;
+		int bag_full_show_time;
 };
 
 

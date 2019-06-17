@@ -54,6 +54,7 @@ bool Action::pick(int item)
 				return true;
 			} else {
 				// bag item 1 full
+				map->open_bag_full_hint(true);
 				return false;
 			}
 		} else {
@@ -67,6 +68,7 @@ bool Action::pick(int item)
 				return true;
 			} else {
 				// bag item 2 full
+				map->open_bag_full_hint(true);
 				return false;
 			}
 		}
@@ -81,6 +83,7 @@ bool Action::pick(int item)
 			return true;
 		} else {
 			// bag item 4 full
+			map->open_bag_full_hint(true);
 			return false;
 		}
 	} else if(item == 10) {
@@ -94,6 +97,7 @@ bool Action::pick(int item)
 			return true;
 		} else {
 			// bag item 5 full
+			map->open_bag_full_hint(true);
 			return false;
 		}
 	}
@@ -128,10 +132,14 @@ bool Action::exit_attack(int result)
 		qDebug()<<"fail";
 		//return false;
 	} else if(map->get_now_use_d() == 1 && result == 3) {
-		bag->put(9);
+		if(!bag->put(9)) {
+			map->open_bag_full_hint(true);
+		}
 		map->remove_pick_item(x_axis, y_axis, direction);
 	} else if(map->get_now_use_d() == 2 && result == 1) {
-		bag->put(9);
+		if(!bag->put(9)) {
+			map->open_bag_full_hint(true);
+		}
 		map->remove_pick_item(x_axis, y_axis, direction);
 	} else if(map->get_now_use_d() == 2 && result == 3) {
 		blood->fail();
@@ -142,7 +150,9 @@ bool Action::exit_attack(int result)
 		qDebug()<<"fail";
 		//return false;
 	} else if(map->get_now_use_d() == 3 && result == 2) {
-		bag->put(9);
+		if(!bag->put(9)) {
+			map->open_bag_full_hint(true);
+		}
 		map->remove_pick_item(x_axis, y_axis, direction);
 	}
 	return true;
@@ -162,6 +172,7 @@ bool Action::furnace(int result)
 				map->open_furnace(1, 0);
 				return true;
 			} else {
+				map->open_bag_full_hint(true);
 				return false;
 			}
 		}
@@ -177,6 +188,7 @@ bool Action::furnace(int result)
 				map->open_furnace(2, 0);
 				return true;
 			} else {
+				map->open_bag_full_hint(true);
 				return false;
 			}
 		}
@@ -192,6 +204,7 @@ bool Action::furnace(int result)
 				map->open_furnace(3, 0);
 				return true;
 			} else {
+				map->open_bag_full_hint(true);
 				return false;
 			}
 		}
@@ -202,7 +215,10 @@ bool Action::bbq()
 {
 	if(bag->get_item_num(9)) {
 		bag->take(9);
-		bag->put(10);
+		if(!bag->put(10)) {
+			bag->put(9);
+			map->open_bag_full_hint(true);
+		}
 		map->open_bbq();
 		return true;
 	} else {
@@ -216,7 +232,11 @@ bool Action::stove()
 	if(bag->get_item_num(1) && bag->get_item_num(2)) {
 		bag->take(1);
 		bag->take(2);
-		bag->put(3);
+		if(!bag->put(3)) {
+			bag->put(1);
+			bag->put(2);
+			map->open_bag_full_hint(true);
+		}
 		map->open_stove();
 		return true;
 	} else {
@@ -242,8 +262,7 @@ bool Action::use_item()
 			break;
 		case 3:
 			// grass purple
-			qDebug()<<"efudo";
-			gamewindow->set_invincible_time(30);
+			gamewindow->set_invincible_time(gamewindow->get_invincible_time()+30);
 			bag->take(3);
 			map->open_bag(map->get_bag_select(), !bag->get_item_num(3));
 			reverse = true;

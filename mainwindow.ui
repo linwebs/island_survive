@@ -159,10 +159,10 @@
   </action>
   <action name="action_about_us">
    <property name="text">
-    <string>關於製作團隊</string>
+    <string>製作團隊</string>
    </property>
    <property name="toolTip">
-    <string>關於製作團隊</string>
+    <string>製作團隊</string>
    </property>
   </action>
  </widget>
