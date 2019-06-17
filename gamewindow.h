@@ -18,9 +18,10 @@ class GameWindow : public QMainWindow
 
 	public:
 		GameWindow();
+		GameWindow(QString);
 		virtual ~GameWindow();
 		void closeEvent (QCloseEvent*);
-		void back_to_main_window(bool);
+		void back_to_main_window();
 		void set_invincible_time(int);
 	private:
         void create_actions();

@@ -8,12 +8,9 @@
 #include <QJsonArray>
 #include <QDebug>
 #include <QDateTime>
-#include "player.h"
-#include "action.h"
-#include "bag.h"
-#include "energy.h"
-#include "blood.h"
 #include "map.h"
+#include "player.h"
+#include "bag.h"
 
 using namespace std;
 #include "system.h"
@@ -23,79 +20,71 @@ System::System() {
 }
 
 // Save File Test
-bool System::save(Map *m, Player *p) {
+bool System::save(Player *p, Map *m, int status) {
 	if(!QDir("data").exists()) {
 		QDir().mkdir("data");
 	}
 	string name = QDateTime::currentDateTime().toString("yyyyMMddhhmm").toStdString();
-	string file_name="data/" + name + ".dat";
+	string file_name="data/" + name + ".data";
 	QFile file(file_name.c_str());
 	file.open(QIODevice::WriteOnly);
 
-	QJsonObject obj;
-	obj.insert("project", "island_survive");
-	obj.insert("type", "save");
-	obj.insert("note", "");
-	obj.insert("date_time", "");
+	QJsonObject json;
+
+	json.insert("project", "island_survive");
+	json.insert("type", "save");
+	json.insert("note", "");
+	json.insert("date_time", QDateTime::currentDateTime().toString("yyyy-MM-ddThh:mm:ss"));
+
 	QJsonObject player;
 	player.insert("x_axis", p->action->get_x_axis());
 	player.insert("y_axis", p->action->get_y_axis());
 	player.insert("direction", p->action->get_direction());
-	player.insert("blood", p->blood->get_blood());
+	player.insert("status", status);
+	player.insert("reverse", p->action->get_reverse());
+//	player.insert("pause", p->action->get_pause());
 	player.insert("energy", p->energy->get_energy());
-	player.insert("status", p->action->get_status());
-	obj.insert("player", player);
+	player.insert("blood", p->blood->get_blood());
+	json.insert("player", player);
 
 	QJsonObject size;
 	size.insert("height", m->get_size_height()-8);
 	size.insert("width", m->get_size_width()-15);
-	obj.insert("size", size);
+	json.insert("size", size);
 
 	QJsonObject home;
 	home.insert("height", m->get_home_size_height());
 	home.insert("width", m->get_home_size_width());
-	obj.insert("home", home);
+	json.insert("home", home);
 
 	QJsonArray bag;
 	const vector<bags> bb = *p->bag->get_items();
 	for(int i=0; i<bb.size(); i++) {
-		QJsonObject bags;
-		bags.insert("item", bb[i].item);
-		bags.insert("quantity", bb[i].quantity);
-		bag.append(bags);
+		QJsonObject bag_item;
+		bag_item.insert("item", bb[i].item);
+		bag_item.insert("quantity", bb[i].quantity);
+		bag.append(bag_item);
 	}
-	obj.insert("bag", bag);
+	json.insert("bag", bag);
 
+	QJsonArray items;
 	const vector<vector<map_item>> mm = *m->get_map_items();
-	QJsonArray item;
-	qDebug()<<mm.size()<<mm[0].size();
-	for(int i=7; i<mm.size()-8; i++) {		// 65
-		for(int j=2; j<mm[i].size()-6; j++) {	// 48
-			QJsonObject items;
-			items.insert("item", mm[i][j].item);
-			items.insert("size", mm[i][j].size);
-			items.insert("walk", mm[i][j].walk);
-			items.insert("x_axis", i-7);
-			items.insert("y_axis", j-2);
-			items.insert("img", mm[i][j].img);
-			item.append(items);
+	for(int i=7; i<mm.size()-8; i++) {
+		for(int j=2; j<mm[0].size()-6; j++) {
+			QJsonObject map_item;
+			map_item.insert("item", mm[i][j].item);
+			map_item.insert("size", mm[i][j].size);
+			map_item.insert("walk", mm[i][j].walk);
+			map_item.insert("img", mm[i][j].img);
+			map_item.insert("x_axis", i-7);
+			map_item.insert("y_axis", j-2);
+			items.append(map_item);
 		}
 	}
+	json.insert("items", items);
 
-	for(int i=0; i<5; i++) {
-		QJsonObject items;
-		items.insert("item", 6);
-		items.insert("size", 9);
-		items.insert("walk", 0);
-		items.insert("x_axis", 2);
-		items.insert("y_axis", 10);
-		items.insert("img", "://res/img/building/bbq_1_80.png");
-		item.append(items);
-	}
-	obj.insert("item", item);
-
-	QJsonDocument doc(obj);
-	QString str(doc.toJson(QJsonDocument::Compact));
+	QJsonDocument doc(json);
+	QString str(doc.toJson((QJsonDocument::Compact)));
 	QByteArray ba = str.toLocal8Bit();
 	const char* data = ba.data();
 	file.write(data);
@@ -103,11 +92,11 @@ bool System::save(Map *m, Player *p) {
 	return true;
 }
 
-// Read File Test
-int System::read(QString files[]) {
+int System::get_save_file(QString files[] )
+{
 	int n=0;
 	QDir directory("data");
-	QStringList file = directory.entryList(QStringList() << "*.dat", QDir::Files);
+	QStringList file = directory.entryList(QStringList() << "*.data", QDir::Files);
 	//qDebug()<<file;
 
 	foreach(QString filename, file) {
@@ -115,6 +104,34 @@ int System::read(QString files[]) {
 		files[n++]=filename;
 	}
 	return n;
+}
+
+// Read File Test
+QJsonObject System::read_save_file(QString save) {
+	QString settings, name;
+	name = "data/" + save + ".data";
+	QFile file;
+	file.setFileName(name);
+	file.open(QIODevice::ReadOnly | QIODevice::Text);
+	settings = file.readAll();
+	file.close();
+
+	QJsonDocument sd = QJsonDocument::fromJson(settings.toUtf8());
+	//qWarning() << sd.isNull(); // <- print false :)
+	QJsonObject sett = sd.object();
+	if(!sd.isNull()) {
+		if((sett["project"].toString().toStdString().data() == QString("island_survive"))) {
+			if((sett["type"].toString().toStdString().data() == QString("save"))) {
+				return sett;
+			} else {
+				qDebug()<<"System:: [savefile.data] type error!";
+			}
+		} else {
+			qDebug()<<"System:: [savefile.data] project error!";
+		}
+	} else {
+		qDebug()<<"System:: [savefile.data] empty!";
+	}
 }
 
 QJsonObject System::get_default_map()

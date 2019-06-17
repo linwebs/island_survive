@@ -14,6 +14,7 @@ class Energy
 		bool eat(int);			// 進食
 		bool die();			// 死亡判定
 		int get_energy();	// 取得體力
+		bool set_energy(int);	// 設定體力
 		void set_map(Map*);		// 設定Map以顯示死亡畫面
 
 	private:

@@ -15,10 +15,11 @@
 #include <QJsonArray>
 #include <QTime>
 
-Map::Map(GameWindowScene *GWscene, int *p)
+Map::Map(GameWindowScene *GWscene, int *t, Player *p)
 {
 	scene = GWscene;
 	map.clear();
+	player = p;
 
 	setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -28,7 +29,7 @@ Map::Map(GameWindowScene *GWscene, int *p)
 	initialize_items(4, 0);
 	generate_player(true);
 	show_energy_blood(100, 100);
-	play_time = p;
+	play_time = t;
 	local_item = 0;
 	last_local_item = 0;
 	now_use_d = 0;
@@ -38,9 +39,31 @@ Map::Map(GameWindowScene *GWscene, int *p)
 	show();
 }
 
-Map::Map(vector<maps> maps)
+Map::Map(GameWindowScene *GWscene, int *t, Player *p, QString save)
 {
-	map = maps;
+	scene = GWscene;
+	map.clear();
+	player = p;
+
+	setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+	setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+	setFixedSize(1280, 720);
+	create_land();
+	create_items(System::read_save_file(save));
+	// read file
+	initialize_items(player->action->get_x_axis(), player->action->get_y_axis());
+//initialize_items(20, 4);
+	generate_player(true);
+	show_energy_blood(player->energy->get_energy(), player->blood->get_blood());
+	show_bags();
+	play_time = t;
+	local_item = 0;
+	last_local_item = 0;
+	now_use_d = 0;
+	fight_result = 0;
+	bag_select = 0;
+	// update_map(8, 3, 1);
+	show();
 }
 
 bool Map::set_player(Player *p)
@@ -647,13 +670,13 @@ void Map::show_die()
 	die_bgm->setPixmap(QPixmap("://res/img/frame/die/die_bgm.png"));
 	die_bgm->setPos(0, 0);
 	scene->addItem(die_bgm);
-
+/*
 	// exit btn
 	die_exit= new QGraphicsPixmapItem();
 	die_exit->setPixmap(QPixmap("://res/img/frame/exit/exit_60.png"));
 	die_exit->setPos(1100, 0);
 	scene->addItem(die_exit);
-
+*/
 	// survive_time
 	survive_time = new QGraphicsTextItem();
 	survive_time->setPos(560, 30);
@@ -1081,6 +1104,27 @@ bool Map::initialize_items(int x, int y)
 
 bool Map::create_items(QJsonObject json)
 {
+	if(json["type"] == "save") {
+		QJsonObject player_save = json["player"].toObject();
+		player->energy->set_energy(player_save["energy"].toInt());
+		player->blood->set_blood(player_save["blood"].toInt());
+		player->action->set_x_axis(player_save["x_axis"].toInt());
+		player->action->set_y_axis(player_save["y_axis"].toInt());
+		player->action->set_direction(player_save["direction"].toInt());
+		player->action->change_reverse(player_save["reverse"].toBool());
+		player->action->change_status(player_save["status"].toInt());
+
+		QJsonArray bag_save = json["bag"].toArray();
+		for(int i=0; i<bag_save.size(); i++) {
+			QJsonObject bag_item_save = bag_save[i].toObject();
+			for(int j=0; j<bag_item_save["quantity"].toInt(); j++) {
+				player->bag->put(bag_item_save["item"].toInt());
+			}
+		}
+		qDebug()<<"read save";
+	} else {
+		qDebug()<<"no save";
+	}
 	QJsonObject map_size = json["size"].toObject();
 	size_height = map_size["height"].toInt() + 8;
 	size_width = map_size["width"].toInt() + 15;

@@ -1,6 +1,5 @@
 #include "blood.h"
 #include "map.h"
-#include <QDebug>
 
 Blood::Blood()
 {
@@ -41,12 +40,17 @@ int Blood::get_blood()
 	return bloods;
 }
 
+void Blood::set_blood(int b)
+{
+	bloods = b;
+}
+
 bool Blood::add(int b)
 {
 	if(bloods == 100) {
 		return false;
 	} else {
-		bloods+=b;
+		bloods += b;
 		if(bloods > 100) {
 			bloods = 100;
 		}
@@ -56,7 +60,7 @@ bool Blood::add(int b)
 
 bool Blood::sub(int b) {
 	bloods -= b;
-	if(bloods-b <= 0) {
+	if(bloods <= 0) {
 		bloods = 0;
 		return !die();
 	} else {

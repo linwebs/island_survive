@@ -39,7 +39,7 @@ void GameWindowScene::keyPressEvent(QKeyEvent *event) {
 			break;
 		case Qt::Key_Space:
 			space_event();
-			break;
+			break;R
 		case Qt::Key_F:
 			f_event();
 			break;

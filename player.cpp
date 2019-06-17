@@ -12,8 +12,8 @@ Player::Player(GameWindow *g, QGraphicsItem *parent): QGraphicsPixmapItem(parent
 	action->set_energy(energy);
 	action->set_blood(blood);
 	action->set_bag(bag);
-	action->set_player(this);
 	action->set_gamewindow(gamewindow);
+	action->set_player(this);
 	setPixmap(QPixmap("://res/img/character/people_80.png"));
 }
 

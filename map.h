@@ -18,8 +18,8 @@ class Player;
 class Map : public QGraphicsView
 {
 	public:
-		Map(GameWindowScene *GWscene, int *);
-		Map(vector<maps>);						// 帶入存檔(map)
+		Map(GameWindowScene *GWscene, int *, Player *);
+		Map(GameWindowScene *GWscene, int *, Player *, QString);						// 帶入存檔(map)
 		bool update_map(int&, int&, int&);
 		bool set_player(Player*);
 		bool create_items(QJsonObject);		// 從 map.json 取得地圖上物品
@@ -51,7 +51,7 @@ class Map : public QGraphicsView
 		bool generate_animal();				// 生成獵物
 		bool generate_stone();					// 生成礦物
 		bool generate_wood();					// 生成木頭
-		vector<vector<map_item> > *get_map_items();	// 取得地圖中的物品
+		vector<vector<map_item> > *get_map_items();	// 取得背包中的物品
 
 	private:
 		bool create_land();					// 生成土地

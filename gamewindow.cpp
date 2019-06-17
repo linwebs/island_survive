@@ -14,8 +14,6 @@ GameWindow::GameWindow()
 	setWindowTitle("小島生存");  // 設定遊戲視窗標題
 	setFixedSize(1280, 740);   // 設定遊戲視窗大小
 
-	system = new System;
-
 	player = new Player(this);	// 建立玩家 object
 	player->setPos(560, 453);
 
@@ -23,13 +21,15 @@ GameWindow::GameWindow()
 
 	scene = new GameWindowScene(player, this);	// scene
 
-	map = new Map(scene, &play_time);	// view
+	map = new Map(scene, &play_time, player);	// view
+	//map->set_player(player);
+
+
 	player->set_map(map);
 
 	player->action->set_map(map);
 	scene->setSceneRect(0, 0, 1280, 720);	// 設定場景大小
 	map->setScene(scene);
-	map->set_player(player);
 	scene->set_map(map);
 	setCentralWidget(map);	// 將場景添加到 QMain Window
 
@@ -45,6 +45,55 @@ GameWindow::GameWindow()
 	create_actions();	// 建立標題列按鈕活動(小分支)
 	create_menus();		// 建立標題列按鈕
 	invincible_time = 0;
+
+	system = new System;
+
+	timer = new QTimer();
+	connect(timer, SIGNAL(timeout()), this, SLOT(add_play_time()));
+	timer->start(1000);
+	//	connect("要connect的東西", SIGNAL("得到訊號"), this, SLOT("要執行的東西"));
+
+	energy_timer = new QTimer();
+	connect(energy_timer, SIGNAL(timeout()), this, SLOT(sub_time()));
+	energy_timer->start(3000);
+}
+
+GameWindow::GameWindow(QString save)
+{
+	setWindowTitle("小島生存");  // 設定遊戲視窗標題
+	setFixedSize(1280, 740);   // 設定遊戲視窗大小
+
+	player = new Player(this);	// 建立玩家 object
+	player->setPos(560, 453);
+
+	play_time = 0;
+
+	scene = new GameWindowScene(player, this);	// scene
+
+	map = new Map(scene, &play_time, player, save);	// view
+	player->set_map(map);
+
+	player->action->set_map(map);
+	scene->setSceneRect(0, 0, 1280, 720);	// 設定場景大小
+	map->setScene(scene);
+//	map->set_player(player);
+	scene->set_map(map);
+	setCentralWidget(map);	// 將場景添加到 QMain Window
+
+	/* 560: 1280-80*7=560
+	 * 453: 720-80*2-107=453
+	 */
+
+	// make the player focusable and set it to be the current focus
+	//player->setFlag(QGraphicsItem::ItemIsFocusable);
+	//player->setFocus();
+	scene->addItem(player);	// 將玩家加入場景中
+
+	create_actions();	// 建立標題列按鈕活動(小分支)
+	create_menus();		// 建立標題列按鈕
+	invincible_time = 0;
+
+	system = new System;
 
 	timer = new QTimer();
 	connect(timer, SIGNAL(timeout()), this, SLOT(add_play_time()));
@@ -134,7 +183,7 @@ void GameWindow::create_actions()
 	menu_actions[1][2] -> setShortcut(Qt::Key_B);		// 呼叫次選單功能的快捷鍵
 	connect(menu_actions[1][2], SIGNAL(triggered()), this, SLOT(show_bag()));
 
-	menu_actions[2][0] = new QAction(tr("&遊戲說明"), this);	// 次選單文字
+	menu_actions[2][0] = new QAction(tr("&遊戲介紹"), this);	// 次選單文字
 	menu_actions[2][0] -> setShortcut(tr("Ctrl+I"));		// 呼叫次選單功能的快捷鍵
 	connect(menu_actions[2][0], SIGNAL(triggered()), this, SLOT(show_about()));
 }
@@ -152,6 +201,7 @@ void GameWindow::create_menus()
 	menus[1]->addAction(menu_actions[1][0]);
 	menus[1]->addAction(menu_actions[1][1]);
 	menus[1]->addAction(menu_actions[1][2]);
+	menus[2]->setToolTip("遊戲選項");				// 主選單內的次選單提示文字
 
 	menus[2] = menuBar()->addMenu(tr("&說明"));	// 主選單文字
 	menus[2]->addAction(menu_actions[2][0]);
@@ -168,6 +218,8 @@ void GameWindow::show_bag()
 {
 	if(player->action->get_status() == 0) {
 		map->open_bag(0, 0);
+	} else if(player->action->get_status() == 2) {
+		map->open_bag(0, 0);
 	} else if(player->action->get_status() == 9) {
 		map->close_bag();
 	}
@@ -176,6 +228,11 @@ void GameWindow::show_bag()
 void GameWindow::save_file()
 {
 	qDebug()<<"save file";
+	if(player->action->get_status() == 2) {
+		system->save(player, map, 2);
+	} else if(player->action->get_status() != 4) {
+		system->save(player, map, 0);
+	}
 }
 
 void GameWindow::pause_game()
@@ -190,11 +247,7 @@ void GameWindow::exit_pause_game()
 }
 
 void GameWindow::back_to_main_window_slot() {
-	if(player->action->get_status() == 4) {
-		back_to_main_window(true);
-	} else {
-		back_to_main_window(false);
-	}
+	back_to_main_window();
 }
 
 void GameWindow::closeEvent(QCloseEvent *event)
@@ -205,13 +258,14 @@ void GameWindow::closeEvent(QCloseEvent *event)
 	} else {
 		mbox_content = "是否要存檔並返回主畫面";
 	}
+	int status = player->action->get_status();
 	if(player->action->get_status() == 0) {
 		map->pause_game();
 	}
 	QMessageBox::StandardButton reply = QMessageBox::question(this, "返回主畫面", mbox_content, QMessageBox::Yes | QMessageBox::No);
 	if(reply == QMessageBox::Yes) {
 		if(player->action->get_status() != 4) {
-			system->save(map, player);
+			system->save(player, map, status);
 		}
 		event->accept();
 		MainWindow *mainwindow = new MainWindow;
@@ -226,27 +280,27 @@ void GameWindow::closeEvent(QCloseEvent *event)
 	}
 }
 
-void GameWindow::back_to_main_window(bool die)
+void GameWindow::back_to_main_window()
 {
 	QString mbox_content;
-	if(die) {
+	if(player->action->get_status() == 4) {
 		mbox_content = "是否返回主畫面";
 	} else {
 		mbox_content = "是否要存檔並返回主畫面";
 	}
+	int status = player->action->get_status();
 	if(player->action->get_status() == 0) {
 		map->pause_game();
 	}
 	QMessageBox::StandardButton reply = QMessageBox::question(this, "返回主畫面", mbox_content, QMessageBox::Yes | QMessageBox::No);
 	if(reply == QMessageBox::Yes) {
-		if(!die) {
-			system->save(map, player);
+		if(player->action->get_status() != 4) {
+			system->save(player, map, status);
 		}
 		MainWindow *mainwindow = new MainWindow;
 		mainwindow->show();
 		destructor();
 		this->hide();
-	} else {
 	}
 }
 

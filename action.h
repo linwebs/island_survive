@@ -9,14 +9,13 @@ class Energy;
 class Blood;
 class Bag;
 class GameWindow;
-class System;
 class Player;
+class System;
 /* 行動 */
 class Action: public QGraphicsPixmapItem
 {
 	public:
 		Action();
-		Action(int);				// 帶入存檔(direction, x-axis, y-axis)
 		bool move(int);				// 行走(direction_id)
 		bool pick(int);				// 採集資源(item id)
 		bool attack();				// 獵殺動物
@@ -28,17 +27,20 @@ class Action: public QGraphicsPixmapItem
 		void set_map(Map *);
 		void set_energy(Energy *);
 		void set_blood(Blood *);
-		void set_player(Player *);
 		void set_gamewindow(GameWindow *);
 		void set_bag(Bag *);
+		void set_player(Player *);
+		bool set_x_axis(int);
+		bool set_y_axis(int);
+		bool set_direction(int);
 		int &get_x_axis();
 		int &get_y_axis();
 		int &get_direction();
 		bool energy_update();
 		bool change_status(int);
 		int get_status();
-		int get_last_status();
 		int get_pause();
+		bool get_reverse();
 		void change_reverse(bool);
 
 	private:
@@ -54,8 +56,8 @@ class Action: public QGraphicsPixmapItem
 		Blood *blood;
 		Bag *bag;
 		GameWindow *gamewindow;
-		System *system;
 		Player *player;
+		System *system;
 
 		int direction;				// 方向
 		bool reverse;				// 反向
@@ -63,7 +65,6 @@ class Action: public QGraphicsPixmapItem
 		int y_axis;					// Y 軸座標
 		int pause;					// 暫停狀態
 		int status;					// 遊戲狀態
-		int last_status;			// 前一個狀態
 };
 
 #endif // ACTION_H

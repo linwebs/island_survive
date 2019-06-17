@@ -52,6 +52,11 @@ int Energy::get_energy()
 	return energy;
 }
 
+bool Energy::set_energy(int e)
+{
+	energy = e;
+}
+
 bool Energy::add(int e)
 {
 	if(energy == 100) {

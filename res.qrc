@@ -125,5 +125,6 @@
         <file>res/img/land/swamp_2_80.png</file>
         <file>res/img/land/swamp_3_80.png</file>
         <file>res/img/land/swamp_4_80.png</file>
+        <file>res/img/intro/game_intro.png</file>
     </qresource>
 </RCC>

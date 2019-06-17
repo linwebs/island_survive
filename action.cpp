@@ -9,6 +9,7 @@
 #include "blood.h"
 #include "gamewindow.h"
 #include "system.h"
+#include "player.h"
 Action::Action()
 {
 	reverse = false;
@@ -17,14 +18,8 @@ Action::Action()
 	direction = 1;
 	pause = 0;
 	status = 0;
-	last_status = 0;
 	system = new System;
 	setPixmap(QPixmap("://res/img/character/people.png"));
-}
-
-Action::Action(int n)
-{
-	direction = n;
 }
 
 bool Action::move(int n) {
@@ -304,6 +299,7 @@ bool Action::go_up(int step) {
 }
 
 bool Action::go_down(int step) {
+	qDebug()<<"dyiscuhxjk"<<y_axis<<x_axis;
 	if(reverse) {
 		if(y_axis+1 < map->get_size_height()-8) {
 			y_axis += 1;
@@ -375,11 +371,6 @@ void Action::set_blood(Blood *b)
 	blood = b;
 }
 
-void Action::set_player(Player *p)
-{
-	player = p;
-}
-
 void Action::set_gamewindow(GameWindow * g)
 {
 	gamewindow = g;
@@ -388,6 +379,26 @@ void Action::set_gamewindow(GameWindow * g)
 void Action::set_bag(Bag *b)
 {
 	bag = b;
+}
+
+void Action::set_player(Player *p)
+{
+	player = p;
+}
+
+bool Action::set_x_axis(int x)
+{
+	x_axis = x;
+}
+
+bool Action::set_y_axis(int y)
+{
+	y_axis = y;
+}
+
+bool Action::set_direction(int d)
+{
+	direction = d;
 }
 
 int &Action::get_x_axis()
@@ -412,7 +423,7 @@ bool Action::energy_update()
 
 bool Action::change_status(int s)
 {
-	last_status = status;
+	int last_status = status;
 	switch (s) {
 		case 0:
 			status = 0;
@@ -430,9 +441,9 @@ bool Action::change_status(int s)
 			return true;
 		case 3:
 			// save file
+			system->save(player, map, last_status);
 			status = 3;
 			pause = 1;
-			system->save(map, player);
 			return true;
 		case 4:
 			// game over
@@ -473,14 +484,14 @@ int Action::get_status()
 	return status;
 }
 
-int Action::get_last_status()
-{
-	return last_status;
-}
-
 int Action::get_pause()
 {
 	return pause;
+}
+
+bool Action::get_reverse()
+{
+	return reverse;
 }
 
 void Action::change_reverse(bool r)

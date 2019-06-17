@@ -12,6 +12,7 @@ class Blood
 		bool fail();		// 戰鬥失敗
 		bool die();			// 死亡判定
 		int get_blood();	// 取得血量
+		void set_blood(int);	// 設定血量
 		void set_map(Map*);		// 設定Map以顯示死亡畫面
 
 	private:
