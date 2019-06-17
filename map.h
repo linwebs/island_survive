@@ -21,7 +21,6 @@ class Map : public QGraphicsView
 		Map(GameWindowScene *GWscene, int *, Player *);
 		Map(GameWindowScene *GWscene, int *, Player *, QString);						// 帶入存檔(map)
 		bool update_map(int&, int&, int&);
-		bool set_player(Player*);
 		bool create_items(QJsonObject);		// 從 map.json 取得地圖上物品
 		int get_size_height();
 		int get_size_width();

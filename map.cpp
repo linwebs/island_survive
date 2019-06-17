@@ -20,6 +20,12 @@ Map::Map(GameWindowScene *GWscene, int *t, Player *p)
 	scene = GWscene;
 	map.clear();
 	player = p;
+	play_time = t;
+	local_item = 0;
+	last_local_item = 0;
+	now_use_d = 0;
+	fight_result = 0;
+	bag_select = 0;
 
 	setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -29,13 +35,7 @@ Map::Map(GameWindowScene *GWscene, int *t, Player *p)
 	initialize_items(4, 0);
 	generate_player(true);
 	show_energy_blood(100, 100);
-	play_time = t;
-	local_item = 0;
-	last_local_item = 0;
-	now_use_d = 0;
-	fight_result = 0;
-	bag_select = 0;
-	// update_map(8, 3, 1);
+	show_bags();
 	show();
 }
 
@@ -44,6 +44,12 @@ Map::Map(GameWindowScene *GWscene, int *t, Player *p, QString save)
 	scene = GWscene;
 	map.clear();
 	player = p;
+	play_time = t;
+	local_item = 0;
+	last_local_item = 0;
+	now_use_d = 0;
+	fight_result = 0;
+	bag_select = 0;
 
 	setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -52,27 +58,10 @@ Map::Map(GameWindowScene *GWscene, int *t, Player *p, QString save)
 	create_items(System::read_save_file(save));
 	// read file
 	initialize_items(player->action->get_x_axis(), player->action->get_y_axis());
-//initialize_items(20, 4);
 	generate_player(true);
 	show_energy_blood(player->energy->get_energy(), player->blood->get_blood());
 	show_bags();
-	play_time = t;
-	local_item = 0;
-	last_local_item = 0;
-	now_use_d = 0;
-	fight_result = 0;
-	bag_select = 0;
-	// update_map(8, 3, 1);
 	show();
-}
-
-bool Map::set_player(Player *p)
-{
-	player = p;
-	player->bag->put(3);
-	/* test bag items
-	player->bag->put(3);*/
-	show_bags();
 }
 
 bool Map::create_land()
@@ -1112,6 +1101,8 @@ bool Map::create_items(QJsonObject json)
 		player->action->set_y_axis(player_save["y_axis"].toInt());
 		player->action->set_direction(player_save["direction"].toInt());
 		player->action->change_reverse(player_save["reverse"].toBool());
+		player->action->set_play_time(player_save["time"].toInt());
+		player->action->set_invincible_time(player_save["invincible"].toInt());
 		player->action->change_status(player_save["status"].toInt());
 
 		QJsonArray bag_save = json["bag"].toArray();
@@ -1121,7 +1112,7 @@ bool Map::create_items(QJsonObject json)
 				player->bag->put(bag_item_save["item"].toInt());
 			}
 		}
-		qDebug()<<"read save";
+		qDebug()<<"read save ("<<player->action->get_x_axis()<<","<<player->action->get_y_axis()<<")";
 	} else {
 		qDebug()<<"no save";
 	}

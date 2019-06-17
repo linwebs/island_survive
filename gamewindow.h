@@ -22,7 +22,11 @@ class GameWindow : public QMainWindow
 		virtual ~GameWindow();
 		void closeEvent (QCloseEvent*);
 		void back_to_main_window();
+		void set_play_time(int);
 		void set_invincible_time(int);
+		int get_play_time();
+		int get_invincible_time();
+
 	private:
         void create_actions();
         void create_menus();

@@ -45,6 +45,8 @@ bool System::save(Player *p, Map *m, int status) {
 //	player.insert("pause", p->action->get_pause());
 	player.insert("energy", p->energy->get_energy());
 	player.insert("blood", p->blood->get_blood());
+	player.insert("time", p->action->get_play_time());
+	player.insert("invincible", p->action->get_invincible_time());
 	json.insert("player", player);
 
 	QJsonObject size;

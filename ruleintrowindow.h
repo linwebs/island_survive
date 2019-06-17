@@ -15,9 +15,6 @@ class RuleIntroWindow : public QDialog
 		explicit RuleIntroWindow(QWidget *parent = nullptr);
 		~RuleIntroWindow();
 
-	private slots:
-		void on_pushButton_clicked();
-
 	private:
 		Ui::RuleIntroWindow *ui;
 };

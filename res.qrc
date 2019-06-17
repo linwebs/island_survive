@@ -5,7 +5,6 @@
         <file>res/img/logo/logo.ico</file>
         <file>res/img/character/people_80.png</file>
         <file>res/img/land/grass_80.png</file>
-        <file>res/map/map.json</file>
         <file>res/img/building/home_3_80.png</file>
         <file>res/img/building/home_4_80.png</file>
         <file>res/img/building/home_5_80.png</file>
@@ -126,5 +125,8 @@
         <file>res/img/land/swamp_3_80.png</file>
         <file>res/img/land/swamp_4_80.png</file>
         <file>res/img/intro/game_intro.png</file>
+    </qresource>
+    <qresource prefix="/map">
+        <file>res/map/map.json</file>
     </qresource>
 </RCC>

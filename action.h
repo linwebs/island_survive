@@ -33,6 +33,8 @@ class Action: public QGraphicsPixmapItem
 		bool set_x_axis(int);
 		bool set_y_axis(int);
 		bool set_direction(int);
+		void set_play_time(int);
+		void set_invincible_time(int);
 		int &get_x_axis();
 		int &get_y_axis();
 		int &get_direction();
@@ -41,6 +43,8 @@ class Action: public QGraphicsPixmapItem
 		int get_status();
 		int get_pause();
 		bool get_reverse();
+		int get_play_time();
+		int get_invincible_time();
 		void change_reverse(bool);
 
 	private:

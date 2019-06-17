@@ -52,10 +52,8 @@ void GameWindowScene::keyPressEvent(QKeyEvent *event) {
 void GameWindowScene::mousePressEvent(QGraphicsSceneMouseEvent *event) {
 	qreal x = event->scenePos().x(), y = event->scenePos().y();
 	qDebug()<<"Mouse Event: ("<<x<<","<<y<<")";
-	if(player->action->get_status() == 0 && x >= 800 && y >= 560) {
+	if((player->action->get_status() == 0 || player->action->get_status() == 2) && x >= 800 && y >= 560) {
 		map->open_bag(0, 0);
-	} else if(player->action->get_status() == 9 && x >= 1080 && y <= 70) {
-		map->close_bag();
 	} else if(player->action->get_status() == 6 && x >= 1080 && y <= 70) {
 		map->close_bbq();
 	} else if(player->action->get_status() == 6 && x >= 540 && x <= 720 && y >= 280 && y <= 430 && player->bag->get_item_num(9)) {
@@ -74,9 +72,45 @@ void GameWindowScene::mousePressEvent(QGraphicsSceneMouseEvent *event) {
 		map->open_furnace(2, 0);
 	} else if(player->action->get_status() == 5 && x >= 0 && x <= 220 && y >= 341 && y <= 510) {
 		map->open_furnace(3, 0);
+	} else if(player->action->get_status() == 8 && map->get_fight_result() == 0) {
+
+//		qDebug()<<"fight: "<<map->get_fight_result();
+		if(x>=240 && x<=400 && y>=515 && y<= 710) {
+			map->open_fight(1, 0, 0);
+		} else if(x>=560 && x<=720 && y>=515 && y<= 710) {
+			map->open_fight(2, 0, 0);
+		} else if(x>=880 && x<=1040 && y>=515 && y<= 710) {
+			map->open_fight(3, 0, 0);
+		} else if(x>=430 && x<=800 && y>=140 && y<= 420) {
+			player->action->attack();
+		}
 	} else if(player->action->get_status() == 8 && x >= 1080 && y <= 70) {
 		if(player->action->exit_attack(map->get_fight_result())) {
 			map->close_fight();
+		}
+	} else if(player->action->get_status() == 9) {
+		if(x>=60 && x<=260 && y>=180 && y<= 380) {
+			map->open_bag(0, 0);
+		} else if(x>=300 && x<=500 && y>=180 && y<= 380) {
+			map->open_bag(1, 0);
+		} else if(x>=540 && x<=740 && y>=180 && y<= 380) {
+			map->open_bag(2, 0);
+		} else if(x>=780 && x<=980 && y>=180 && y<= 380) {
+			map->open_bag(3, 0);
+		} else if(x>=1020 && x<=1220 && y>=180 && y<= 380) {
+			map->open_bag(4, 0);
+		} else if(x>=60 && x<=260 && y>=420 && y<= 620) {
+			map->open_bag(5, 0);
+		} else if(x>=300 && x<=500 && y>=420 && y<= 620) {
+			map->open_bag(6, 0);
+		} else if(x>=540 && x<=740 && y>=420 && y<= 620) {
+			map->open_bag(7, 0);
+		} else if(x>=780 && x<=980 && y>=420 && y<= 620) {
+			map->open_bag(8, 0);
+		} else if(x>=1020 && x<=1220 && y>=420 && y<= 620) {
+			map->open_bag(9, 0);
+		} else if(x >= 1080 && y <= 70) {
+			map->close_bag();
 		}
 	}/* else if(player->action->get_status() == 4 && x >= 1080 && y <= 70) {
 		gamewindow->back_to_main_window(true);
@@ -98,6 +132,7 @@ void GameWindowScene::f_event() {
 	} else if((player->action->get_status() == 0 || player->action->get_status() == 2) && map->get_local_item() == 8) {
 		map->open_fight(1, 1, 0);
 	} else if(player->action->get_status() == 8 && map->get_fight_result() == 0) {
+		qDebug()<<"fight"<<map->get_fight_result();
 		player->action->attack();
 	} else if(player->action->get_status() == 6 && player->bag->get_item_num(9)) {
 		player->action->bbq();

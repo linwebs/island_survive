@@ -401,6 +401,16 @@ bool Action::set_direction(int d)
 	direction = d;
 }
 
+void Action::set_invincible_time(int t)
+{
+	gamewindow->set_invincible_time(t);
+}
+
+void Action::set_play_time(int t)
+{
+	gamewindow->set_play_time(t);
+}
+
 int &Action::get_x_axis()
 {
 	return x_axis;
@@ -423,7 +433,6 @@ bool Action::energy_update()
 
 bool Action::change_status(int s)
 {
-	int last_status = status;
 	switch (s) {
 		case 0:
 			status = 0;
@@ -441,7 +450,11 @@ bool Action::change_status(int s)
 			return true;
 		case 3:
 			// save file
-			system->save(player, map, last_status);
+			if(status == 2) {
+				system->save(player, map, 2);
+			} else {
+				system->save(player, map, 0);
+			}
 			status = 3;
 			pause = 1;
 			return true;
@@ -492,6 +505,16 @@ int Action::get_pause()
 bool Action::get_reverse()
 {
 	return reverse;
+}
+
+int Action::get_play_time()
+{
+	return gamewindow->get_play_time();
+}
+
+int Action::get_invincible_time()
+{
+	return gamewindow->get_invincible_time();
 }
 
 void Action::change_reverse(bool r)
