@@ -21,6 +21,10 @@ Map::Map(GameWindowScene *GWscene, int *t, Player *p, GameWindow*g)
 	scene = GWscene;
 	map.clear();
 	player = p;
+	p->bag->put(9);
+	p->bag->put(9);
+	p->bag->put(10);
+	p->bag->put(10);
 	play_time = t;
 	gamewindow = g;
 	local_item = 0;
@@ -28,6 +32,8 @@ Map::Map(GameWindowScene *GWscene, int *t, Player *p, GameWindow*g)
 	now_use_d = 0;
 	fight_result = 0;
 	bag_select = 0;
+	show_purple_time = false;
+	show_use_item_hint = false;
 
 	setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -36,7 +42,7 @@ Map::Map(GameWindowScene *GWscene, int *t, Player *p, GameWindow*g)
 	create_items(System::get_default_map());
 	initialize_items(4, 0);
 	generate_player(true);
-	show_energy_blood(100, 100);
+	show_energy_blood(true, 100, 100);
 	show_bags();
 	show();
 }
@@ -53,6 +59,8 @@ Map::Map(GameWindowScene *GWscene, int *t, Player *p, QString save, GameWindow*g
 	now_use_d = 0;
 	fight_result = 0;
 	bag_select = 0;
+	show_purple_time = false;
+	show_use_item_hint = false;
 
 	setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -62,7 +70,7 @@ Map::Map(GameWindowScene *GWscene, int *t, Player *p, QString save, GameWindow*g
 	// read file
 	initialize_items(player->action->get_x_axis(), player->action->get_y_axis());
 	generate_player(true);
-	show_energy_blood(player->energy->get_energy(), player->blood->get_blood());
+	show_energy_blood(true, player->energy->get_energy(), player->blood->get_blood());
 	show_bags();
 	show();
 }
@@ -148,6 +156,31 @@ void Map::close_bag_full_hint() {
 	delete bag_full_hint;
 }
 
+void Map::open_use_item_hint(bool ini, QString img)
+{
+	if(show_use_item_hint) {
+		scene->removeItem(use_item_hint);
+		delete use_item_hint;
+	}
+	qDebug()<<"use: "<<img;
+	// bgm
+	use_item_hint= new QGraphicsPixmapItem();
+	use_item_hint->setPixmap(QPixmap(img));
+	use_item_hint->setPos(880, 80);
+	scene->addItem(use_item_hint);
+	if(ini) {
+		gamewindow->set_use_item_time(3);
+		gamewindow->set_use_item_img(img);
+		show_use_item_hint = true;
+	}
+}
+
+void Map::close_use_item_hint() {
+	scene->removeItem(use_item_hint);
+	show_use_item_hint = false;
+	delete use_item_hint;
+}
+
 vector<vector<map_item> > *Map::get_map_items()
 {
 	return &map_items;
@@ -226,12 +259,16 @@ bool Map::update_map(int &player_x, int &player_y, int &player_di)
 		}
 		generate_player(false);
 		items_event();
-		show_energy_blood(player->energy->get_energy(), player->blood->get_blood());
+		show_energy_blood(false, player->energy->get_energy(), player->blood->get_blood());
 		show_bags();
 
 		if(gamewindow->get_bag_full_show_time() > 0) {
 			close_bag_full_hint();
 			open_bag_full_hint(false);
+		}
+		if(gamewindow->get_use_item_time() > 0) {
+			close_use_item_hint();
+			open_use_item_hint(false, gamewindow->get_use_item_img());
 		}
 		return true;
 	}
@@ -1256,12 +1293,30 @@ int Map::get_home_size_width()
 	return home_size_width;
 }
 
-int Map::show_energy_blood(int energy_v, int blood_v, QString avatar_v)
+int Map::show_energy_blood(bool ini, int energy_v, int blood_v, QString avatar_v)
 {
-	QGraphicsPixmapItem *frame, *avatar;
-	QGraphicsRectItem *energy, *blood;
-	QGraphicsTextItem *energy_t, *blood_t;
-
+	if(!ini) {
+		scene->removeItem(frame);
+		scene->removeItem(blood);
+		scene->removeItem(blood_t);
+		scene->removeItem(energy);
+		scene->removeItem(energy_t);
+		scene->removeItem(avatar);
+		delete frame;
+		delete blood;
+		delete blood_t;
+		delete energy;
+		delete energy_t;
+		delete avatar;
+		qDebug()<<"debug 2";
+		if(show_purple_time) {
+			qDebug()<<"debug 3";
+			scene->removeItem(purple_time);
+			scene->removeItem(purple_time_t);
+			delete purple_time;
+			delete  purple_time_t;
+		}
+	}
 	frame= new QGraphicsPixmapItem();
 	frame->setPixmap(QPixmap("://res/img/frame/ebh.png"));
 	frame->setPos(10, 10);
@@ -1307,6 +1362,34 @@ int Map::show_energy_blood(int energy_v, int blood_v, QString avatar_v)
 	avatar->setPixmap(QPixmap(avatar_v));
 	avatar->setPos(36, 26);
 	scene->addItem(avatar);
+
+	qDebug()<<"debug 4";
+	if(gamewindow->get_invincible_time() > 1) {
+		qDebug()<<"debug 55";
+		purple_time = new QGraphicsPixmapItem();
+		purple_time->setPixmap(QPixmap("://res/img/bag/grass_purple_54.png"));
+		purple_time->setPos(475, 80);
+		scene->addItem(purple_time);
+
+		purple_time_t = new QGraphicsTextItem();
+		purple_time_t->setDefaultTextColor(Qt::black);
+		purple_time_t->setFont(QFont("Microsoft JhengHei", 12));
+		if(gamewindow->get_invincible_time() < 10) {
+			purple_time_t->setPos(492, 98);
+		} else if(gamewindow->get_invincible_time() < 100) {
+			purple_time_t->setPos(488, 98);
+		} else {
+			purple_time_t->setPos(484, 98);
+		}
+		purple_time_t->setPlainText(QString::number(gamewindow->get_invincible_time()));
+		scene->addItem(purple_time_t);
+		show_purple_time = true;
+		qDebug()<<"debug 5";
+	} else if(gamewindow->get_invincible_time() == 1) {
+		qDebug()<<"debug 66";
+		show_purple_time = false;
+		qDebug()<<"debug 6";
+	}
 }
 
 void Map::show_bags()

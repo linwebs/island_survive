@@ -19,6 +19,9 @@ GameWindow::GameWindow()
 
 	play_time = 0;
 	bag_full_show_time = 0;
+	use_item_show_time = 0;
+	use_item_img = "";
+	invincible_time = 0;
 
 	scene = new GameWindowScene(player, this);	// scene
 
@@ -44,7 +47,6 @@ GameWindow::GameWindow()
 
 	create_actions();	// 建立標題列按鈕活動(小分支)
 	create_menus();		// 建立標題列按鈕
-	invincible_time = 0;
 
 	system = new System;
 
@@ -68,6 +70,9 @@ GameWindow::GameWindow(QString save)
 
 	play_time = 0;
 	bag_full_show_time = 0;
+	use_item_show_time = 0;
+	use_item_img = "";
+	invincible_time = 0;
 
 	scene = new GameWindowScene(player, this);	// scene
 
@@ -127,7 +132,7 @@ void GameWindow::sub_time()
 {
 	if(player->action->get_pause() == 0) {
 		if(player->action->energy_update()) {
-			map->show_energy_blood(player->energy->get_energy(), player->blood->get_blood());
+			map->show_energy_blood(false, player->energy->get_energy(), player->blood->get_blood());
 		}
 	}
 }
@@ -155,6 +160,18 @@ void GameWindow::add_play_time()
 		map->close_bag_full_hint();
 	} else if(bag_full_show_time > 1) {
 		bag_full_show_time--;
+	}
+	if(player->action->get_status() == 0 || player->action->get_status() == 2) {
+		qDebug()<<"debug 0";
+		map->show_energy_blood(false, player->energy->get_energy(), player->blood->get_blood());
+		qDebug()<<"debug 1";
+	}
+	if(use_item_show_time == 1) {
+		use_item_show_time--;
+		use_item_img = "";
+		map->close_use_item_hint();
+	} else if(use_item_show_time > 1) {
+		use_item_show_time--;
 	}
 	qDebug()<<"play time: "<<play_time;
 }
@@ -331,6 +348,16 @@ void GameWindow::set_bag_full_show_time(int t)
 	bag_full_show_time = t;
 }
 
+void GameWindow::set_use_item_img(QString img)
+{
+	use_item_img = img;
+}
+
+void GameWindow::set_use_item_time(int t)
+{
+	use_item_show_time = t;
+}
+
 int GameWindow::get_play_time()
 {
 	return  play_time;
@@ -344,5 +371,15 @@ int GameWindow::get_invincible_time()
 int GameWindow::get_bag_full_show_time()
 {
 	return bag_full_show_time;
+}
+
+QString GameWindow::get_use_item_img()
+{
+	return use_item_img;
+}
+
+int GameWindow::get_use_item_time()
+{
+	return use_item_show_time;
 }
 

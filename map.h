@@ -27,7 +27,7 @@ class Map : public QGraphicsView
 		int get_size_width();
 		int get_home_size_height();
 		int get_home_size_width();
-		int show_energy_blood(int, int, QString avatar_v = "://res/img/character/people_avatar_130.png");
+		int show_energy_blood(bool, int, int, QString avatar_v = "://res/img/character/people_avatar_130.png");
 		void show_bags();						// 顯示小背包
 		bool exit_pause();						// 離開暫停遊戲畫面
 		void pause_game();						// 遊戲暫停畫面
@@ -53,6 +53,8 @@ class Map : public QGraphicsView
 		bool generate_wood();					// 生成木頭
 		void open_bag_full_hint(bool);
 		void close_bag_full_hint();
+		void open_use_item_hint(bool, QString);
+		void close_use_item_hint();
 		vector<vector<map_item> > *get_map_items();	// 取得背包中的物品
 
 	private:
@@ -135,6 +137,12 @@ class Map : public QGraphicsView
 		QGraphicsTextItem *fight_stone_card_text;
 		int fight_result;
 
+		// show energy blood
+		QGraphicsPixmapItem *frame, *avatar, *purple_time;
+		QGraphicsRectItem *energy, *blood;
+		QGraphicsTextItem *energy_t, *blood_t, *purple_time_t;
+		bool show_purple_time;
+
 		QGraphicsPixmapItem *player_show;
 		QGraphicsPixmapItem *background[16][9];
 		QGraphicsPixmapItem *map_now[16][9];
@@ -148,7 +156,8 @@ class Map : public QGraphicsView
 		int local_item;
 		int last_local_item;
 		QGraphicsPixmapItem *bag_full_hint;
-		int bag_full_show_time;
+		QGraphicsPixmapItem *use_item_hint;
+		bool show_use_item_hint;
 };
 
 

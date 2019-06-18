@@ -224,24 +224,3 @@ QString System::get_bags_item_file_path(int name)
 			return "";
 	}
 }
-
-/*
- * Write Data
-if(!QDir("data").exists()) {
-	QDir().mkdir("data");
-}
-QFile file("data/save1.dat");
-file.open(QIODevice::WriteOnly);
-const char* data = "welcome QT!\nHello World!";
-file.write(data);
-file.close();
- *
- * Get All Save Data
-QDir directory("data");
-QStringList file = directory.entryList(QStringList() << "*.dat", QDir::Files);
-qDebug()<<file;
-
-foreach(QString filename, file) {
-	qDebug()<<filename;
-}
-*/

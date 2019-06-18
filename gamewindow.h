@@ -25,9 +25,13 @@ class GameWindow : public QMainWindow
 		void set_play_time(int);
 		void set_invincible_time(int);
 		void set_bag_full_show_time(int);
+		void set_use_item_time(int);
+		void set_use_item_img(QString);
 		int get_play_time();
 		int get_invincible_time();
 		int get_bag_full_show_time();
+		int get_use_item_time();
+		QString get_use_item_img();
 
 	private:
         void create_actions();
@@ -54,6 +58,8 @@ class GameWindow : public QMainWindow
 		int play_time;
 		int invincible_time;
 		int bag_full_show_time;
+		int use_item_show_time;
+		QString use_item_img;
 };
 
 #endif // GAMEWINDOW_H

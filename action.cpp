@@ -250,49 +250,64 @@ bool Action::use_item()
 	switch (bag->get_order_item(map->get_bag_select())) {
 		case 1:
 			// grass blue
-			blood->grass(1);
-			bag->take(1);
-			map->open_bag(map->get_bag_select(), !bag->get_item_num(1));
+			if(blood->grass(1)) {
+				bag->take(1);
+				map->open_bag(map->get_bag_select(), !bag->get_item_num(1));
+				map->open_use_item_hint(true, "://res/img/frame/bag/hint/use_item_hint_1_1.png");
+			} else {
+				map->open_bag(map->get_bag_select(), !bag->get_item_num(1));
+				map->open_use_item_hint(true, "://res/img/frame/bag/hint/use_item_hint_1_0.png");
+			}
 			break;
 		case 2:
 			// grass red
 			blood->grass(2);
 			bag->take(2);
 			map->open_bag(map->get_bag_select(), !bag->get_item_num(2));
+			map->open_use_item_hint(true, "://res/img/frame/bag/hint/use_item_hint_2_1.png");
 			break;
 		case 3:
 			// grass purple
 			gamewindow->set_invincible_time(gamewindow->get_invincible_time()+30);
 			bag->take(3);
 			map->open_bag(map->get_bag_select(), !bag->get_item_num(3));
+			map->open_use_item_hint(true, "://res/img/frame/bag/hint/use_item_hint_3_1.png");
 			reverse = true;
 			break;
 		case 4:
 			// wood
+			map->open_use_item_hint(true, "://res/img/frame/bag/hint/use_item_hint_4_0.png");
 			break;
 		case 5:
 			// stone
+			map->open_use_item_hint(true, "://res/img/frame/bag/hint/use_item_hint_5_0.png");
 			break;
 		case 6:
 			// weapon scissor
+			map->open_use_item_hint(true, "://res/img/frame/bag/hint/use_item_hint_6_0.png");
 			break;
 		case 7:
 			// weapon stone
+
+			map->open_use_item_hint(true, "://res/img/frame/bag/hint/use_item_hint_7_0.png");
 			break;
 		case 8:
 			// weapon paper
+			map->open_use_item_hint(true, "://res/img/frame/bag/hint/use_item_hint_8_0.png");
 			break;
 		case 9:
 			// flesh
 			energy->eat(9);
 			bag->take(9);
 			map->open_bag(map->get_bag_select(), !bag->get_item_num(9));
+			map->open_use_item_hint(true, "://res/img/frame/bag/hint/use_item_hint_9_1.png");
 			break;
 		case 10:
 			// meat
 			energy->eat(10);
 			bag->take(10);
 			map->open_bag(map->get_bag_select(), !bag->get_item_num(10));
+			map->open_use_item_hint(true, "://res/img/frame/bag/hint/use_item_hint_10_1.png");
 			break;
 	}
 }
