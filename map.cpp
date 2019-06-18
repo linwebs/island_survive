@@ -21,10 +21,6 @@ Map::Map(GameWindowScene *GWscene, int *t, Player *p, GameWindow*g)
 	scene = GWscene;
 	map.clear();
 	player = p;
-	p->bag->put(9);
-	p->bag->put(9);
-	p->bag->put(10);
-	p->bag->put(10);
 	play_time = t;
 	gamewindow = g;
 	local_item = 0;

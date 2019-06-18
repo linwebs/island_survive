@@ -37,8 +37,9 @@ class GameWindow : public QMainWindow
         void create_actions();
         void create_menus();
 		void destructor();
-    private slots:
-        void show_about();
+	private slots:
+		void show_about();
+		void show_use();
         void show_bag();
         void save_file();
 		void pause_game();

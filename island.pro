@@ -1,8 +1,8 @@
 #-------------------------------------------------
 #
 # Project created by QtCreator 2019-03-31T02:02:52
-# Version: 0.28
-# Last edit time 2019-06-18 02:16
+# Version: 0.29
+# Last edit time 2019-06-18 14:44
 #
 #-------------------------------------------------
 
@@ -43,7 +43,8 @@ SOURCES += \
     energy.cpp \
     player.cpp \
     gamewindowscene.cpp \
-    teamintro.cpp
+    teamintro.cpp \
+    useintro.cpp
 
 HEADERS += \
     bag.h \
@@ -58,13 +59,15 @@ HEADERS += \
     energy.h \
     player.h \
     gamewindowscene.h \
-    teamintro.h
+    teamintro.h \
+    useintro.h
 
 FORMS += \
     mainwindow.ui \
     oldmemorywindow.ui \
     ruleintrowindow.ui \
-    teamintro.ui
+    teamintro.ui \
+    useintro.ui
 #    gamewindow.ui \
 
 # Default rules for deployment.

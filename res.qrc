@@ -138,6 +138,7 @@
         <file>res/img/frame/bag/hint/use_item_hint_9_1.png</file>
         <file>res/img/frame/bag/hint/use_item_hint_10_1.png</file>
         <file>res/img/team/team_intro.png</file>
+        <file>res/img/use/use.png</file>
     </qresource>
     <qresource prefix="/map">
         <file>res/map/map.json</file>

@@ -31,6 +31,8 @@ class MainWindow : public QMainWindow
 
 		void on_action_about_us_triggered();
 
+		void on_action_game_control_triggered();
+
 	private:
 		Ui::MainWindow *ui;
 };

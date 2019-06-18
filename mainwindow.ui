@@ -124,6 +124,9 @@
    <property name="toolTip">
     <string>新遊戲</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+N</string>
+   </property>
   </action>
   <action name="action_old_memory">
    <property name="text">
@@ -131,6 +134,9 @@
    </property>
    <property name="toolTip">
     <string>舊的記憶</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
    </property>
   </action>
   <action name="action_exit">
@@ -140,6 +146,9 @@
    <property name="toolTip">
     <string>離開遊戲</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
+   </property>
   </action>
   <action name="action_game_intro">
    <property name="text">
@@ -147,6 +156,9 @@
    </property>
    <property name="toolTip">
     <string>遊戲說明</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+I</string>
    </property>
   </action>
   <action name="action_game_control">
@@ -156,6 +168,9 @@
    <property name="toolTip">
     <string>操作方式</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+U</string>
+   </property>
   </action>
   <action name="action_about_us">
    <property name="text">
@@ -163,6 +178,9 @@
    </property>
    <property name="toolTip">
     <string>製作團隊</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+T</string>
    </property>
   </action>
  </widget>

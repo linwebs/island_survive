@@ -1,5 +1,6 @@
 #include "gamewindow.h"
 #include "mainwindow.h"
+#include "useintro.h"
 #include "map.h"
 #include "ruleintrowindow.h"
 #include "gamewindowscene.h"
@@ -205,6 +206,10 @@ void GameWindow::create_actions()
 	menu_actions[2][0] = new QAction(tr("&遊戲介紹"), this);	// 次選單文字
 	menu_actions[2][0] -> setShortcut(tr("Ctrl+I"));		// 呼叫次選單功能的快捷鍵
 	connect(menu_actions[2][0], SIGNAL(triggered()), this, SLOT(show_about()));
+
+	menu_actions[2][0] = new QAction(tr("&操作方式"), this);	// 次選單文字
+	menu_actions[2][0] -> setShortcut(tr("Ctrl+U"));		// 呼叫次選單功能的快捷鍵
+	connect(menu_actions[2][0], SIGNAL(triggered()), this, SLOT(show_use()));
 }
 
 void GameWindow::create_menus()
@@ -231,6 +236,12 @@ void GameWindow::show_about(){
 
 	RuleIntroWindow *ruleintrowindow = new RuleIntroWindow;
 	ruleintrowindow->show();
+}
+
+void GameWindow::show_use(){
+
+	UseIntro *useintrowindow = new UseIntro;
+	useintrowindow->show();
 }
 
 void GameWindow::show_bag()
